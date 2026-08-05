@@ -22,9 +22,11 @@ verified against live market data. The UI is functional rather than finished.
 | Risk statistics | ✅ Sharpe, Sortino, drawdown, VaR, beta/alpha, Monte Carlo |
 | Interpretation engine | ✅ evidence-based, no buy/sell verdicts |
 | Interactive chart | ✅ zoom, tooltips, PNG export |
-| Tests | ✅ 153 backend, 21 frontend |
-| Analytics in the UI | 🚧 computed but not yet displayed |
-| UI design system | ⬜ not started |
+| Analytics in the UI | ✅ evidence ledger, risk panel, interactive chart |
+| Design system | ✅ tokens, light + dark, responsive, accessible |
+| Beginner glossary | ✅ 16 terms in plain English |
+| Tests | ✅ 160 backend, 67 frontend |
+| CI | ✅ lint, types, tests, build, secret scan |
 | Portfolio / watchlists / screener | ⬜ not started (needs a database) |
 
 A full inventory is in [AUDIT.md](AUDIT.md); current priorities are in [ROADMAP.md](ROADMAP.md).
@@ -133,7 +135,7 @@ ruff check .        # lint
 
 # Frontend
 cd frontend
-npm test            # 21 tests
+npm test            # 67 tests
 npm run typecheck
 npm run lint
 npm run build
