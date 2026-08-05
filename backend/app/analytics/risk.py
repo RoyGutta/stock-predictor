@@ -172,25 +172,29 @@ def max_drawdown(prices: pd.Series) -> Drawdown:
         return Drawdown(float("nan"), None, None, None)
 
     drawdowns = drawdown_series(prices)
-    trough_index = drawdowns.idxmin()
-    worst = float(drawdowns.loc[trough_index])
 
-    # The peak is the last high before the trough.
-    peak_index = prices.loc[:trough_index].idxmax()
-    peak_value = prices.loc[peak_index]
+    # Positional throughout: a price series can carry a non-unique index (repeated
+    # timestamps from a vendor, or an unindexed frame), and label-based .loc would
+    # then return a Series where a scalar is expected.
+    trough_pos = int(np.argmin(drawdowns.to_numpy()))
+    worst = float(drawdowns.iloc[trough_pos])
 
-    after_trough = prices.loc[trough_index:]
-    recovered = after_trough[after_trough >= peak_value]
-    recovery_index = recovered.index[0] if not recovered.empty else None
+    # The peak is the highest point at or before the trough.
+    peak_pos = int(np.argmax(prices.iloc[: trough_pos + 1].to_numpy()))
+    peak_value = float(prices.iloc[peak_pos])
 
-    def label(index: object) -> str | None:
-        return None if index is None else str(index)
+    after_trough = prices.iloc[trough_pos:]
+    recovered = np.flatnonzero(after_trough.to_numpy() >= peak_value)
+    recovery_pos = trough_pos + int(recovered[0]) if recovered.size else None
+
+    def label(position: int | None) -> str | None:
+        return None if position is None else str(prices.index[position])
 
     return Drawdown(
         max_drawdown=worst,
-        peak_date=label(peak_index),
-        trough_date=label(trough_index),
-        recovery_date=label(recovery_index),
+        peak_date=label(peak_pos),
+        trough_date=label(trough_pos),
+        recovery_date=label(recovery_pos),
     )
 
 

@@ -58,3 +58,80 @@ class Quote(BaseModel):
 
 class ErrorResponse(BaseModel):
     detail: str
+
+
+# --- analysis ---------------------------------------------------------------
+
+
+class ObservationOut(BaseModel):
+    indicator: str
+    stance: str = Field(description="bullish | bearish | neutral. Describes past price action.")
+    value: float | None
+    headline: str
+    detail: str
+    caveat: str = Field(description="This indicator's known failure mode. Never empty.")
+
+    @classmethod
+    def from_domain(cls, observation: object) -> ObservationOut:
+        return cls(
+            indicator=observation.indicator,  # type: ignore[attr-defined]
+            stance=observation.stance.value,  # type: ignore[attr-defined]
+            value=observation.value,  # type: ignore[attr-defined]
+            headline=observation.headline,  # type: ignore[attr-defined]
+            detail=observation.detail,  # type: ignore[attr-defined]
+            caveat=observation.caveat,  # type: ignore[attr-defined]
+        )
+
+
+class TrendInterpretation(BaseModel):
+    summary: str
+    agreement_score: float = Field(
+        ge=0.0,
+        le=1.0,
+        description=(
+            "How much the indicators agree WITH EACH OTHER. This is not a probability "
+            "and not a confidence level for any prediction."
+        ),
+    )
+    agreement_label: str
+    conflicts: list[str] = Field(
+        description="Contradictions between indicators, stated rather than averaged away."
+    )
+    bullish: list[ObservationOut]
+    bearish: list[ObservationOut]
+    neutral: list[ObservationOut]
+    disclaimer: str
+
+
+class RiskMetrics(BaseModel):
+    annualized_return: float | None
+    annualized_volatility: float | None
+    sharpe_ratio: float | None
+    sortino_ratio: float | None
+    max_drawdown: float | None = Field(
+        description="Largest peak-to-trough decline, as a negative fraction."
+    )
+    drawdown_peak_date: str | None
+    drawdown_trough_date: str | None
+    drawdown_recovery_date: str | None = Field(
+        description="Null if the price never regained its previous peak within this range."
+    )
+    value_at_risk_95: float | None
+    conditional_value_at_risk_95: float | None
+    observations: int
+    frequency: str
+    basis: str
+
+
+class AnalysisResponse(BaseModel):
+    ticker: str
+    company_name: str
+    range: Range
+    as_of: str
+    source: str
+    bars_analyzed: int
+    interpretation: TrendInterpretation
+    risk: RiskMetrics | None = Field(
+        default=None,
+        description="Null when the range holds too few bars for the statistics to be meaningful.",
+    )

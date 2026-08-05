@@ -102,6 +102,19 @@ def test_rsi_is_zero_when_every_bar_loses() -> None:
     assert result.iloc[-1] == pytest.approx(0.0, abs=1e-9)
 
 
+def test_rsi_is_undefined_on_a_flat_series() -> None:
+    """0 gains and 0 losses is 0/0, not saturation. Reporting 100 here would
+    claim maximum bullish momentum for a price that never moved."""
+    assert rsi(pd.Series(np.full(40, 100.0)), 14).dropna().empty
+
+
+def test_rsi_distinguishes_saturation_from_undefined() -> None:
+    rising = rsi(pd.Series(np.arange(1.0, 40.0)), 14).iloc[-1]
+    flat_series = rsi(pd.Series(np.full(40, 100.0)), 14).iloc[-1]
+    assert rising == pytest.approx(100.0)
+    assert np.isnan(flat_series)
+
+
 def test_rsi_stays_within_bounds(frame: pd.DataFrame) -> None:
     result = rsi(frame["close"], 14).dropna()
     assert not result.empty

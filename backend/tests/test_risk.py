@@ -196,6 +196,15 @@ def test_max_drawdown_is_zero_for_a_monotonic_rise() -> None:
     assert max_drawdown(pd.Series([1.0, 2, 3, 4, 5])).max_drawdown == pytest.approx(0.0)
 
 
+def test_max_drawdown_handles_a_duplicated_index() -> None:
+    """Vendor data can repeat timestamps; label-based lookup would return a
+    Series where a scalar is required and raise."""
+    prices = pd.Series([100.0, 120, 60, 80, 130], index=["a", "a", "b", "b", "c"])
+    result = max_drawdown(prices)
+    assert result.max_drawdown == pytest.approx(-0.5)
+    assert result.trough_date == "b"
+
+
 def test_max_drawdown_handles_an_empty_series() -> None:
     assert np.isnan(max_drawdown(pd.Series([], dtype=float)).max_drawdown)
 

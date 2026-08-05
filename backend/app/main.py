@@ -10,7 +10,7 @@ from fastapi.responses import JSONResponse
 
 from app.config import get_settings
 from app.middleware.rate_limit import RateLimitMiddleware
-from app.routes import stocks
+from app.routes import analysis, stocks
 
 logging.basicConfig(
     level=logging.INFO,
@@ -68,3 +68,4 @@ async def health() -> dict[str, str]:
 
 
 app.include_router(stocks.router, prefix="/api/v1")
+app.include_router(analysis.router, prefix="/api/v1")

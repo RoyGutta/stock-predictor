@@ -124,8 +124,15 @@ def rsi(series: pd.Series, period: int = 14) -> pd.Series:
 
     relative_strength = avg_gain / avg_loss
     result = 100 - (100 / (1 + relative_strength))
-    # A window with no losses gives avg_loss == 0 -> RS is inf -> RSI is exactly 100.
-    return result.where(avg_loss != 0, 100.0).where(avg_gain.notna())
+
+    # Two distinct degenerate cases, which must not be collapsed:
+    #   gains > 0, losses == 0  -> RS is infinite, RSI saturates at 100.
+    #   gains == 0, losses == 0 -> a perfectly flat window. RSI is 0/0, genuinely
+    #     undefined. Returning 100 here would report maximum bullish momentum for
+    #     a price that has not moved at all.
+    saturated = (avg_loss == 0) & (avg_gain > 0)
+    undefined = (avg_loss == 0) & (avg_gain == 0)
+    return result.mask(saturated, 100.0).mask(undefined, np.nan).where(avg_gain.notna())
 
 
 @dataclass(frozen=True)
