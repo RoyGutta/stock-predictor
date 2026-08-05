@@ -1,0 +1,228 @@
+/**
+ * The evidence ledger.
+ *
+ * Supporting and opposing evidence sit in two columns either side of a hairline
+ * spine, with contradictions called out on the spine itself. The layout is the
+ * argument: this product's position is that a mixed picture is the finding, so
+ * conflict is given the centre of the composition rather than being averaged
+ * into a single score and hidden.
+ */
+
+.ledger {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.ledger__summary {
+  font-size: var(--text-base);
+  color: var(--text);
+  text-wrap: pretty;
+}
+
+/* --- agreement meter --- */
+
+.agreement {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+}
+
+.agreement__track {
+  position: relative;
+  flex: 1;
+  height: 3px;
+  background: var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.agreement__fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 999px;
+  transition: width var(--transition-base);
+}
+
+.agreement__label {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* --- the two columns and their spine --- */
+
+.ledger__columns {
+  display: grid;
+  grid-template-columns: 1fr 1px 1fr;
+  gap: 0;
+  align-items: start;
+}
+
+.ledger__spine {
+  align-self: stretch;
+  background: var(--border);
+}
+
+.ledger__column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: 0 var(--space-5);
+  min-width: 0;
+}
+
+.ledger__column:first-child {
+  padding-left: 0;
+}
+
+.ledger__column:last-child {
+  padding-right: 0;
+}
+
+.ledger__column-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-bottom: var(--space-2);
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+.ledger__count {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--text-xs);
+  color: var(--text-subtle);
+  margin-left: auto;
+}
+
+.ledger__empty {
+  font-size: var(--text-sm);
+  color: var(--text-subtle);
+  font-style: italic;
+}
+
+/* Below this width two columns stop being readable; they stack, and each
+   observation keeps its stance via a coloured left border. */
+@media (max-width: 720px) {
+  .ledger__columns {
+    grid-template-columns: 1fr;
+  }
+
+  .ledger__spine {
+    height: 1px;
+    margin: var(--space-4) 0;
+  }
+
+  .ledger__column {
+    padding: 0;
+  }
+}
+
+/* --- one observation --- */
+
+.observation {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-left: var(--space-3);
+  border-left: 2px solid var(--border-strong);
+}
+
+.observation--bullish {
+  border-left-color: var(--up);
+}
+.observation--bearish {
+  border-left-color: var(--down);
+}
+
+.observation__head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.observation__indicator {
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-subtle);
+}
+
+.observation__headline {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text);
+  text-wrap: pretty;
+}
+
+.observation__detail {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  text-wrap: pretty;
+}
+
+/**
+ * The caveat is always visible, never behind a disclosure. Hiding an
+ * indicator's known failure mode would undercut the entire premise.
+ */
+.observation__caveat {
+  display: flex;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--text-subtle);
+  text-wrap: pretty;
+}
+
+.observation__caveat::before {
+  content: "But";
+  flex-shrink: 0;
+  font-weight: 600;
+  font-style: italic;
+  color: var(--accent);
+}
+
+/* --- conflicts, sitting on the spine --- */
+
+.conflicts {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: var(--border-width) dashed var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+}
+
+.conflicts__item {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  text-wrap: pretty;
+}
+
+/* --- risk grid --- */
+
+.risk-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--space-5) var(--space-4);
+}
+
+.risk__basis {
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: var(--border-width) solid var(--border);
+  font-size: var(--text-xs);
+  color: var(--text-subtle);
+  text-wrap: pretty;
+}
+
+/* --- disclaimer --- */
+
+.disclaimer {
+  font-size: var(--text-xs);
+  line-height: var(--leading-normal);
+  color: var(--text-subtle);
+  text-wrap: pretty;
+}

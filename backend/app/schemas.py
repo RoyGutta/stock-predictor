@@ -123,6 +123,25 @@ class RiskMetrics(BaseModel):
     basis: str
 
 
+class IndicatorSeries(BaseModel):
+    """Indicator values aligned index-for-index with the quote's `history`.
+
+    `null` marks a bar where the indicator is not yet defined (its window has
+    not filled). Callers must render those as gaps, never as zero.
+    """
+
+    dates: list[str]
+    sma: list[float | None]
+    ema: list[float | None]
+    bollinger_upper: list[float | None]
+    bollinger_lower: list[float | None]
+    rsi: list[float | None]
+    macd: list[float | None]
+    macd_signal: list[float | None]
+    macd_histogram: list[float | None]
+    period: int = Field(description="Window used for SMA, EMA, and Bollinger Bands.")
+
+
 class AnalysisResponse(BaseModel):
     ticker: str
     company_name: str
@@ -131,6 +150,9 @@ class AnalysisResponse(BaseModel):
     source: str
     bars_analyzed: int
     interpretation: TrendInterpretation
+    series: IndicatorSeries = Field(
+        description="Chart-ready indicator values, aligned to the quote's history."
+    )
     risk: RiskMetrics | None = Field(
         default=None,
         description="Null when the range holds too few bars for the statistics to be meaningful.",

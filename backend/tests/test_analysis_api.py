@@ -129,3 +129,37 @@ def test_unknown_ticker_returns_404(client: TestClient, monkeypatch: pytest.Monk
 def test_json_contains_no_nan_literals(client: TestClient, stub_long_history: None) -> None:
     """NaN is not valid JSON; absent statistics must serialize as null."""
     assert "NaN" not in client.get("/api/v1/stocks/AAPL/analysis").text
+
+
+# --- indicator series -------------------------------------------------------
+
+
+def test_series_is_aligned_to_history(client: TestClient, stub_long_history: None) -> None:
+    body = client.get("/api/v1/stocks/AAPL/analysis").json()
+    series = body["series"]
+    length = body["bars_analyzed"]
+    for key in ("dates", "sma", "ema", "bollinger_upper", "rsi", "macd"):
+        assert len(series[key]) == length, f"{key} is not aligned to history"
+
+
+def test_series_uses_null_not_zero_for_undefined_bars(
+    client: TestClient, stub_long_history: None
+) -> None:
+    """A 0 here would draw the indicator plunging to the axis before its window fills."""
+    sma = client.get("/api/v1/stocks/AAPL/analysis?period=20").json()["series"]["sma"]
+    assert sma[:19] == [None] * 19
+    assert sma[19] is not None
+
+
+def test_series_period_is_honoured(client: TestClient, stub_long_history: None) -> None:
+    body = client.get("/api/v1/stocks/AAPL/analysis?period=50").json()
+    assert body["series"]["period"] == 50
+    assert body["series"]["sma"][48] is None
+    assert body["series"]["sma"][49] is not None
+
+
+@pytest.mark.parametrize("period", [1, 0, -5, 201])
+def test_series_rejects_out_of_range_periods(
+    client: TestClient, stub_long_history: None, period: int
+) -> None:
+    assert client.get(f"/api/v1/stocks/AAPL/analysis?period={period}").status_code == 422

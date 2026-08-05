@@ -80,3 +80,6 @@ Thumbs.db
 *.njsproj
 *.sln
 *.sw?
+
+# Playwright MCP scratch output
+.playwright-mcp/

@@ -1,0 +1,105 @@
+.chart__frame {
+  height: clamp(300px, 46vh, 460px);
+  margin-top: var(--space-4);
+}
+
+.chart__controls {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  align-items: center;
+  padding: var(--space-3) 0 0;
+  border-top: var(--border-width) solid var(--border);
+  margin-top: var(--space-4);
+}
+
+.chart__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  cursor: pointer;
+  user-select: none;
+}
+
+.chart__toggle input {
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+/* A colour chip ties each toggle to its line on the chart, so the legend is
+   the control rather than a separate thing to cross-reference. */
+.chart__swatch {
+  width: 10px;
+  height: 2px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.chart__period {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  margin-left: auto;
+}
+
+.chart__period input {
+  width: 4rem;
+  padding: var(--space-1) var(--space-2);
+  background: var(--surface);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--text-xs);
+}
+
+.chart__tooltip {
+  padding: var(--space-3);
+  background: var(--surface-raised);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow);
+  font-size: var(--text-xs);
+  min-width: 11rem;
+}
+
+.chart__tooltip-date {
+  display: block;
+  padding-bottom: var(--space-2);
+  margin-bottom: var(--space-2);
+  border-bottom: var(--border-width) solid var(--border);
+  font-weight: 600;
+  color: var(--text);
+}
+
+.chart__tooltip-row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  color: var(--text-muted);
+}
+
+.chart__tooltip-row span:last-child {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+
+.chart__empty {
+  display: grid;
+  place-items: center;
+  gap: var(--space-2);
+  min-height: 260px;
+  padding: var(--space-6);
+  text-align: center;
+  color: var(--text-subtle);
+}
+
+.chart__empty h2 {
+  color: var(--text);
+}

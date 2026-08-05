@@ -7,11 +7,13 @@ import asyncio
 import pandas as pd
 from fastapi import APIRouter, HTTPException, Query
 
+from app.analytics import indicators as ind
 from app.analytics import risk
 from app.analytics.interpretation import interpret
 from app.schemas import (
     AnalysisResponse,
     ErrorResponse,
+    IndicatorSeries,
     ObservationOut,
     Range,
     RiskMetrics,
@@ -76,6 +78,34 @@ def _build_risk(frame: pd.DataFrame, frequency: str) -> RiskMetrics | None:
     )
 
 
+def _to_optional_floats(series: pd.Series) -> list[float | None]:
+    """Serialize a float Series, mapping NaN to null.
+
+    NaN is not valid JSON, and coercing it to 0 would draw an indicator line
+    plunging to zero across every bar where its window had not yet filled.
+    """
+    return [None if pd.isna(value) else round(float(value), 4) for value in series]
+
+
+def _build_series(frame: pd.DataFrame, period: int) -> IndicatorSeries:
+    close = frame["close"]
+    bands = ind.bollinger_bands(close, period)
+    macd_result = ind.macd(close)
+
+    return IndicatorSeries(
+        dates=[str(index) for index in frame.index],
+        sma=_to_optional_floats(ind.sma(close, period)),
+        ema=_to_optional_floats(ind.ema(close, period)),
+        bollinger_upper=_to_optional_floats(bands.upper),
+        bollinger_lower=_to_optional_floats(bands.lower),
+        rsi=_to_optional_floats(ind.rsi(close)),
+        macd=_to_optional_floats(macd_result.macd),
+        macd_signal=_to_optional_floats(macd_result.signal),
+        macd_histogram=_to_optional_floats(macd_result.histogram),
+        period=period,
+    )
+
+
 @router.get(
     "/{ticker}/analysis",
     response_model=AnalysisResponse,
@@ -89,6 +119,12 @@ def _build_risk(frame: pd.DataFrame, frequency: str) -> RiskMetrics | None:
 async def read_analysis(
     ticker: str,
     range: Range = Query(default=Range.YEAR_1),  # noqa: A002
+    period: int = Query(
+        default=20,
+        ge=2,
+        le=200,
+        description="Window for SMA, EMA, and Bollinger Bands.",
+    ),
 ) -> AnalysisResponse:
     """Analyse a ticker's price history.
 
@@ -106,9 +142,10 @@ async def read_analysis(
 
     # Indicator and risk math is CPU-bound over the whole series; keep it off
     # the event loop so one large request cannot stall other clients.
-    interpretation, risk_metrics = await asyncio.gather(
+    interpretation, risk_metrics, series = await asyncio.gather(
         asyncio.to_thread(interpret, frame),
         asyncio.to_thread(_build_risk, frame, frequency),
+        asyncio.to_thread(_build_series, frame, period),
     )
 
     return AnalysisResponse(
@@ -128,5 +165,6 @@ async def read_analysis(
             neutral=[ObservationOut.from_domain(o) for o in interpretation.neutral],
             disclaimer=interpretation.disclaimer,
         ),
+        series=series,
         risk=risk_metrics,
     )

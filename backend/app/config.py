@@ -37,10 +37,13 @@ def _int(name: str, default: int) -> int:
 class Settings:
     app_env: str = field(default_factory=lambda: os.getenv("APP_ENV", "development"))
     api_port: int = field(default_factory=lambda: _int("API_PORT", 8001))
+    # Defaults cover `vite dev` (5173) and `vite preview` (4173) on both
+    # hostnames. Production must set this explicitly; validate() enforces it.
     cors_allowed_origins: list[str] = field(
         default_factory=lambda: _csv(
             "CORS_ALLOWED_ORIGINS",
-            "http://localhost:5173,http://127.0.0.1:5173",
+            "http://localhost:5173,http://127.0.0.1:5173"
+            ",http://localhost:4173,http://127.0.0.1:4173",
         )
     )
     quote_cache_ttl: int = field(default_factory=lambda: _int("CACHE_TTL_SECONDS", 60))
