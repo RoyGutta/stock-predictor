@@ -12,8 +12,9 @@ what each one actually measures.
 
 ## Status
 
-Early but solid. The data pipeline, API, and indicator math are real, tested, and
-verified against live market data. The UI is functional rather than finished.
+The data pipeline, API, indicator math, and UI are real, tested, and verified against
+live market data. What is missing is anything requiring a database or a licensed data
+provider — those are listed as not started rather than stubbed with fake data.
 
 | Area | State |
 |---|---|
@@ -21,8 +22,8 @@ verified against live market data. The UI is functional rather than finished.
 | Technical indicators | ✅ 11 indicators, unit-tested against hand-computed values |
 | Risk statistics | ✅ Sharpe, Sortino, drawdown, VaR, beta/alpha, Monte Carlo |
 | Interpretation engine | ✅ evidence-based, no buy/sell verdicts |
-| Interactive chart | ✅ zoom, tooltips, PNG export |
-| Analytics in the UI | ✅ evidence ledger, risk panel, interactive chart |
+| Interactive chart | ✅ zoom, crosshair, indicator overlays, CSV export |
+| Analytics in the UI | ✅ evidence ledger and risk panel |
 | Design system | ✅ tokens, light + dark, responsive, accessible |
 | Beginner glossary | ✅ 16 terms in plain English |
 | Tests | ✅ 160 backend, 67 frontend |
@@ -62,19 +63,23 @@ For account signups, rate limits, and deployment steps, see `personal.md`
 
 ```
 frontend/                React 19 + TypeScript (strict) + Vite
-  src/lib/api.ts         typed API client — the only place fetch() is called
-  src/lib/indicators.ts  pure indicator math, framework-free and unit-tested
+  src/styles/            design tokens; light and dark both first-class
+  src/components/ui/     shared primitives — presentation only, no data access
+  src/features/          quote, chart, analysis, education (each owns its CSS)
+  src/hooks/             theme, ticker data loading
+  src/lib/               api client, chart prep, formatting, CSV export
   src/types/market.ts    types mirroring the backend schemas
 
 backend/                 FastAPI + Python 3.11+
   app/config.py          env-driven settings; refuses unsafe production config
   app/schemas.py         pydantic response models (also generates the OpenAPI docs)
+  app/analytics/         indicators, risk statistics, interpretation — pure functions
   app/services/          market data providers behind a narrow interface
   app/routes/            HTTP layer only
   app/middleware/        rate limiting
 ```
 
-Two decisions worth knowing about:
+Three decisions worth knowing about:
 
 **Market data is cached server-side.** The default provider (`yfinance`) is an unofficial
 scraper with an undocumented rate limit — without a cache, a handful of users exhausts it
@@ -84,6 +89,12 @@ and the app dies for everyone. Quotes cache for 60 s; company profiles for 24 h,
 **The provider sits behind an interface.** `yfinance` is fine locally but is not licensed
 for commercial use or redistribution. Swapping in a properly-licensed provider means
 implementing one module, not touching the routes.
+
+**All indicator math lives on the backend.** MACD needs EMA and ADX needs ATR, so a
+second copy in the frontend would inevitably drift. The analysis endpoint returns
+date-aligned indicator series and the frontend plots them — bars where an indicator is
+not yet defined serialize as `null`, so the chart draws a gap rather than a line
+plunging to zero.
 
 ---
 
@@ -130,7 +141,7 @@ are returned as `null`, never as `0`.
 # Backend
 cd backend
 pip install -r requirements-dev.txt
-pytest              # 34 tests
+pytest              # 160 tests
 ruff check .        # lint
 
 # Frontend
