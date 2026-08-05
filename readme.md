@@ -17,14 +17,17 @@ verified against live market data. The UI is functional rather than finished.
 
 | Area | State |
 |---|---|
-| Market data API | ✅ working, cached, rate-limited, validated |
-| Technical indicators (SMA / EMA / Bollinger) | ✅ implemented and unit-tested |
-| Interactive chart | ✅ working (zoom via brush, tooltips, PNG export) |
-| Tests | ✅ 34 backend, 21 frontend |
-| UI design system | 🚧 in progress |
+| Market data API | ✅ cached, rate-limited, validated |
+| Technical indicators | ✅ 11 indicators, unit-tested against hand-computed values |
+| Risk statistics | ✅ Sharpe, Sortino, drawdown, VaR, beta/alpha, Monte Carlo |
+| Interpretation engine | ✅ evidence-based, no buy/sell verdicts |
+| Interactive chart | ✅ zoom, tooltips, PNG export |
+| Tests | ✅ 153 backend, 21 frontend |
+| Analytics in the UI | 🚧 computed but not yet displayed |
+| UI design system | ⬜ not started |
 | Portfolio / watchlists / screener | ⬜ not started (needs a database) |
 
-A full inventory of the codebase, including known gaps, is in [AUDIT.md](AUDIT.md).
+A full inventory is in [AUDIT.md](AUDIT.md); current priorities are in [ROADMAP.md](ROADMAP.md).
 
 ---
 
@@ -88,6 +91,7 @@ implementing one module, not touching the routes.
 |---|---|
 | `GET /health` | Liveness probe |
 | `GET /api/v1/stocks/{ticker}?range=1M` | Quote + candles |
+| `GET /api/v1/stocks/{ticker}/analysis?range=1Y` | Indicators, risk stats, interpretation |
 
 `range` accepts `1D`, `5D`, `1M`, `3M`, `6M`, `1Y`, `5Y`, `MAX`. Each maps to a candle
 interval that suits the period, so `1D` returns intraday 5-minute bars rather than a
@@ -96,6 +100,25 @@ single point.
 Errors use real HTTP status codes with a `{"detail": "..."}` body: `400` invalid ticker,
 `404` unknown ticker, `429` rate limited, `502` upstream failure. Internal error details
 are logged server-side and never returned to the client.
+
+### What the analysis endpoint deliberately does not return
+
+No buy/sell verdict, no price target, no probability that a stock will rise.
+
+It returns evidence grouped into bullish, bearish, and neutral observations, shown side
+by side. Where indicators contradict each other, the contradiction is reported rather
+than averaged into a single score — a mixed picture is usually the most informative thing
+the data has to offer, and hiding it behind one number is the dishonest move.
+
+Every observation carries that indicator's known failure mode as a required field. RSI
+above 70 comes with the note that strong trends hold it there for months; moving-average
+crossovers come with the note that they lag by construction.
+
+The `agreement_score` measures how much the indicators agree **with each other** — not
+how likely anything is. Because indicators are recomputed from the same price series,
+agreement is partly an artifact of shared inputs rather than independent confirmation,
+and the payload says so. Statistics that cannot be computed from the available history
+are returned as `null`, never as `0`.
 
 ---
 
