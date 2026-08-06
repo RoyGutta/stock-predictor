@@ -69,7 +69,7 @@ interface StatProps {
   label: ReactNode;
   value: ReactNode;
   note?: ReactNode;
-  /** Colours the value. Omit for figures that carry no direction. */
+  /** Colors the value. Omit for figures that carry no direction. */
   tone?: "positive" | "negative";
   term?: GlossaryKey;
 }

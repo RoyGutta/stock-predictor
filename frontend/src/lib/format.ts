@@ -25,7 +25,7 @@ export function formatPrice(value: number | null | undefined, currency = "USD"):
   }).format(value);
 }
 
-/** Signed, so a gain is unambiguous without relying on colour. */
+/** Signed, so a gain is unambiguous without relying on color. */
 export function formatChange(value: number | null | undefined): string {
   if (value == null || !Number.isFinite(value)) return EMPTY;
   return `${value >= 0 ? "+" : "−"}${Math.abs(value).toFixed(2)}`;

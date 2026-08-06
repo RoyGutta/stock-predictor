@@ -28,7 +28,7 @@ sides, production build passing with no console warnings.
   constants. Strict TS throughout. Duplicated indicator math removed. Chart
   memoized, theme object memoized, chart animations disabled.
 - **Phase 2** — complete. `.gitignore`, `.env.example`, gitignored `personal.md`,
-  MIT licence with disclaimer, CORS allowlist, input validation, opaque errors,
+  MIT license with disclaimer, CORS allowlist, input validation, opaque errors,
   rate limiting. CI now fails the build if a secret or `node_modules` is tracked.
 - **Phase 3** — complete for the current surface. Design tokens, brass accent,
   tabular numerals, light and dark, responsive to 390 px, animations respecting
@@ -91,7 +91,7 @@ everything here needs a persistence layer that does not exist yet.
 Not negotiable; these shape every decision above.
 
 1. **No fabricated market data.** If a provider is unavailable, the app says so.
-2. **No predictions.** Indicators describe the past. Monte Carlo is labelled as
+2. **No predictions.** Indicators describe the past. Monte Carlo is labeled as
    dispersion under an explicitly stated assumption, not a forecast.
 3. **No buy/sell verdicts.** Evidence on both sides; conflicts surfaced.
 4. **Every statistic states its basis** — window, frequency, observation count.

@@ -16,9 +16,9 @@
   --brass-500: #c9963f;
   --brass-600: #a87a2c;
 
-  /* --- direction: distinguishable by hue AND lightness, never colour alone.
+  /* --- direction: distinguishable by hue AND lightness, never color alone.
          Deliberately not the saturated green/red pair; those read as a casino
-         and fail for the ~8% of men with red-green colour blindness. --- */
+         and fail for the ~8% of men with red-green color blindness. --- */
   --up-500: #3fa98a;
   --up-600: #2f8a70;
   --down-500: #c2603f;

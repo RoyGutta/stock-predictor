@@ -28,7 +28,7 @@ DESCRIPTION = """
 Educational market data and technical analysis API.
 
 **This API provides historical analysis, not predictions.** Every value it
-returns describes past price behaviour. Nothing here is investment advice.
+returns describes past price behavior. Nothing here is investment advice.
 """
 
 app = FastAPI(

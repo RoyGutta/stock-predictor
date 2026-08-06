@@ -28,7 +28,7 @@
   cursor: pointer;
 }
 
-/* A colour chip ties each toggle to its line on the chart, so the legend is
+/* A color chip ties each toggle to its line on the chart, so the legend is
    the control rather than a separate thing to cross-reference. */
 .chart__swatch {
   width: 10px;

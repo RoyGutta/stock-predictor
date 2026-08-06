@@ -126,7 +126,7 @@ async def read_analysis(
         description="Window for SMA, EMA, and Bollinger Bands.",
     ),
 ) -> AnalysisResponse:
-    """Analyse a ticker's price history.
+    """Analyze a ticker's price history.
 
     Returns computed indicators, risk statistics, and an interpretation that
     separates supporting from opposing evidence. It deliberately does not

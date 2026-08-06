@@ -22,7 +22,7 @@ Design rules, in priority order:
    fine print.
 
 This layer is deterministic on purpose. Generated prose can be layered on top
-and labelled as such, but the substance is computed, reproducible, and testable.
+and labeled as such, but the substance is computed, reproducible, and testable.
 """
 
 from __future__ import annotations

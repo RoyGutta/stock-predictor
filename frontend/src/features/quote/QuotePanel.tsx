@@ -97,7 +97,7 @@ export function QuoteSummary({ quote }: { quote: Quote }) {
         <div className="quote__price-row">
           <span className="quote__price">{formatPrice(quote.price, quote.currency)}</span>
           <span className={`quote__change quote__change--${positive ? "positive" : "negative"}`}>
-            {/* The glyph carries the direction too, so meaning never rests on colour alone. */}
+            {/* The glyph carries the direction too, so meaning never rests on color alone. */}
             <span aria-hidden="true">{positive ? "▲" : "▼"}</span>
             {formatChange(quote.change_points)} ({formatPercent(quote.change_percent / 100)})
             <span className="visually-hidden">

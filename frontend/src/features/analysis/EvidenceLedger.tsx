@@ -48,7 +48,7 @@ function Column({
  * Evidence for and against, side by side, with contradictions between them.
  *
  * Deliberately renders no verdict, no score out of ten, and no price target.
- * The agreement meter is labelled as agreement between indicators specifically
+ * The agreement meter is labeled as agreement between indicators specifically
  * so it cannot be read as a probability.
  */
 export function EvidenceLedger({ interpretation }: { interpretation: TrendInterpretation }) {

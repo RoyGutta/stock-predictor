@@ -177,18 +177,18 @@ def test_unknown_movers_kind_is_rejected() -> None:
         asyncio.run(fmp.fetch_movers("sideways"))
 
 
-# --- normalisation ----------------------------------------------------------
+# --- normalization ----------------------------------------------------------
 
 
 def test_penny_stocks_are_flagged_not_dropped() -> None:
     """Biggest-mover lists are dominated by sub-$5 microcaps. Removing them
     would misreport the day's actual movers, so they are marked instead."""
-    cheap = fmp._normalise_mover({"symbol": "ZYBT", "price": 2.36, "changesPercentage": 84.4})
-    normal = fmp._normalise_mover({"symbol": "AAPL", "price": 230.0, "changesPercentage": 1.2})
+    cheap = fmp._normalize_mover({"symbol": "ZYBT", "price": 2.36, "changesPercentage": 84.4})
+    normal = fmp._normalize_mover({"symbol": "AAPL", "price": 230.0, "changesPercentage": 1.2})
     assert cheap is not None and cheap["low_priced"] is True
     assert normal is not None and normal["low_priced"] is False
 
 
 def test_mover_without_a_price_is_dropped() -> None:
-    assert fmp._normalise_mover({"symbol": "AAPL", "price": None}) is None
-    assert fmp._normalise_mover({"price": 10.0}) is None
+    assert fmp._normalize_mover({"symbol": "AAPL", "price": None}) is None
+    assert fmp._normalize_mover({"price": 10.0}) is None

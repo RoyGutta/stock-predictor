@@ -4,7 +4,7 @@
  * Supporting and opposing evidence sit in two columns either side of a hairline
  * spine, with contradictions called out on the spine itself. The layout is the
  * argument: this product's position is that a mixed picture is the finding, so
- * conflict is given the centre of the composition rather than being averaged
+ * conflict is given the center of the composition rather than being averaged
  * into a single score and hidden.
  */
 
@@ -103,7 +103,7 @@
 }
 
 /* Below this width two columns stop being readable; they stack, and each
-   observation keeps its stance via a coloured left border. */
+   observation keeps its stance via a colored left border. */
 @media (max-width: 720px) {
   .ledger__columns {
     grid-template-columns: 1fr;

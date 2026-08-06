@@ -54,7 +54,7 @@ async def _fetch(path: str, capability: Capability, **params: Any) -> Any:
 PENNY_STOCK_THRESHOLD = 5.0
 
 
-def _normalise_mover(row: dict[str, Any]) -> dict[str, Any] | None:
+def _normalize_mover(row: dict[str, Any]) -> dict[str, Any] | None:
     symbol = row.get("symbol")
     price = as_float(row.get("price"))
     if not symbol or price is None:
@@ -82,7 +82,7 @@ async def fetch_movers(kind: str, limit: int = 10) -> list[dict[str, Any]]:
 
     payload = await _fetch(paths[kind], Capability.MOVERS)
     rows = payload if isinstance(payload, list) else []
-    movers = [normalised for row in rows if (normalised := _normalise_mover(row))]
+    movers = [normalized for row in rows if (normalized := _normalize_mover(row))]
     return movers[:limit]
 
 

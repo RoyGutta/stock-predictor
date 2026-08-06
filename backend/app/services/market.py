@@ -189,10 +189,10 @@ async def get_news(ticker: str, limit: int = 12) -> list[dict[str, Any]]:
 
 async def search(query: str, limit: int = 10) -> list[dict[str, Any]]:
     settings = get_settings()
-    normalised = query.strip().lower()
-    key = f"search:{normalised}:{limit}"
+    normalized = query.strip().lower()
+    key = f"search:{normalized}:{limit}"
     return await _cached(
-        key, settings.market_cache_ttl, lambda: finnhub.search_symbols(normalised, limit)
+        key, settings.market_cache_ttl, lambda: finnhub.search_symbols(normalized, limit)
     )
 
 

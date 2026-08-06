@@ -210,7 +210,7 @@ def atr(frame: pd.DataFrame, period: int = 14) -> pd.Series:
 
     A volatility measure with no direction -- it says how far price tends to
     travel, not which way. Quoted in dollars, so it is not comparable across
-    stocks at different price levels without normalising.
+    stocks at different price levels without normalizing.
     """
     _validate_period(period)
     return _wilder(true_range(frame), period)

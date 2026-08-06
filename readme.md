@@ -5,7 +5,7 @@ history, and overlay standard technical indicators — with plain-English explan
 what each one actually measures.
 
 > **This is not investment advice, and it does not predict prices.**
-> Every number it shows describes *past* price behaviour. Technical indicators are
+> Every number it shows describes *past* price behavior. Technical indicators are
 > descriptive statistics, not forecasts. See [Scope and honesty](#scope-and-honesty).
 
 ---
@@ -167,9 +167,9 @@ direct about what that does and does not mean:
   app says so rather than inventing it.
 - **Indicators are descriptive.** An SMA crossover is a statement about what prices already
   did. It carries no information about what they will do next.
-- **Any future AI-generated text will be labelled as such**, and will explain the computed
+- **Any future AI-generated text will be labeled as such**, and will explain the computed
   indicators rather than issue buy/sell calls.
 
-## Licence
+## License
 
 MIT — see [LICENSE](LICENSE), which also carries the full educational-use disclaimer.

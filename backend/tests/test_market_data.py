@@ -1,7 +1,7 @@
 """Unit tests for market data validation, caching, and range mapping.
 
 These tests never hit the network -- the provider layer is stubbed. Live
-provider behaviour is covered separately in test_integration.py.
+provider behavior is covered separately in test_integration.py.
 """
 
 from __future__ import annotations

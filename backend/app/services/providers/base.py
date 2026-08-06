@@ -85,7 +85,7 @@ async def get_json(
     provider: str,
     capability: Capability,
 ) -> Any:
-    """Perform one provider request and normalise its failure modes.
+    """Perform one provider request and normalize its failure modes.
 
     Provider errors are logged with the URL but never with the key, and the
     caller receives a message that does not leak either.

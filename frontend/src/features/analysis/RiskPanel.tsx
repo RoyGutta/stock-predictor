@@ -25,7 +25,7 @@ export function RiskPanel({ risk }: { risk: RiskMetrics }) {
           label="Volatility"
           term="volatility"
           value={formatPercentPlain(risk.annualized_volatility)}
-          note="Annualised"
+          note="Annualized"
         />
         <Stat
           label="Max drawdown"
@@ -62,7 +62,7 @@ export function RiskPanel({ risk }: { risk: RiskMetrics }) {
                 ? "positive"
                 : "negative"
           }
-          note="Annualised, this period"
+          note="Annualized, this period"
         />
       </div>
 
