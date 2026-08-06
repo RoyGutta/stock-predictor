@@ -5,7 +5,17 @@
  * request cancellation are defined in exactly one place.
  */
 
-import type { Analysis, Quote, Range } from "../types/market";
+import type {
+  Analysis,
+  Capabilities,
+  MarketStatus,
+  MoversResponse,
+  NewsResponse,
+  Quote,
+  Range,
+  SearchResult,
+  SectorPerformance,
+} from "../types/market";
 
 const BASE_URL: string = import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:8001";
 
@@ -83,4 +93,39 @@ export function fetchAnalysis(
     `/api/v1/stocks/${encodeURIComponent(ticker)}/analysis?${query}`,
     signal,
   );
+}
+
+// --- market-wide -----------------------------------------------------------
+
+export function fetchCapabilities(signal?: AbortSignal): Promise<Capabilities> {
+  return request<Capabilities>("/api/v1/market/capabilities", signal);
+}
+
+export function fetchMarketStatus(signal?: AbortSignal): Promise<MarketStatus> {
+  return request<MarketStatus>("/api/v1/market/status", signal);
+}
+
+export function fetchMovers(limit = 8, signal?: AbortSignal): Promise<MoversResponse> {
+  return request<MoversResponse>(`/api/v1/market/movers?limit=${limit}`, signal);
+}
+
+export function fetchSectors(signal?: AbortSignal): Promise<SectorPerformance[]> {
+  return request<SectorPerformance[]>("/api/v1/market/sectors", signal);
+}
+
+export function fetchNews(ticker: string, limit = 8, signal?: AbortSignal): Promise<NewsResponse> {
+  const query = new URLSearchParams({ limit: String(limit) });
+  return request<NewsResponse>(
+    `/api/v1/market/news/${encodeURIComponent(ticker)}?${query}`,
+    signal,
+  );
+}
+
+export function searchTickers(
+  query: string,
+  limit = 8,
+  signal?: AbortSignal,
+): Promise<SearchResult[]> {
+  const params = new URLSearchParams({ q: query, limit: String(limit) });
+  return request<SearchResult[]>(`/api/v1/market/search?${params}`, signal);
 }

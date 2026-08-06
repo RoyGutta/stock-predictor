@@ -130,3 +130,17 @@
   text-align: center;
   text-wrap: pretty;
 }
+
+.app__bar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+
+@media (max-width: 720px) {
+  /* The session badge is useful but not essential; the theme toggle stays. */
+  .app__bar-right .session {
+    display: none;
+  }
+}

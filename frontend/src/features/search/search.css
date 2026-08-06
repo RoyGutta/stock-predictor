@@ -1,0 +1,95 @@
+.searchbox {
+  flex: 1 1 24rem;
+  max-width: 38rem;
+  min-width: 0;
+}
+
+.searchbox__form {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.searchbox__field-wrap {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.searchbox__field {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-md);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: var(--text-base);
+  letter-spacing: 0.04em;
+  transition: border-color var(--transition-fast);
+}
+
+.searchbox__field::placeholder {
+  font-family: var(--font-sans);
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--text-subtle);
+}
+
+.searchbox__field:hover {
+  border-color: var(--accent);
+}
+
+.searchbox__list {
+  position: absolute;
+  top: calc(100% + var(--space-1));
+  left: 0;
+  right: 0;
+  z-index: 30;
+  margin: 0;
+  padding: var(--space-1);
+  list-style: none;
+  background: var(--surface-raised);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow);
+  /* Fits the 8 results the API returns without clipping the last row, which
+     otherwise reads as a rendering bug rather than as "scroll for more". */
+  max-height: 21rem;
+  overflow-y: auto;
+  animation: fade-rise var(--transition-fast) both;
+}
+
+.searchbox__option {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  min-width: 0;
+}
+
+.searchbox__option--active {
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+
+.searchbox__ticker {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: var(--text-sm);
+  flex-shrink: 0;
+}
+
+.searchbox__name {
+  font-size: var(--text-xs);
+  color: var(--text-subtle);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.searchbox__option--active .searchbox__name {
+  color: var(--accent-contrast);
+  opacity: 0.85;
+}

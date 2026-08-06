@@ -119,3 +119,77 @@ export interface Analysis {
   /** Null when the range holds too few bars for the statistics to be meaningful. */
   risk: RiskMetrics | null;
 }
+
+// --- market-wide -----------------------------------------------------------
+
+export interface Mover {
+  ticker: string;
+  name: string;
+  price: number;
+  change: number | null;
+  change_percent: number | null;
+  exchange: string | null;
+  /** Trades under $5 — the SEC's penny-stock threshold. Higher manipulation risk. */
+  low_priced: boolean;
+}
+
+export interface MoversResponse {
+  gainers: Mover[];
+  losers: Mover[];
+  actives: Mover[];
+  /** Per-list failures. A list that failed is empty and named here. */
+  errors: Record<string, string>;
+  source: string;
+  disclaimer: string;
+}
+
+export interface SectorPerformance {
+  sector: string;
+  change_percent: number;
+  as_of: string;
+}
+
+export type Session = "open" | "pre-market" | "after-hours" | "closed";
+
+export interface MarketStatus {
+  session: Session;
+  reason: string;
+  exchange: string;
+  local_time: string;
+  timezone: string;
+  next_open: string;
+  holiday_data_through: number | null;
+}
+
+export interface NewsArticle {
+  headline: string;
+  summary: string | null;
+  source: string | null;
+  url: string;
+  published_at: string | null;
+  image: string | null;
+}
+
+export interface NewsResponse {
+  ticker: string;
+  articles: NewsArticle[];
+  source: string;
+  disclaimer: string;
+}
+
+export interface SearchResult {
+  ticker: string;
+  name: string;
+  type: string | null;
+}
+
+export interface Capabilities {
+  movers: boolean;
+  sectors: boolean;
+  news: boolean;
+  search: boolean;
+  fundamentals: boolean;
+  screener: boolean;
+  /** Why a capability is unavailable, keyed by capability name. */
+  notes: Record<string, string>;
+}

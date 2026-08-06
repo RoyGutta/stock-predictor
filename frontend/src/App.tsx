@@ -8,12 +8,26 @@ import { LazyPriceChart } from "./features/chart/LazyPriceChart";
 import { DEFAULT_CHART_OPTIONS, type ChartOptions } from "./features/chart/chartConfig";
 import { LearnPanel } from "./features/education/LearnPanel";
 import {
+  CapabilityNotice,
+  MoversPanel,
+  NewsPanel,
+  SectorsPanel,
+  SessionBadge,
+} from "./features/market/MarketPanels";
+import {
   QuoteSkeleton,
   QuoteSummary,
   RangeSelector,
   RecentSearches,
-  TickerSearch,
 } from "./features/quote/QuotePanel";
+import { SearchBox } from "./features/search/SearchBox";
+import {
+  useCapabilities,
+  useMarketStatus,
+  useMovers,
+  useNews,
+  useSectors,
+} from "./hooks/useMarketData";
 import { useTheme } from "./hooks/useTheme";
 import { useTickerData } from "./hooks/useTickerData";
 import { buildHistoryCsv, downloadCsv } from "./lib/export";
@@ -32,6 +46,16 @@ function App() {
   const [options, setOptions] = useState<ChartOptions>(DEFAULT_CHART_OPTIONS);
   const [recent, setRecent] = useState<Quote[]>([]);
 
+  const capabilities = useCapabilities();
+  const marketStatus = useMarketStatus();
+  const canShowMovers = capabilities.data?.movers ?? false;
+  const canShowSectors = capabilities.data?.sectors ?? false;
+  const canShowNews = capabilities.data?.news ?? false;
+
+  const movers = useMovers(canShowMovers);
+  const sectors = useSectors(canShowSectors);
+  const news = useNews(quote?.ticker ?? null, canShowNews);
+
   // Keep the recent list in sync with whatever loaded last, most recent first.
   useEffect(() => {
     if (!quote) return;
@@ -45,6 +69,14 @@ function App() {
       load(symbol, nextRange, nextPeriod);
     },
     [load, range, options.period],
+  );
+
+  const selectTicker = useCallback(
+    (symbol: string) => {
+      setTickerInput(symbol);
+      search(symbol);
+    },
+    [search],
   );
 
   const handleRangeChange = useCallback(
@@ -63,14 +95,6 @@ function App() {
       if (quote && next.period !== options.period) search(quote.ticker, range, next.period);
     },
     [quote, options.period, range, search],
-  );
-
-  const handleExample = useCallback(
-    (symbol: string) => {
-      setTickerInput(symbol);
-      search(symbol);
-    },
-    [search],
   );
 
   const handleExportCsv = useCallback(() => {
@@ -96,18 +120,22 @@ function App() {
             <span className="app__name">Stock Predictor</span>
             <span className="app__tag">Educational market analysis</span>
           </div>
-          <Button variant="ghost" small onClick={toggleTheme}>
-            {theme === "dark" ? "Light" : "Dark"} mode
-          </Button>
+          <div className="app__bar-right">
+            {marketStatus.data && <SessionBadge status={marketStatus.data} />}
+            <Button variant="ghost" small onClick={toggleTheme}>
+              {theme === "dark" ? "Light" : "Dark"} mode
+            </Button>
+          </div>
         </header>
 
         <main id="main" className="app__main">
           <div className="app__toolbar">
-            <TickerSearch
+            <SearchBox
               value={tickerInput}
               onChange={setTickerInput}
-              onSubmit={() => search(tickerInput)}
+              onSubmit={selectTicker}
               loading={loading}
+              suggestionsEnabled={capabilities.data?.search ?? false}
             />
             <RangeSelector value={range} onChange={handleRangeChange} disabled={loading} />
           </div>
@@ -137,7 +165,7 @@ function App() {
                     </p>
                     <div className="welcome__examples">
                       {EXAMPLE_TICKERS.map((symbol) => (
-                        <Button key={symbol} small onClick={() => handleExample(symbol)}>
+                        <Button key={symbol} small onClick={() => selectTicker(symbol)}>
                           {symbol}
                         </Button>
                       ))}
@@ -185,15 +213,54 @@ function App() {
                   mean anything. Try a longer range.
                 </Callout>
               )}
+
+              {quote &&
+                (canShowNews ? (
+                  <NewsPanel
+                    news={news.data}
+                    loading={news.loading}
+                    error={news.error}
+                    ticker={quote.ticker}
+                  />
+                ) : (
+                  capabilities.data && (
+                    <CapabilityNotice
+                      title="News"
+                      note={capabilities.data.notes.news ?? "News is not configured."}
+                    />
+                  )
+                ))}
+
+              {showWelcome &&
+                (canShowMovers ? (
+                  <MoversPanel
+                    data={movers.data}
+                    loading={movers.loading}
+                    error={movers.error}
+                    onSelect={selectTicker}
+                  />
+                ) : (
+                  capabilities.data && (
+                    <CapabilityNotice
+                      title="Biggest movers"
+                      note={capabilities.data.notes.movers ?? "Movers are not configured."}
+                    />
+                  )
+                ))}
+
+              {showWelcome && canShowSectors && (
+                <SectorsPanel
+                  sectors={sectors.data}
+                  loading={sectors.loading}
+                  error={sectors.error}
+                />
+              )}
             </div>
 
             <div className="app__side">
               <RecentSearches
                 quotes={recent}
-                onSelect={(symbol) => {
-                  setTickerInput(symbol);
-                  search(symbol);
-                }}
+                onSelect={selectTicker}
                 onClear={() => setRecent([])}
               />
               <LearnPanel />

@@ -1,5 +1,3 @@
-import { useId, type FormEvent } from "react";
-
 import { Button, Card, Skeleton, Stat } from "../../components/ui";
 import {
   formatChange,
@@ -10,47 +8,6 @@ import {
 } from "../../lib/format";
 import { INTRADAY_RANGES, RANGES, RANGE_LABELS, type Quote, type Range } from "../../types/market";
 import "./quote.css";
-
-// --- search ----------------------------------------------------------------
-
-interface TickerSearchProps {
-  value: string;
-  onChange: (value: string) => void;
-  onSubmit: () => void;
-  loading: boolean;
-}
-
-export function TickerSearch({ value, onChange, onSubmit, loading }: TickerSearchProps) {
-  const inputId = useId();
-
-  const handleSubmit = (event: FormEvent) => {
-    event.preventDefault();
-    onSubmit();
-  };
-
-  return (
-    <form className="search" onSubmit={handleSubmit} role="search">
-      <label className="visually-hidden" htmlFor={inputId}>
-        Stock ticker symbol
-      </label>
-      <input
-        id={inputId}
-        className="search__field"
-        type="text"
-        inputMode="text"
-        autoComplete="off"
-        autoCapitalize="characters"
-        spellCheck={false}
-        placeholder="Enter a ticker — AAPL, MSFT, VOO"
-        value={value}
-        onChange={(event) => onChange(event.target.value.toUpperCase())}
-      />
-      <Button variant="primary" type="submit" disabled={loading || !value.trim()}>
-        {loading ? "Loading…" : "Analyze"}
-      </Button>
-    </form>
-  );
-}
 
 // --- range selector --------------------------------------------------------
 
