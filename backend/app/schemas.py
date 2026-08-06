@@ -123,6 +123,114 @@ class RiskMetrics(BaseModel):
     basis: str
 
 
+# --- market-wide ------------------------------------------------------------
+
+
+class Mover(BaseModel):
+    ticker: str
+    name: str
+    price: float
+    change: float | None
+    change_percent: float | None
+    exchange: str | None = None
+    low_priced: bool = Field(
+        default=False,
+        description=(
+            "Trades under $5 (the SEC's penny-stock threshold). These dominate "
+            "biggest-mover lists and carry markedly higher manipulation risk."
+        ),
+    )
+
+
+class MoversResponse(BaseModel):
+    gainers: list[Mover]
+    losers: list[Mover]
+    actives: list[Mover]
+    errors: dict[str, str] = Field(
+        default_factory=dict,
+        description="Per-list failures. A list that failed is empty and named here.",
+    )
+    source: str
+    disclaimer: str
+
+
+class SectorPerformance(BaseModel):
+    sector: str
+    change_percent: float
+    as_of: str
+
+
+class MarketStatus(BaseModel):
+    session: str = Field(description="open | pre-market | after-hours | closed")
+    reason: str
+    exchange: str
+    local_time: str
+    timezone: str
+    next_open: str
+    holiday_data_through: int | None = Field(
+        description="Last year covered by the holiday table. Beyond it, holidays are not applied."
+    )
+
+
+class NewsArticle(BaseModel):
+    headline: str
+    summary: str | None
+    source: str | None
+    url: str
+    published_at: str | None
+    image: str | None = None
+
+
+class NewsResponse(BaseModel):
+    ticker: str
+    articles: list[NewsArticle]
+    source: str
+    disclaimer: str
+
+
+class SearchResult(BaseModel):
+    ticker: str
+    name: str
+    type: str | None = None
+
+
+class CompanyProfile(BaseModel):
+    ticker: str
+    name: str | None
+    sector: str | None
+    industry: str | None
+    country: str | None
+    exchange: str | None
+    market_cap: float | None
+    beta: float | None
+    last_dividend: float | None
+    average_volume: float | None
+    employees: float | None
+    website: str | None
+    description: str | None
+    ceo: str | None
+    is_etf: bool
+    source: str
+
+
+class CapabilityStatus(BaseModel):
+    """What this deployment can actually serve.
+
+    Lets the UI hide or explain features precisely rather than rendering an
+    empty panel with no reason given.
+    """
+
+    movers: bool
+    sectors: bool
+    news: bool
+    search: bool
+    fundamentals: bool
+    screener: bool
+    notes: dict[str, str] = Field(
+        description="Why a capability is unavailable, keyed by capability name."
+    )
+
+
 class IndicatorSeries(BaseModel):
     """Indicator values aligned index-for-index with the quote's `history`.
 

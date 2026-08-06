@@ -10,12 +10,16 @@ from fastapi.responses import JSONResponse
 
 from app.config import get_settings
 from app.middleware.rate_limit import RateLimitMiddleware
-from app.routes import analysis, stocks
+from app.routes import analysis, market, stocks
 
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)-8s %(name)s: %(message)s",
 )
+
+# Note: httpx/httpcore log levels are raised in app.services.providers.base,
+# where the requests are actually made -- see the comment there.
+
 logger = logging.getLogger(__name__)
 
 settings = get_settings()
@@ -69,3 +73,4 @@ async def health() -> dict[str, str]:
 
 app.include_router(stocks.router, prefix="/api/v1")
 app.include_router(analysis.router, prefix="/api/v1")
+app.include_router(market.router, prefix="/api/v1")

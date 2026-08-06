@@ -53,9 +53,30 @@ class Settings:
     )
     rate_limit_per_minute: int = field(default_factory=lambda: _int("RATE_LIMIT_PER_MINUTE", 60))
 
+    # Optional provider keys. The app runs fully without them; features that
+    # need one report that it is missing rather than inventing data.
+    finnhub_api_key: str = field(default_factory=lambda: os.getenv("FINNHUB_API_KEY", "").strip())
+    fmp_api_key: str = field(default_factory=lambda: os.getenv("FMP_API_KEY", "").strip())
+
+    # Market-wide data (movers, sectors) changes slowly enough that a short
+    # cache keeps us far inside the free-tier request budgets.
+    market_cache_ttl: int = field(default_factory=lambda: _int("MARKET_CACHE_TTL_SECONDS", 300))
+    news_cache_ttl: int = field(default_factory=lambda: _int("NEWS_CACHE_TTL_SECONDS", 900))
+    provider_timeout: float = field(
+        default_factory=lambda: float(os.getenv("PROVIDER_TIMEOUT_SECONDS", "10"))
+    )
+
     @property
     def is_production(self) -> bool:
         return self.app_env.lower() == "production"
+
+    @property
+    def has_finnhub(self) -> bool:
+        return bool(self.finnhub_api_key)
+
+    @property
+    def has_fmp(self) -> bool:
+        return bool(self.fmp_api_key)
 
     def validate(self) -> None:
         """Reject configurations that are unsafe to run publicly."""

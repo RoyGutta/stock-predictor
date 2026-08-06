@@ -46,7 +46,7 @@ export function TickerSearch({ value, onChange, onSubmit, loading }: TickerSearc
         onChange={(event) => onChange(event.target.value.toUpperCase())}
       />
       <Button variant="primary" type="submit" disabled={loading || !value.trim()}>
-        {loading ? "Loading…" : "Analyse"}
+        {loading ? "Loading…" : "Analyze"}
       </Button>
     </form>
   );

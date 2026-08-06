@@ -8,6 +8,7 @@ pydantic~=2.13.0
 yfinance~=0.2.66
 pandas~=2.3.0
 python-dotenv~=1.1.0
+httpx~=0.28.0
 
 # NOTE: scikit-learn was previously declared here but never imported anywhere in
 # the codebase. It has been removed -- it pulled in scipy + numpy (~100 MB) for
