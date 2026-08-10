@@ -7,8 +7,10 @@ streaming is paid-only, so nothing here claims to be real-time.
 
 from __future__ import annotations
 
+import logging
 from datetime import UTC, datetime, timedelta
 from typing import Any
+from urllib.parse import urlparse
 
 from app.config import get_settings
 from app.services.providers.base import (
@@ -19,11 +21,31 @@ from app.services.providers.base import (
     get_json,
 )
 
+logger = logging.getLogger(__name__)
+
 BASE_URL = "https://finnhub.io/api/v1"
 PROVIDER = "Finnhub"
 
 # Headlines shorter than this are almost always truncated feed noise.
 _MIN_HEADLINE_LENGTH = 12
+
+# Article URLs come from a third-party feed and are rendered as links. Only
+# http(s) may ever reach a client: a `javascript:` or `data:` URL in an href
+# executes when clicked, which would turn a compromised or careless news feed
+# into stored XSS in this app. Validated here, where the untrusted data enters,
+# so every consumer is protected rather than relying on each one to re-check.
+_SAFE_URL_SCHEMES = frozenset({"http", "https"})
+
+
+def _is_safe_url(value: object) -> bool:
+    if not isinstance(value, str) or not value.strip():
+        return False
+    try:
+        parsed = urlparse(value.strip())
+    except ValueError:
+        return False
+    # A netloc is required too: "https:evil" parses with a valid scheme but no host.
+    return parsed.scheme.lower() in _SAFE_URL_SCHEMES and bool(parsed.netloc)
 
 
 def _require_key(capability: Capability) -> str:
@@ -83,7 +105,11 @@ async def fetch_company_news(ticker: str, days: int = 14, limit: int = 12) -> li
     for row in rows:
         headline = (row.get("headline") or "").strip()
         url = row.get("url")
-        if not headline or not url or len(headline) < _MIN_HEADLINE_LENGTH:
+        if not headline or len(headline) < _MIN_HEADLINE_LENGTH:
+            continue
+        if not _is_safe_url(url):
+            # Drop rather than render a link we would not let a user click.
+            logger.warning("Dropped article with unsafe or missing URL for %s", ticker)
             continue
         # Wire stories are syndicated verbatim across outlets; dedupe by headline.
         fingerprint = headline.lower()
@@ -97,13 +123,13 @@ async def fetch_company_news(ticker: str, days: int = 14, limit: int = 12) -> li
                 "headline": headline,
                 "summary": (row.get("summary") or "").strip() or None,
                 "source": row.get("source") or None,
-                "url": url,
+                "url": str(url).strip(),
                 "published_at": (
                     datetime.fromtimestamp(published, UTC).isoformat()
                     if isinstance(published, int | float) and published
                     else None
                 ),
-                "image": row.get("image") or None,
+                "image": (row.get("image") if _is_safe_url(row.get("image")) else None),
             }
         )
         if len(articles) >= limit:

@@ -192,3 +192,78 @@ def test_penny_stocks_are_flagged_not_dropped() -> None:
 def test_mover_without_a_price_is_dropped() -> None:
     assert fmp._normalize_mover({"symbol": "AAPL", "price": None}) is None
     assert fmp._normalize_mover({"price": 10.0}) is None
+
+
+# --- URL safety (XSS) -------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "javascript:alert(document.cookie)",
+        "JavaScript:alert(1)",
+        "  javascript:alert(1)  ",
+        "data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==",
+        "vbscript:msgbox(1)",
+        "file:///etc/passwd",
+        "https:notahost",
+        "",
+        "   ",
+        None,
+        12345,
+    ],
+)
+def test_unsafe_article_urls_are_rejected(url: object) -> None:
+    """Article URLs are rendered into an href. A javascript: or data: URL there
+    executes on click, so a compromised feed would become stored XSS."""
+    assert finnhub._is_safe_url(url) is False
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "https://finance.example.com/story",
+        "http://news.example.com/a?b=c#d",
+        "HTTPS://Example.com/Story",
+    ],
+)
+def test_legitimate_article_urls_are_accepted(url: str) -> None:
+    assert finnhub._is_safe_url(url) is True
+
+
+async def test_news_drops_articles_with_unsafe_urls(monkeypatch: pytest.MonkeyPatch) -> None:
+    rows = [
+        {
+            "headline": "Legitimate market story here",
+            "url": "https://good.example/1",
+            "datetime": 1,
+        },
+        {"headline": "Malicious payload story here", "url": "javascript:alert(1)", "datetime": 2},
+        {"headline": "Missing url story goes here", "url": None, "datetime": 3},
+    ]
+
+    async def fake_fetch(path: str, capability: object, **params: object) -> object:
+        return rows
+
+    monkeypatch.setattr(finnhub, "_fetch", fake_fetch)
+    articles = await finnhub.fetch_company_news("AAPL")
+
+    assert len(articles) == 1
+    assert articles[0]["url"] == "https://good.example/1"
+    assert not any("javascript" in a["url"].lower() for a in articles)
+
+
+async def test_news_drops_unsafe_image_urls(monkeypatch: pytest.MonkeyPatch) -> None:
+    async def fake_fetch(path: str, capability: object, **params: object) -> object:
+        return [
+            {
+                "headline": "A perfectly ordinary headline",
+                "url": "https://good.example/1",
+                "image": "javascript:alert(1)",
+                "datetime": 1,
+            }
+        ]
+
+    monkeypatch.setattr(finnhub, "_fetch", fake_fetch)
+    articles = await finnhub.fetch_company_news("AAPL")
+    assert articles[0]["image"] is None

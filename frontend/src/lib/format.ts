@@ -78,3 +78,21 @@ export function formatAxisTick(iso: string, intraday: boolean): string {
     ? date.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })
     : date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
 }
+
+/**
+ * Return `url` only if it is a safe, absolute http(s) link; otherwise null.
+ *
+ * Defense in depth. The backend already rejects non-http(s) URLs where the feed
+ * enters the system, but any value that reaches an `href` is worth re-checking
+ * at the point of use: a `javascript:` or `data:` URL there executes on click.
+ * React's own protection is a development warning, not a guarantee.
+ */
+export function safeExternalUrl(url: string | null | undefined): string | null {
+  if (!url) return null;
+  try {
+    const parsed = new URL(url, window.location.origin);
+    return parsed.protocol === "http:" || parsed.protocol === "https:" ? parsed.href : null;
+  } catch {
+    return null;
+  }
+}

@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { Callout, Card, Skeleton } from "../../components/ui";
-import { formatPercent, formatPrice, formatTimestamp } from "../../lib/format";
+import { formatPercent, formatPrice, formatTimestamp, safeExternalUrl } from "../../lib/format";
 import type {
   MarketStatus,
   Mover,
@@ -264,11 +264,16 @@ export function NewsPanel({ news, loading, error, ticker }: NewsPanelProps) {
   return (
     <Card title={`News — ${ticker}`} action={<span className="eyebrow">{news.source}</span>}>
       <ul className="news">
-        {news.articles.map((article) => (
+        {news.articles.map((article) => {
+          // Re-checked at the point of use even though the backend filters the
+          // feed: anything reaching an href must be a verified http(s) URL.
+          const href = safeExternalUrl(article.url);
+          if (!href) return null;
+          return (
           <li key={article.url} className="news__item">
             <a
               className="news__link"
-              href={article.url}
+              href={href}
               target="_blank"
               // noopener/noreferrer: target=_blank otherwise gives the opened
               // page access to window.opener.
@@ -285,7 +290,8 @@ export function NewsPanel({ news, loading, error, ticker }: NewsPanelProps) {
               </span>
             </a>
           </li>
-        ))}
+          );
+        })}
       </ul>
       <p className="risk__basis">{news.disclaimer}</p>
     </Card>

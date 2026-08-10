@@ -28,7 +28,10 @@ provider — those are listed as not started rather than stubbed with fake data.
 | Beginner glossary | ✅ 16 terms in plain English |
 | Tests | ✅ 160 backend, 67 frontend |
 | CI | ✅ lint, types, tests, build, secret scan |
-| Portfolio / watchlists / screener | ⬜ not started (needs a database) |
+| Live market data | ✅ movers, sector heatmap, session status |
+| News + ticker search | ✅ real headlines, debounced autocomplete |
+| Stock screener | ⛔ needs a paid data plan — see below |
+| Portfolio / watchlists | ⬜ not started (needs a database) |
 
 A full inventory is in [AUDIT.md](AUDIT.md); current priorities are in [ROADMAP.md](ROADMAP.md).
 
@@ -105,6 +108,13 @@ plunging to zero.
 | `GET /health` | Liveness probe |
 | `GET /api/v1/stocks/{ticker}?range=1M` | Quote + candles |
 | `GET /api/v1/stocks/{ticker}/analysis?range=1Y` | Indicators, risk stats, interpretation |
+| `GET /api/v1/market/capabilities` | Which data features this deployment can serve |
+| `GET /api/v1/market/status` | US trading session (no API key needed) |
+| `GET /api/v1/market/movers` | Top gainers, losers, most active |
+| `GET /api/v1/market/sectors` | Sector performance |
+| `GET /api/v1/market/search?q=` | Ticker search |
+| `GET /api/v1/market/news/{ticker}` | Recent company news |
+| `GET /api/v1/market/profile/{ticker}` | Company fundamentals |
 
 `range` accepts `1D`, `5D`, `1M`, `3M`, `6M`, `1Y`, `5Y`, `MAX`. Each maps to a candle
 interval that suits the period, so `1D` returns intraday 5-minute bars rather than a
@@ -151,6 +161,27 @@ npm run typecheck
 npm run lint
 npm run build
 ```
+
+---
+
+## Data providers
+
+The app runs with **no API keys at all** — price history, charts, indicators, and
+risk statistics all work from `yfinance`, which needs no account.
+
+Two optional free-tier keys unlock the market-wide features. Both are free and
+need no credit card; see `personal.md` for signup links.
+
+| Feature | Provider | Free tier |
+|---|---|---|
+| News, ticker search | Finnhub | ✅ 60 calls/min |
+| Movers, sectors, fundamentals | FMP | ✅ 250 calls/day |
+| **Stock screener** | FMP | ❌ **paid plans only (HTTP 402)** |
+
+`GET /api/v1/market/capabilities` reports exactly what the running deployment can
+serve, and the UI explains any missing feature rather than rendering an empty
+panel. **The screener is not implemented** because the free tier cannot serve it —
+building a UI that returns invented rows would be worse than not having one.
 
 ---
 

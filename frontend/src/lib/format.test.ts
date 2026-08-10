@@ -8,6 +8,7 @@ import {
   formatPrice,
   formatRatio,
   formatVolume,
+  safeExternalUrl,
 } from "./format";
 
 /**
@@ -108,5 +109,29 @@ describe("formatVolume", () => {
 describe("formatRatio", () => {
   it("fixes to two decimals by default", () => {
     expect(formatRatio(1.7823)).toBe("1.78");
+  });
+});
+
+describe("safeExternalUrl", () => {
+  it.each([
+    "javascript:alert(1)",
+    "JavaScript:alert(1)",
+    "data:text/html;base64,PHNjcmlwdD4=",
+    "vbscript:msgbox(1)",
+  ])("rejects the dangerous scheme %s", (url) => {
+    // These execute when placed in an href and clicked.
+    expect(safeExternalUrl(url)).toBeNull();
+  });
+
+  it.each([null, undefined, ""])("rejects the empty value %s", (url) => {
+    expect(safeExternalUrl(url)).toBeNull();
+  });
+
+  it("accepts an https URL", () => {
+    expect(safeExternalUrl("https://example.com/story")).toBe("https://example.com/story");
+  });
+
+  it("accepts an http URL", () => {
+    expect(safeExternalUrl("http://example.com/a?b=c")).toBe("http://example.com/a?b=c");
   });
 });
