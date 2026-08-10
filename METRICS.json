@@ -1,0 +1,51 @@
+{
+  "_readme": "Measured values only. Every entry is reproducible by the command in `how`. Never hand-edit a number that was not actually observed.",
+  "success_metric": {
+    "name": "validated_out_of_sample_performance_and_reliability",
+    "status": "NOT ESTABLISHED",
+    "why": "There is no predictive model in this project, so out-of-sample predictive performance has no baseline and cannot be measured. See TENSIONS.md T-1. Reliability is tracked below via test coverage, gate pass rate, and build health.",
+    "baseline": null
+  },
+  "measurements": [
+    {
+      "date": "2026-08-10",
+      "commit": "2c0b46d",
+      "note": "First baseline. Values observed, not estimated.",
+      "reliability": {
+        "backend_tests_passing": 199,
+        "backend_tests_failing": 0,
+        "frontend_tests_passing": 76,
+        "frontend_tests_failing": 0,
+        "backend_lint_clean": true,
+        "frontend_lint_clean": true,
+        "typecheck_clean": true,
+        "production_build_passing": true,
+        "production_console_errors": 0,
+        "production_console_warnings": 0,
+        "how": "cd backend && ruff check . && pytest ; cd frontend && npm run typecheck && npm run lint && npm test && npm run build"
+      },
+      "performance": {
+        "initial_js_bundle_bytes": 224020,
+        "initial_js_gzip_bytes": 71590,
+        "lazy_chart_chunk_bytes": 327890,
+        "lazy_chart_gzip_bytes": 97970,
+        "css_bytes": 24820,
+        "css_gzip_bytes": 4950,
+        "how": "cd frontend && npm run build",
+        "note": "Initial bundle was 728000 bytes before the chart was split out; that is the only historical point available."
+      },
+      "size": {
+        "backend_python_loc": 2916,
+        "frontend_ts_loc": 3220,
+        "api_endpoints": 9,
+        "commits": 13,
+        "how": "find backend/app -name '*.py' | xargs wc -l ; find frontend/src -name '*.ts' -o -name '*.tsx' | xargs wc -l"
+      },
+      "data_integrity": {
+        "fabricated_data_points": 0,
+        "features_gated_rather_than_faked": 1,
+        "note": "Stock screener (Phase 11) is reported unavailable because FMP returns HTTP 402 on the free tier."
+      }
+    }
+  ]
+}
