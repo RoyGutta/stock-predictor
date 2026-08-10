@@ -2,9 +2,12 @@
 
 Living document. Updated as milestones land.
 
-**Last updated:** 2026-08-05
-**Current state:** 160 backend tests, 67 frontend tests, lint and types clean both
+**Last updated:** 2026-08-10
+**Current state:** 199 backend tests, 76 frontend tests, lint and types clean both
 sides, production build passing with no console warnings.
+
+> Day-to-day state now lives in `STATE.md`; open problems in `TENSIONS.md`.
+> This file tracks product phases only.
 
 ---
 
@@ -19,7 +22,11 @@ sides, production build passing with no console warnings.
 | 4 | Indicator & risk engines | `c81ad2d` |
 | 5 | Analysis endpoint with interpretation | `6b2c627` |
 | 6 | Design system, feature architecture, analytics in the UI | `a6a3d70` |
-| 7 | CI pipeline | `pending` |
+| 7 | CI pipeline | `508a4c2` |
+| 8 | Finnhub + FMP providers with capability gating | `39083f9` |
+| 9 | Movers, sectors, news, ticker autocomplete | `eec660c` |
+| 10 | XSS fix: reject non-http(s) feed URLs | `2c0b46d` |
+| 11 | Ultra Code operating procedure + persistent state | `75ce307` |
 
 ### By phase
 
@@ -33,9 +40,17 @@ sides, production build passing with no console warnings.
 - **Phase 3** — complete for the current surface. Design tokens, brass accent,
   tabular numerals, light and dark, responsive to 390 px, animations respecting
   `prefers-reduced-motion`. Verified in a browser in both themes.
-- **Phase 4** — foundation done. 16-term glossary in plain English, each entry
-  ending with what the concept does *not* tell you, reachable inline via
-  accessible info tips. No multi-step onboarding flow yet.
+- **Phase 4** — foundation done. 16-term glossary, each entry ending with what the
+  concept does *not* tell you. No multi-step onboarding flow yet.
+- **Phase 7** — mostly done. Movers, sector heatmap, session status, live prices.
+  Missing: economic calendar, Fear & Greed, 52-week ranges (none on the free tiers).
+- **Phase 11** — **blocked.** FMP serves its screener only on paid plans (HTTP
+  402). Reported unavailable via `/market/capabilities` rather than faked.
+- **Phase 12** — done. Debounced ARIA combobox autocomplete, recent searches.
+  Missing: trending searches, company logos.
+- **Phase 17** — partial. Real headlines with source and timestamp. Deliberately
+  no AI summarization yet: summarizing financial news without a labeled,
+  reviewable pipeline risks putting words in a source's mouth.
 - **Phase 8** — mostly done. SMA, EMA, VWAP, RSI, MACD, Stochastic, ATR,
   Bollinger, ADX (+DI/−DI), OBV, Ichimoku. Missing: Volume Profile,
   support/resistance, candlestick patterns, gap detection.
@@ -76,11 +91,7 @@ computable from data already fetched.
 ### 4. Phase 4 completion — onboarding flow
 A guided first-run path rather than a glossary panel alone.
 
-### 5. Phases 7/11/12/17 — provider integration
-Blocked on free-tier keys (Finnhub + FMP). Provider interface first, then
-implementations; features show a "requires a provider key" state, never fake data.
-
-### 6. Phases 5/6/14/15/16 — persistence
+### 5. Phases 5/6/14/15/16 — persistence
 Database, auth, portfolio builder, watchlists, paper trading. Largest chunk;
 everything here needs a persistence layer that does not exist yet.
 
