@@ -7,6 +7,7 @@
 
 import type {
   Analysis,
+  BacktestResponse,
   Capabilities,
   MarketStatus,
   MoversResponse,
@@ -128,4 +129,17 @@ export function searchTickers(
 ): Promise<SearchResult[]> {
   const params = new URLSearchParams({ q: query, limit: String(limit) });
   return request<SearchResult[]>(`/api/v1/market/search?${params}`, signal);
+}
+
+/** Walk-forward backtest of the built-in indicator rules. */
+export function fetchBacktest(
+  ticker: string,
+  range: Range,
+  signal?: AbortSignal,
+): Promise<BacktestResponse> {
+  const query = new URLSearchParams({ range });
+  return request<BacktestResponse>(
+    `/api/v1/stocks/${encodeURIComponent(ticker)}/backtest?${query}`,
+    signal,
+  );
 }

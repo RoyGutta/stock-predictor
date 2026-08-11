@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import {
   ApiError,
+  fetchBacktest,
   fetchCapabilities,
   fetchMarketStatus,
   fetchMovers,
@@ -10,10 +11,12 @@ import {
   isAbort,
 } from "../lib/api";
 import type {
+  BacktestResponse,
   Capabilities,
   MarketStatus,
   MoversResponse,
   NewsResponse,
+  Range,
   SectorPerformance,
 } from "../types/market";
 
@@ -108,6 +111,37 @@ export function useNews(ticker: string | null, enabled: boolean): AsyncState<New
 
     return () => controller.abort();
   }, [ticker, enabled]);
+
+  return state;
+}
+
+/** Backtest for whichever ticker is on screen. Only runs when asked. */
+export function useBacktest(ticker: string | null, range: Range): AsyncState<BacktestResponse> {
+  const [state, setState] = useState<AsyncState<BacktestResponse>>({
+    data: null,
+    loading: false,
+    error: null,
+  });
+
+  useEffect(() => {
+    if (!ticker) {
+      setState({ data: null, loading: false, error: null });
+      return;
+    }
+    const controller = new AbortController();
+    setState({ data: null, loading: true, error: null });
+
+    fetchBacktest(ticker, range, controller.signal)
+      .then((data) => {
+        if (!controller.signal.aborted) setState({ data, loading: false, error: null });
+      })
+      .catch((error: unknown) => {
+        if (isAbort(error) || controller.signal.aborted) return;
+        setState({ data: null, loading: false, error: toMessage(error) });
+      });
+
+    return () => controller.abort();
+  }, [ticker, range]);
 
   return state;
 }

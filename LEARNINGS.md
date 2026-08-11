@@ -127,3 +127,22 @@ buy-and-hold.
 **Applies from now on:** when building anything that evaluates its own
 performance, write the adversarial test first — the one that proves it *cannot*
 cheat. A metric with no such guard should not be believed, including by me.
+
+---
+
+## L-8 · Zero is not a positive number
+**2026-08-11**
+
+The backtest panel colored a 0.0% out-of-sample return green, using a
+`>= 0 ? positive : negative` test. But that 0.0% meant the rule never triggered
+and sat in cash — rendering it as a gain was actively misleading, and it sat
+directly beneath a headline saying the rule had lost.
+
+Both this and a nonsense "picked none = 0 from 1 tried" line on the benchmark row
+were found by *looking at the rendered page*, not by any test. Types, lint, and 76
+unit tests all passed.
+
+**Applies from now on:** treat exact zero as its own case in any sign-based
+formatting, and say what a zero means rather than leaving the reader to infer it.
+More generally: rendering defects need eyes on the actual page — a green check
+from the test suite does not mean the screen is correct.

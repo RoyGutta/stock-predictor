@@ -1,6 +1,6 @@
 # State
 
-**Updated:** 2026-08-11 · **Commit:** `408fb0e` · **Cycle:** 2
+**Updated:** 2026-08-11 · **Commit:** `pending` · **Cycle:** 3
 
 ## Objective
 
@@ -34,6 +34,8 @@ frontend/ React 19 + TS strict + Vite      backend/ FastAPI + Python 3.11+
 - **Walk-forward backtesting** of four indicator rules, with structural guards
   against lookahead, missing costs, no benchmark, in-sample fitting, and
   multiple testing — each pinned by a test
+- **Backtest UI**, opt-in per ticker, showing the in-sample → out-of-sample drop
+  as the primary visual. Verified on AAPL 1Y: 0 of 3 rules beat buy-and-hold
 
 **Baseline metrics:** `METRICS.json` (247 backend tests, 76 frontend, 0 failing).
 
@@ -48,14 +50,13 @@ backtesting rather than a price forecaster.
 
 ## Next highest-value actions (unblocked, in order)
 
-1. **Backtest UI.** `GET /api/v1/stocks/{ticker}/backtest` is implemented and
-   tested but nothing consumes it. Showing a beginner that an optimized rule
-   collapsed out-of-sample is arguably the most valuable screen in the product.
-2. Automated accessibility tests (`vitest-axe`) — the UI is currently only
+1. Automated accessibility tests (`vitest-axe`) — the UI is currently only
    checked by hand each milestone.
-3. Surface Monte Carlo, CVaR, beta, and correlation in the UI (T-6).
-4. Company profile panel — the endpoint exists and nothing consumes it.
-5. Complete Phase 8: support/resistance, gap detection, candlestick patterns.
+2. Surface Monte Carlo, CVaR, beta, and correlation in the UI (T-6).
+3. Company profile panel — the endpoint exists and nothing consumes it.
+4. Complete Phase 8: support/resistance, gap detection, candlestick patterns.
+5. Component tests for BacktestPanel — its zero-return and never-traded states
+   were both found by eye, not by a test.
 
 ## Cold-start checklist for the next session
 

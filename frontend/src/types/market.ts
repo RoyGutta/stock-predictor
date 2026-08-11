@@ -193,3 +193,55 @@ export interface Capabilities {
   /** Why a capability is unavailable, keyed by capability name. */
   notes: Record<string, string>;
 }
+
+// --- backtesting -----------------------------------------------------------
+
+export interface BacktestMetrics {
+  strategy_key: string;
+  strategy_name: string;
+  parameter: number;
+  bars: number;
+  total_return: number;
+  annualized_return: number;
+  annualized_volatility: number | null;
+  sharpe_ratio: number | null;
+  max_drawdown: number;
+  trades: number;
+  win_rate: number | null;
+  exposure: number;
+  cost_bps: number;
+  cost_drag: number;
+}
+
+export interface StrategyResult {
+  strategy_key: string;
+  strategy_name: string;
+  description: string;
+  parameter_label: string;
+  chosen_parameter: number;
+  parameters_tried: number;
+  /** The earlier slice used to pick the parameter. NOT evidence of skill. */
+  in_sample: BacktestMetrics;
+  /** The held-out later slice. The only figure here that means anything. */
+  out_of_sample: BacktestMetrics;
+  benchmark_out_of_sample: BacktestMetrics;
+  excess_return: number;
+  beat_benchmark: boolean;
+  /** Out-of-sample minus in-sample. Large negatives indicate over-fitting. */
+  degradation: number;
+  verdict: string;
+}
+
+export interface BacktestResponse {
+  ticker: string;
+  company_name: string;
+  range: Range;
+  bars: number;
+  split_date: string;
+  train_fraction: number;
+  cost_bps: number;
+  strategies: StrategyResult[];
+  strategies_beating_benchmark: number;
+  method: string;
+  disclaimer: string;
+}

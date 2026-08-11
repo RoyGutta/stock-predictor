@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Button, Callout, Card } from "./components/ui";
 import { EvidenceLedger } from "./features/analysis/EvidenceLedger";
 import { RiskPanel } from "./features/analysis/RiskPanel";
+import { BacktestPanel } from "./features/backtest/BacktestPanel";
 import { ChartControls } from "./features/chart/ChartControls";
 import { LazyPriceChart } from "./features/chart/LazyPriceChart";
 import { DEFAULT_CHART_OPTIONS, type ChartOptions } from "./features/chart/chartConfig";
@@ -24,6 +25,7 @@ import { SearchBox } from "./features/search/SearchBox";
 import {
   useCapabilities,
   useMarketStatus,
+  useBacktest,
   useMovers,
   useNews,
   useSectors,
@@ -45,6 +47,9 @@ function App() {
   const [range, setRange] = useState<Range>("1Y");
   const [options, setOptions] = useState<ChartOptions>(DEFAULT_CHART_OPTIONS);
   const [recent, setRecent] = useState<Quote[]>([]);
+  // Backtesting is opt-in: it is the most expensive request in the app and most
+  // visits do not need it.
+  const [backtestFor, setBacktestFor] = useState<string | null>(null);
 
   const capabilities = useCapabilities();
   const marketStatus = useMarketStatus();
@@ -55,6 +60,7 @@ function App() {
   const movers = useMovers(canShowMovers);
   const sectors = useSectors(canShowSectors);
   const news = useNews(quote?.ticker ?? null, canShowNews);
+  const backtest = useBacktest(backtestFor, range);
 
   // Keep the recent list in sync with whatever loaded last, most recent first.
   useEffect(() => {
@@ -62,6 +68,9 @@ function App() {
     setRecent((previous) =>
       [quote, ...previous.filter((item) => item.ticker !== quote.ticker)].slice(0, MAX_RECENT),
     );
+    // A backtest belongs to one ticker; looking up another must not leave the
+    // previous result on screen under the new name.
+    setBacktestFor((current) => (current === quote.ticker ? current : null));
   }, [quote]);
 
   const search = useCallback(
@@ -212,6 +221,17 @@ function App() {
                   This range has too few trading days to calculate risk statistics that would
                   mean anything. Try a longer range.
                 </Callout>
+              )}
+
+              {quote && !error && (
+                <BacktestPanel
+                  data={backtest.data}
+                  loading={backtest.loading}
+                  error={backtest.error}
+                  ticker={quote.ticker}
+                  started={backtestFor === quote.ticker}
+                  onRun={() => setBacktestFor(quote.ticker)}
+                />
               )}
 
               {quote &&
