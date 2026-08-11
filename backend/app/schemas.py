@@ -265,3 +265,59 @@ class AnalysisResponse(BaseModel):
         default=None,
         description="Null when the range holds too few bars for the statistics to be meaningful.",
     )
+
+
+# --- backtesting ------------------------------------------------------------
+
+
+class BacktestMetrics(BaseModel):
+    strategy_key: str
+    strategy_name: str
+    parameter: int
+    bars: int
+    total_return: float
+    annualized_return: float
+    annualized_volatility: float | None
+    sharpe_ratio: float | None
+    max_drawdown: float
+    trades: int
+    win_rate: float | None
+    exposure: float = Field(description="Fraction of bars spent holding rather than in cash.")
+    cost_bps: float
+    cost_drag: float
+
+
+class StrategyResult(BaseModel):
+    strategy_key: str
+    strategy_name: str
+    description: str
+    parameter_label: str
+    chosen_parameter: int
+    parameters_tried: int
+    in_sample: BacktestMetrics = Field(
+        description="The earlier slice, used to pick the parameter. NOT evidence of skill."
+    )
+    out_of_sample: BacktestMetrics = Field(
+        description="The held-out later slice. The only figure here that means anything."
+    )
+    benchmark_out_of_sample: BacktestMetrics
+    excess_return: float = Field(description="Out-of-sample return minus buy-and-hold.")
+    beat_benchmark: bool
+    degradation: float = Field(
+        description="Out-of-sample return minus in-sample. Large negatives indicate over-fitting."
+    )
+    verdict: str
+
+
+class BacktestResponse(BaseModel):
+    ticker: str
+    company_name: str
+    range: Range
+    bars: int
+    split_date: str
+    train_fraction: float
+    cost_bps: float
+    strategies: list[StrategyResult]
+    strategies_beating_benchmark: int
+    method: str
+    disclaimer: str
