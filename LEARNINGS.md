@@ -103,3 +103,27 @@ identical runs. The tests themselves take ~1.0 s.
 An inconsistent test signal costs more time than the servers save.
 
 **Applies from now on:** kill dev servers and browsers before the VERIFY step.
+
+---
+
+## L-7 · A backtest's value is in its guards, not its returns
+**2026-08-11**
+
+Writing the backtest engine, almost all the difficulty was in *not* producing a
+flattering number. The five standard ways backtests lie — lookahead, no costs, no
+benchmark, in-sample fitting, multiple testing — each needed an explicit
+structural defense, and each is now a test.
+
+The most effective was adversarial: give a strategy perfect foresight of a single
++100% bar and assert it captures **nothing**. That one test makes lookahead bias
+impossible to reintroduce silently. A leakage test does the same for the
+train/test split by tampering only with held-out data and asserting the chosen
+parameter is unchanged.
+
+The first run on real data immediately produced the honest result the design was
+for: an RSI rule at +48% in-sample fell to +26.8% out-of-sample and lost to
+buy-and-hold.
+
+**Applies from now on:** when building anything that evaluates its own
+performance, write the adversarial test first — the one that proves it *cannot*
+cheat. A metric with no such guard should not be believed, including by me.

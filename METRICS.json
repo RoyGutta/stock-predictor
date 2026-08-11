@@ -2,9 +2,17 @@
   "_readme": "Measured values only. Every entry is reproducible by the command in `how`. Never hand-edit a number that was not actually observed.",
   "success_metric": {
     "name": "validated_out_of_sample_performance_and_reliability",
-    "status": "NOT ESTABLISHED",
-    "why": "There is no predictive model in this project, so out-of-sample predictive performance has no baseline and cannot be measured. See TENSIONS.md T-1. Reliability is tracked below via test coverage, gate pass rate, and build health.",
-    "baseline": null
+    "status": "ESTABLISHED (2026-08-11)",
+    "resolution": "TENSIONS T-1 resolved as option C. Out-of-sample performance is measured by walk-forward backtesting of indicator rules, not by a price forecaster.",
+    "important_caveat": "The backtest RETURN figures are facts about the market and the ticker, not about this system. Treating them as a number to improve would mean tuning rules until they look good, which is the data mining the engine exists to expose. What is tracked as OUR metric is the VALIDITY of the measurement and the reliability of the system -- not how well any rule happens to score.",
+    "validity_criteria": {
+      "no_lookahead": "positions shifted one bar after signal; guard test uses a perfect-foresight oracle",
+      "costs_charged": "10 bps default on every position change",
+      "benchmark_compared": "buy-and-hold over the identical window",
+      "held_out_slice": "parameter chosen on train only; leakage test tampers with test data and asserts the choice is unchanged",
+      "all_results_reported": "every rule returned with parameters_tried, never just the winner",
+      "all_five_enforced_by_tests": true
+    }
   },
   "measurements": [
     {
@@ -45,6 +53,45 @@
         "fabricated_data_points": 0,
         "features_gated_rather_than_faked": 1,
         "note": "Stock screener (Phase 11) is reported unavailable because FMP returns HTTP 402 on the free tier."
+      }
+    },
+    {
+      "date": "2026-08-11",
+      "commit": "408fb0e",
+      "note": "Cycle 2. Backtest engine added; success metric now measurable.",
+      "reliability": {
+        "backend_tests_passing": 247,
+        "backend_tests_failing": 0,
+        "frontend_tests_passing": 76,
+        "frontend_tests_failing": 0,
+        "backend_lint_clean": true,
+        "frontend_lint_clean": true,
+        "typecheck_clean": true,
+        "production_build_passing": true,
+        "how": "cd backend && ruff check . && pytest ; cd frontend && npm run typecheck && npm run lint && npm test && npm run build"
+      },
+      "backtest_validity": {
+        "lookahead_guard_test_passing": true,
+        "leakage_guard_test_passing": true,
+        "costs_on_by_default_bps": 10.0,
+        "strategies_implemented": 4,
+        "note": "Validity properties, not performance. See success_metric.important_caveat."
+      },
+      "observed_example": {
+        "ticker": "AAPL",
+        "range": "5Y",
+        "bars": 262,
+        "note": "One live observation, recorded as evidence the engine works and produces honest results. NOT a target to improve.",
+        "buy_and_hold_out_of_sample_return": 0.374,
+        "rsi_in_sample_return": 0.48,
+        "rsi_out_of_sample_return": 0.268,
+        "rsi_excess_vs_benchmark": -0.106,
+        "rules_beating_benchmark": 1,
+        "rules_tested": 3
+      },
+      "size": {
+        "api_endpoints": 10,
+        "commits": 15
       }
     }
   ]

@@ -18,10 +18,12 @@ documentation.
 **Success metric** — validated out-of-sample performance and system reliability,
 without breaking what works.
 
-> ⚠️ The "out-of-sample" half of that metric is **unresolved**. This project has
-> no predictive model, deliberately. See `TENSIONS.md` **T-1** before doing any
-> work that assumes one. Do not write forecasting code until that is settled.
-> Reliability is measured today via tests, gates, and build health.
+> The "out-of-sample" half is measured by **walk-forward backtesting of indicator
+> rules** (`app/analytics/backtest.py`), not by a price forecaster — see
+> `TENSIONS.md` T-1 for why. Note the caveat in `METRICS.json`: backtest *returns*
+> are facts about the market, not about this system. Tuning rules to improve them
+> would be the data mining the engine exists to expose. Our metric is the
+> *validity* of the measurement plus system reliability.
 
 **Pipeline** — React/Vite frontend → FastAPI backend → market data →
 feature engineering → analysis → evaluation → visualization.
@@ -54,6 +56,9 @@ These are product commitments, enforced by tests. Treat them as constraints, not
 14. **Caveats are never hidden** behind a disclosure.
 15. **Risky data is labeled, not silently filtered.** Sub-$5 movers are flagged;
     removing them would misreport the day's actual movers.
+16. **Backtests must not be able to cheat.** One-bar execution lag, costs on by
+    default, buy-and-hold benchmark, held-out slice, and every result reported —
+    not just the winner. Each is enforced by a test; do not weaken them.
 
 ---
 
@@ -87,7 +92,7 @@ existing architecture.
 **4. VERIFY** — **Stop dev servers and browsers first** (see CHANGELOG SM-2), then:
 
 ```bash
-cd backend  && ruff check . && pytest        # expect 199 passed
+cd backend  && ruff check . && pytest        # expect 247 passed
 cd frontend && npm run typecheck && npm run lint && npm test && npm run build
 ```
 

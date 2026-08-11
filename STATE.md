@@ -1,6 +1,6 @@
 # State
 
-**Updated:** 2026-08-10 · **Commit:** `2c0b46d` · **Cycle:** 1
+**Updated:** 2026-08-11 · **Commit:** `408fb0e` · **Cycle:** 2
 
 ## Objective
 
@@ -31,32 +31,36 @@ frontend/ React 19 + TS strict + Vite      backend/ FastAPI + Python 3.11+
   autocomplete (Finnhub + FMP, live keys verified)
 - Capability gating: unavailable features explain themselves rather than faking
 - CI: lint, typecheck, tests, build, and a secret-scan job
+- **Walk-forward backtesting** of four indicator rules, with structural guards
+  against lookahead, missing costs, no benchmark, in-sample fitting, and
+  multiple testing — each pinned by a test
 
-**Baseline metrics:** `METRICS.json` (199 backend tests, 76 frontend, 0 failing).
+**Baseline metrics:** `METRICS.json` (247 backend tests, 76 frontend, 0 failing).
 
 ## Blocked / needs your decision
 
-1. **T-1 — the success metric conflicts with the product.** The procedure asks
-   for "validated out-of-sample ML performance"; this project deliberately makes
-   no predictions. **No forecasting code will be written until you choose a path.**
-   See TENSIONS.md T-1 — recommendation is option C (backtest indicator rules as
-   history, not as a strategy).
-2. **T-2** — `backend/venv/` (a stale Windows virtualenv) should be deleted;
+1. **T-2** — `backend/venv/` (a stale Windows virtualenv) should be deleted;
    awaiting your OK since it is your file.
-3. **T-4** — stock screener needs a paid FMP plan.
+2. **T-4** — stock screener needs a paid FMP plan.
+
+T-1 is **resolved**: the success metric is now measurable via walk-forward
+backtesting rather than a price forecaster.
 
 ## Next highest-value actions (unblocked, in order)
 
-1. Automated accessibility tests (`vitest-axe`) — the UI is currently only
+1. **Backtest UI.** `GET /api/v1/stocks/{ticker}/backtest` is implemented and
+   tested but nothing consumes it. Showing a beginner that an optimized rule
+   collapsed out-of-sample is arguably the most valuable screen in the product.
+2. Automated accessibility tests (`vitest-axe`) — the UI is currently only
    checked by hand each milestone.
-2. Surface Monte Carlo, CVaR, beta, and correlation in the UI (T-6).
-3. Company profile panel — the endpoint exists and nothing consumes it.
-4. Complete Phase 8: support/resistance, gap detection, candlestick patterns.
+3. Surface Monte Carlo, CVaR, beta, and correlation in the UI (T-6).
+4. Company profile panel — the endpoint exists and nothing consumes it.
+5. Complete Phase 8: support/resistance, gap detection, candlestick patterns.
 
 ## Cold-start checklist for the next session
 
 ```bash
-cd backend && source .venv/bin/activate && ruff check . && pytest      # expect 199 passed
+cd backend && source .venv/bin/activate && ruff check . && pytest      # expect 247 passed
 cd frontend && npm run typecheck && npm run lint && npm test          # expect 76 passed
 ```
 Stop dev servers before running tests (T-5). Read `TENSIONS.md` before planning.

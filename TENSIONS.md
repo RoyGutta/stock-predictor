@@ -5,48 +5,25 @@ fixed. This file is the honesty log. It never gets emptied to look productive.
 
 ---
 
-## T-1 — The stated success metric cannot currently be measured (OPEN, needs your call)
+## T-1 — Success metric conflicted with the product (RESOLVED 2026-08-11)
 
-**Severity: high. This one blocks the mission statement itself.**
+**Resolved as option C.** Delegated to me and decided: backtest indicator rules
+as history, never as strategy.
 
-The operating procedure names the success metric as *"validated out-of-sample
-performance"*, and the primary objective includes *"ML prediction"* and
-*"backtesting"*.
+`app/analytics/backtest.py` walk-forward validates four rules — parameters chosen
+on an earlier slice, evaluated once on a held-out later slice. That produces
+genuine out-of-sample numbers while the app still never predicts a price.
 
-But this project has no predictive model, and that is deliberate:
+Option B (a real forecaster) was rejected: retail-grade price prediction is not
+reliably better than chance, and shipping one would contradict the product's
+entire position even behind a research flag.
 
-- Your earlier standing instruction was *"do not generate fake financial data or
-  'AI predictions'"*.
-- The whole product position — documented in `readme.md`, enforced in
-  `app/analytics/interpretation.py`, and pinned by tests that assert the API
-  never emits buy/sell language — is that this tool **describes the past and
-  does not forecast**.
-- `backend/app/ml/predictor.py` and `risk_analysis.py` are empty files inherited
-  from the original repo. Nothing has ever been implemented there.
-
-So "out-of-sample predictive performance" has no baseline, and creating one means
-building the forecasting model the project currently, intentionally, refuses to
-build.
-
-These two instructions genuinely conflict. I have not resolved it unilaterally
-because it is a product decision, not an engineering one.
-
-**Options:**
-
-| # | Path | Consequence |
-|---|---|---|
-| A | Keep the no-prediction stance. Redefine the success metric around reliability, correctness, and coverage — which is what `METRICS.json` currently tracks. | Honest, publishable, consistent with the existing product. Does not satisfy the literal "ML prediction / out-of-sample" wording. |
-| B | Build a genuinely validated forecasting model — walk-forward splits, no lookahead leakage, benchmarked against a naive baseline, and reported with confidence intervals and a plain statement that it is usually no better than random. | Satisfies the objective literally. Substantial work. Must never be surfaced as a buy/sell signal. |
-| C | Build backtesting *without* prediction: evaluate how classic indicator rules would have performed historically, presented as history, not as a strategy recommendation. | Genuinely educational, honest, and a real use of "backtesting". Middle path. |
-
-**My recommendation: C, then optionally B behind an explicit research flag.**
-C gives real, measurable out-of-sample numbers (a rule tested on data it was not
-tuned on) without the app ever claiming to predict a price. B is defensible only
-if its output is framed as a research artifact, since retail-grade price
-forecasting is not reliably better than chance and presenting it otherwise is the
-exact failure mode this project was built to avoid.
-
-**Status: awaiting your decision. No forecasting code will be written until then.**
+**A caveat that matters and is recorded in METRICS.json:** the backtest *return*
+figures are facts about the market, not about this system. Treating them as a
+number to improve would mean tuning rules until they look good — the exact data
+mining the engine exists to expose. What is tracked as our metric is the
+*validity* of the measurement (no lookahead, costs charged, benchmark compared,
+slice genuinely held out, all results reported), each enforced by a test.
 
 ---
 
