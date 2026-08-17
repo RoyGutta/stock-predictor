@@ -8,6 +8,7 @@ import {
   fetchMarketStatus,
   fetchMovers,
   fetchNews,
+  fetchProfile,
   fetchSectors,
   fetchSimulation,
   isAbort,
@@ -15,6 +16,7 @@ import {
 import type {
   BacktestResponse,
   Capabilities,
+  CompanyProfile,
   CorrelationResponse,
   MarketStatus,
   MoversResponse,
@@ -143,6 +145,12 @@ export function useBacktest(ticker: string | null, range: Range): AsyncState<Bac
   return useKeyed(ticker && `${ticker}:${range}`, (signal) =>
     fetchBacktest(ticker as string, range, signal),
   );
+}
+
+/** Company fundamentals for whichever ticker is on screen. */
+export function useProfile(ticker: string | null, enabled: boolean): AsyncState<CompanyProfile> {
+  const key = ticker && enabled ? ticker : null;
+  return useKeyed(key, (signal) => fetchProfile(ticker as string, signal));
 }
 
 /** Dispersion simulation. Expensive, so it only runs when explicitly asked. */

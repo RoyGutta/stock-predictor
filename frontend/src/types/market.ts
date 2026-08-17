@@ -225,6 +225,25 @@ export interface SearchResult {
   type: string | null;
 }
 
+export interface CompanyProfile {
+  ticker: string;
+  name: string | null;
+  sector: string | null;
+  industry: string | null;
+  country: string | null;
+  exchange: string | null;
+  market_cap: number | null;
+  beta: number | null;
+  last_dividend: number | null;
+  average_volume: number | null;
+  employees: number | null;
+  website: string | null;
+  description: string | null;
+  ceo: string | null;
+  is_etf: boolean;
+  source: string;
+}
+
 export interface Capabilities {
   movers: boolean;
   sectors: boolean;

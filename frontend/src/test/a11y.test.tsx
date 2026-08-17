@@ -29,6 +29,7 @@ import { expect as vitestExpect } from "vitest";
 import { EvidenceLedger } from "../features/analysis/EvidenceLedger";
 import { RiskPanel } from "../features/analysis/RiskPanel";
 import { BacktestPanel } from "../features/backtest/BacktestPanel";
+import { ProfilePanel } from "../features/profile/ProfilePanel";
 import { CorrelationPanel } from "../features/simulation/CorrelationPanel";
 import { SimulationPanel } from "../features/simulation/SimulationPanel";
 import { WatchlistPanel } from "../features/watchlist/WatchlistPanel";
@@ -258,6 +259,34 @@ describe("accessibility", () => {
         currency="USD"
         started={false}
         onRun={noop}
+      />,
+    );
+  });
+
+  it("company profile has no violations", async () => {
+    await expectNoViolations(
+      <ProfilePanel
+        profile={{
+          ticker: "AAPL",
+          name: "Apple Inc.",
+          sector: "Technology",
+          industry: "Consumer Electronics",
+          country: "US",
+          exchange: "NASDAQ",
+          market_cap: 3.4e12,
+          beta: 1.09,
+          last_dividend: 1.04,
+          average_volume: 52_400_000,
+          employees: 164_000,
+          website: "https://www.apple.com",
+          description: "Apple Inc. designs, manufactures and markets smartphones.",
+          ceo: "Tim Cook",
+          is_etf: false,
+          source: "Financial Modeling Prep",
+        }}
+        loading={false}
+        error={null}
+        ticker="AAPL"
       />,
     );
   });

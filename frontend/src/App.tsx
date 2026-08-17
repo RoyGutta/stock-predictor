@@ -21,6 +21,7 @@ import {
   RangeSelector,
   RecentSearches,
 } from "./features/quote/QuotePanel";
+import { ProfilePanel } from "./features/profile/ProfilePanel";
 import { SearchBox } from "./features/search/SearchBox";
 import { SimulationPanel } from "./features/simulation/SimulationPanel";
 import { WatchlistPanel } from "./features/watchlist/WatchlistPanel";
@@ -32,6 +33,7 @@ import {
   useBacktest,
   useMovers,
   useNews,
+  useProfile,
   useSectors,
   useSimulation,
 } from "./hooks/useMarketData";
@@ -65,10 +67,12 @@ function App() {
   const canShowMovers = capabilities.data?.movers ?? false;
   const canShowSectors = capabilities.data?.sectors ?? false;
   const canShowNews = capabilities.data?.news ?? false;
+  const canShowProfile = capabilities.data?.fundamentals ?? false;
 
   const movers = useMovers(canShowMovers);
   const sectors = useSectors(canShowSectors);
   const news = useNews(quote?.ticker ?? null, canShowNews);
+  const profile = useProfile(quote?.ticker ?? null, canShowProfile);
   const backtest = useBacktest(backtestFor, range);
   const simulation = useSimulation(simulationFor, range);
 
@@ -225,6 +229,15 @@ function App() {
                 <Callout tone="note">
                   The chart loaded, but the analysis did not: {analysisError}
                 </Callout>
+              )}
+
+              {quote && !error && canShowProfile && (
+                <ProfilePanel
+                  profile={profile.data}
+                  loading={profile.loading}
+                  error={profile.error}
+                  ticker={quote.ticker}
+                />
               )}
 
               {analysis && !analysisError && (

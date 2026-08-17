@@ -9,6 +9,7 @@ import type {
   Analysis,
   BacktestResponse,
   Capabilities,
+  CompanyProfile,
   CorrelationResponse,
   MarketStatus,
   MoversResponse,
@@ -114,6 +115,14 @@ export function fetchMovers(limit = 8, signal?: AbortSignal): Promise<MoversResp
 
 export function fetchSectors(signal?: AbortSignal): Promise<SectorPerformance[]> {
   return request<SectorPerformance[]>("/api/v1/market/sectors", signal);
+}
+
+/** Company fundamentals. Requires an FMP key; gated on the `fundamentals` capability. */
+export function fetchProfile(ticker: string, signal?: AbortSignal): Promise<CompanyProfile> {
+  return request<CompanyProfile>(
+    `/api/v1/market/profile/${encodeURIComponent(ticker)}`,
+    signal,
+  );
 }
 
 export function fetchNews(ticker: string, limit = 8, signal?: AbortSignal): Promise<NewsResponse> {
