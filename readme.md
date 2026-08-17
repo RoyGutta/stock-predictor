@@ -26,7 +26,7 @@ provider — those are listed as not started rather than stubbed with fake data.
 | Analytics in the UI | ✅ evidence ledger and risk panel |
 | Design system | ✅ tokens, light + dark, responsive, accessible |
 | Beginner glossary | ✅ 16 terms in plain English |
-| Tests | ✅ 160 backend, 67 frontend |
+| Tests | ✅ 247 backend, 76 frontend |
 | CI | ✅ lint, types, tests, build, secret scan |
 | Live market data | ✅ movers, sector heatmap, session status |
 | News + ticker search | ✅ real headlines, debounced autocomplete |
@@ -151,12 +151,12 @@ are returned as `null`, never as `0`.
 # Backend
 cd backend
 pip install -r requirements-dev.txt
-pytest              # 160 tests
+pytest              # 247 tests
 ruff check .        # lint
 
 # Frontend
 cd frontend
-npm test            # 67 tests
+npm test            # 76 tests
 npm run typecheck
 npm run lint
 npm run build

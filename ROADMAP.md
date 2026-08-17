@@ -2,8 +2,8 @@
 
 Living document. Updated as milestones land.
 
-**Last updated:** 2026-08-10
-**Current state:** 199 backend tests, 76 frontend tests, lint and types clean both
+**Last updated:** 2026-08-17
+**Current state:** 247 backend tests, 76 frontend tests, lint and types clean both
 sides, production build passing with no console warnings.
 
 > Day-to-day state now lives in `STATE.md`; open problems in `TENSIONS.md`.

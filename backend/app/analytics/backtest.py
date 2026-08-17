@@ -108,8 +108,8 @@ class Strategy:
     name: str
     description: str
     signal: SignalFn
-    """Parameter values to search over. Buy-and-hold has none."""
     parameter_grid: tuple[int, ...]
+    """Parameter values to search over. Buy-and-hold has none."""
     parameter_label: str
 
 
@@ -171,11 +171,12 @@ class BacktestResult:
     max_drawdown: float
     trades: int
     win_rate: float | None
-    """Fraction of time holding the stock rather than cash."""
+    """Fraction of completed holding periods that ended profitable."""
     exposure: float
+    """Fraction of bars spent holding the stock rather than sitting in cash."""
     cost_bps: float
-    """Total drag from transaction costs, as a fraction of starting capital."""
     cost_drag: float
+    """Total drag from transaction costs, as a fraction of starting capital."""
     equity_curve: list[float] = field(default_factory=list)
     dates: list[str] = field(default_factory=list)
 
@@ -291,11 +292,11 @@ class WalkForwardResult:
     in_sample: BacktestResult
     out_of_sample: BacktestResult
     benchmark_out_of_sample: BacktestResult
-    """out-of-sample return minus buy-and-hold over the same slice."""
     excess_return: float
+    """Out-of-sample return minus buy-and-hold over the same slice."""
     beat_benchmark: bool
-    """How much of the in-sample edge survived. Usually very little."""
     degradation: float
+    """How much of the in-sample edge survived. Usually very little."""
     split_date: str
     verdict: str
 
