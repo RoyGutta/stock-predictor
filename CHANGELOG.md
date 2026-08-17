@@ -56,4 +56,56 @@ Restarting servers each cycle costs more time than the flakiness did, or timeout
 recur with no servers running — which would mean the real cause is elsewhere and
 this change masked it.
 
+**STATUS** active, but no longer load bearing — superseded in practice by SM-3.
+
+---
+
+## SM-3 | 2026-08-17
+
+**TRIGGER**
+T-5 recurred. The frontend suite reported "9 errors, no tests" with dev servers
+and a browser running, then passed clean on retry. SM-2 says to stop servers
+before verifying; the step was missed once the suite passed 150 tests and gained
+axe, which is slow. A process rule that depends on remembering will be forgotten
+exactly when the suite is largest and the cost of a false red is highest.
+
+**CHANGE**
+`testTimeout` and `hookTimeout` raised to 20 s in `vitest.config.ts`, against a
+real runtime of about 1 s. Where a mitigation can be encoded in configuration
+rather than carried as a habit, encode it.
+
+**HYPOTHESIS**
+No further false reds from machine load. A generous timeout costs nothing on a
+passing run — it only bounds how long a genuine hang takes to surface.
+
+**REVERT-IF**
+A real hang starts taking meaningfully longer to diagnose, or timeouts recur at
+20 s — which would mean the cause was never contention and this masked it.
+
+**STATUS** active. Verified over three consecutive full runs, 151 passed each.
+
+---
+
+## SM-4 | 2026-08-17
+
+**TRIGGER**
+`.env.example` documented three variables no code path read, one of them
+describing an AI explanation feature that has never existed (LEARNINGS L-10).
+It also omitted two variables the code did read. Nothing in the process checked
+that the setup contract matched the code.
+
+**CHANGE**
+Whenever `config.py` or `.env.example` changes, diff the variables the code
+reads against the variables the file documents — in both directions. Extract
+each list mechanically rather than reading by eye; the check takes a minute and
+found four defects the first time it ran.
+
+**HYPOTHESIS**
+`.env.example` stays an accurate contract. Configuration for unbuilt features
+stays in ROADMAP, where being unbuilt is the point.
+
+**REVERT-IF**
+The check produces repeated false positives from indirect variable reads, making
+it noise rather than signal.
+
 **STATUS** active

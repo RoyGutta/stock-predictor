@@ -146,3 +146,56 @@ unit tests all passed.
 formatting, and say what a zero means rather than leaving the reader to infer it.
 More generally: rendering defects need eyes on the actual page — a green check
 from the test suite does not mean the screen is correct.
+
+---
+
+## L-9 · A statistic's window is part of the statistic
+**2026-08-17**
+
+Two separate defects this cycle were the same mistake: a number rendered without
+the window it was measured over.
+
+- The watchlist showed "MSFT +25.22%" with nothing saying that was a month. A
+  25% *daily* move for Microsoft is implausible enough to alarm someone, and
+  "percent change" defaults to "today" in every reader's head.
+- The dispersion simulation showed a median of $404 against a $306 price. That
+  32% gap is inherited drift — resampling a window in which the stock rose
+  carries that rise into every path — but on screen it reads as a forecast.
+
+Both passed every test. Both were caught by looking at the page and asking what
+a beginner would conclude, which is the L-3 question applied to a rendered
+screen rather than to a new data feed.
+
+The fix in each case was not to hide the number but to name its basis, which
+constraint 12 already required of the API payload. The rule had been applied to
+the JSON and not to the pixels.
+
+**Applies from now on:** any figure whose meaning depends on a window carries
+that window in the UI, not just in the payload. When a derived number differs
+noticeably from the value a reader is anchored on, say why in words rather than
+trusting a caption to carry it.
+
+---
+
+## L-10 · Config for an unbuilt feature is a lie with a long half-life
+**2026-08-17**
+
+`.env.example` documented `ANTHROPIC_API_KEY` as enabling AI explanations that
+"fall back to deterministic template text" without it. There has never been an
+LLM integration in this codebase. Every explanation is computed, always was, and
+there is no fallback because there is nothing to fall back from.
+
+Someone following that file adds a paid key and waits for prose that cannot
+arrive. It also quietly contradicts the product's own position, since it implies
+the app generates commentary it does not generate. Two more variables
+(`ALPHA_VANTAGE_API_KEY`, `REDIS_URL`) were read by no code path either.
+
+The check that found it was mechanical and took a minute: extract the variables
+the code reads, extract the variables the file documents, diff both directions.
+It also found two variables the code read that were documented nowhere.
+
+**Applies from now on:** `.env.example` is a contract, not a wishlist. Diff it
+against the variables the code actually reads, in both directions, whenever
+either changes. Configuration for future features belongs in ROADMAP, where
+being unbuilt is the point, not in a file whose entire purpose is telling
+someone what to set up right now.

@@ -122,6 +122,55 @@
         "rules_tested": 3,
         "note": "Live observation, evidence the engine reports honestly. NOT a target."
       }
+    },
+    {
+      "date": "2026-08-17",
+      "commit": "pending",
+      "note": "Cycle 4. T-6 analytics surfaced, watchlist, a11y suite, chart measurement fix.",
+      "reliability": {
+        "backend_tests_passing": 278,
+        "backend_tests_failing": 0,
+        "frontend_tests_passing": 151,
+        "frontend_tests_failing": 0,
+        "backend_lint_clean": true,
+        "frontend_lint_clean": true,
+        "typecheck_clean": true,
+        "production_build_passing": true,
+        "browser_console_errors": 0,
+        "browser_console_warnings": 0,
+        "how": "cd backend && ruff check . && pytest ; cd frontend && npm run typecheck && npm run lint && npm test && npm run build",
+        "note": "Console warnings were 4 per chart mount before the ResponsiveContainer fix; now 0. Suite verified stable across three consecutive runs with dev servers stopped."
+      },
+      "performance": {
+        "initial_js_bundle_bytes": 241700,
+        "initial_js_gzip_bytes": 76830,
+        "lazy_chart_chunk_bytes": 322710,
+        "lazy_chart_gzip_bytes": 96460,
+        "css_bytes": 32360,
+        "css_gzip_bytes": 5970,
+        "how": "cd frontend && npm run build",
+        "note": "Chart chunk fell 5.2 kB (327890 -> 322710) by dropping ResponsiveContainer in favour of an explicit measurement. Initial bundle grew 12.4 kB for the simulation, correlation and watchlist features."
+      },
+      "security": {
+        "secrets_tracked": 0,
+        "secrets_in_git_history": 0,
+        "history_objects_scanned": 402,
+        "dependency_advisories_high": 0,
+        "env_example_documents_unread_variables": 0,
+        "how": "git log --all --diff-filter=A -- .env personal.md ; git grep over git rev-list --all ; npm audit",
+        "note": "One high advisory (nanoid GHSA-2v37-7h3g-55p8) found and fixed. Three variables documented in .env.example were read by no code path and were removed."
+      },
+      "accessibility": {
+        "axe_checks_passing": 14,
+        "color_contrast_machine_checked": false,
+        "note": "axe rasterises to a canvas to measure contrast and jsdom has none, so that rule is explicitly disabled rather than silently no-opping. Contrast remains a browser check."
+      },
+      "size": {
+        "backend_python_loc": 3967,
+        "frontend_ts_loc": 5806,
+        "api_endpoints": 12,
+        "commits": 24
+      }
     }
   ]
 }

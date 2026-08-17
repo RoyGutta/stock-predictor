@@ -74,23 +74,68 @@ screening.
 
 ---
 
-## T-5 — Test suite is sensitive to machine load (OPEN, low)
+## T-5 — Test suite was sensitive to machine load (RESOLVED 2026-08-17)
 
 Frontend component tests timed out at the default 5 s while dev servers and a
 Playwright browser were running, producing inconsistent results between runs
 (1 failure, then 4, then 0). The tests themselves execute in ~1.0 s.
 
-Not a code defect, but a flaky signal. Either raise `testTimeout` or make it
-routine to stop background servers before a verification run. Currently handled
-by the latter (see CHANGELOG SM-1).
+**It recurred**, which is what settled the fix. Mid-session the suite reported
+"9 errors, no tests" with servers running, then passed clean on retry. The
+standing mitigation (SM-2, stop servers before verifying) depends on
+remembering, and it was missed once the suite passed 150 tests and gained axe,
+which is slow.
+
+`testTimeout` and `hookTimeout` are now 20 s, far above the ~1 s these need. A
+generous timeout costs nothing on a passing run — it only bounds how long a
+genuine hang takes to surface — and it removes the false-red rather than relying
+on a manual step. SM-2 still stands as good practice; it is no longer load
+bearing.
+
+Verified: three consecutive full runs, 151 passed each time.
 
 ---
 
-## T-6 — Analytics computed but unreachable from the UI (OPEN, low)
+## T-6 — Analytics computed but unreachable from the UI (RESOLVED 2026-08-17)
 
 `monte_carlo`, `conditional_value_at_risk`, `beta_alpha`, and
-`correlation_matrix` are implemented and tested in `app/analytics/risk.py`, but
-nothing consumes them. Same for `GET /api/v1/market/profile/{ticker}`.
+`correlation_matrix` were implemented and tested but consumed by nothing.
 
-Not dead code — they are tested and reachable via the API — but they deliver no
-user value yet.
+All four now ship end to end: `GET /stocks/{ticker}/simulation`,
+`GET /market/correlation`, and beta/alpha/R² plus expected shortfall folded into
+the existing risk payload, each with a UI panel.
+
+Building it surfaced a real defect: `beta_alpha` raised `ValueError` on a
+duplicated index — the same failure mode `max_drawdown` was fixed for, and one
+real vendor feeds do produce. Fixed with `risk.collapse_duplicate_index` and a
+regression test.
+
+**Still open, and the last of this family:** `GET /market/profile/{ticker}`
+exists and nothing consumes it. Tracked as the top item in STATE.md.
+
+---
+
+## T-7 — A price forecaster was requested, reversing T-1 (OPEN, needs your call)
+
+A later brief asked to "preserve and improve the existing ML stock prediction
+system", and to add bear/base/bull scenario forecasts.
+
+Two problems, so it was not built:
+
+1. **There is no existing ML system to preserve.** `app/ml/predictor.py` was a
+   0-byte file and has been deleted along with the rest of the empty scaffolding.
+2. **T-1 explicitly rejected building one.** Option B — a real forecaster — was
+   considered and turned down on the grounds that retail-grade price prediction
+   is not reliably better than chance, and that shipping one would contradict the
+   product's entire position even behind a research flag. Hard constraint 10 is
+   "No predictions".
+
+What was built instead is the honest reading of the same request: walk-forward
+backtesting already answers "would this rule have worked on unseen data", and
+the dispersion simulation already shows a range of outcomes with its assumptions
+stated. Both are explainable and neither claims direction.
+
+Reversing T-1 is a product decision with real consequences for what this app is,
+and it is yours to make rather than mine to infer from a brief that did not know
+T-1 existed. Say the word and it gets built — with honest evaluation, published
+out-of-sample metrics, and no presentation as advice.
