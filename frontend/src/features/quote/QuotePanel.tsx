@@ -39,7 +39,13 @@ export function RangeSelector({ value, onChange, disabled = false }: RangeSelect
 
 // --- quote summary ---------------------------------------------------------
 
-export function QuoteSummary({ quote }: { quote: Quote }) {
+interface QuoteSummaryProps {
+  quote: Quote;
+  watched: boolean;
+  onToggleWatch: () => void;
+}
+
+export function QuoteSummary({ quote, watched, onToggleWatch }: QuoteSummaryProps) {
   const positive = quote.change_points >= 0;
   const intraday = INTRADAY_RANGES.has(quote.range);
 
@@ -49,6 +55,16 @@ export function QuoteSummary({ quote }: { quote: Quote }) {
         <div className="quote__identity">
           <h1 className="quote__ticker">{quote.ticker}</h1>
           <p className="quote__company">{quote.company_name}</p>
+          <Button
+            variant={watched ? "default" : "ghost"}
+            small
+            onClick={onToggleWatch}
+            aria-pressed={watched}
+            className="quote__watch"
+          >
+            <span aria-hidden="true">{watched ? "★" : "☆"}</span>
+            {watched ? "Watching" : "Watch"}
+          </Button>
         </div>
 
         <div className="quote__price-row">

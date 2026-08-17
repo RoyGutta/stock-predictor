@@ -1,0 +1,146 @@
+.wl-actions {
+  display: flex;
+  gap: var(--space-1);
+}
+
+.wl-empty {
+  font-size: var(--text-sm);
+  color: var(--text-subtle);
+  text-wrap: pretty;
+}
+
+/* Names the window the change column covers. Without it a month's move reads
+   as today's, which for a large stock is both implausible and alarming. */
+.wl-column-note {
+  display: block;
+  margin-bottom: var(--space-2);
+  text-align: right;
+}
+
+.wl-list {
+  display: grid;
+  gap: var(--space-1);
+  list-style: none;
+  padding: 0;
+  margin-bottom: var(--space-3);
+}
+
+.wl-row {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-1);
+  border-radius: var(--radius-md);
+  border: var(--border-width) solid transparent;
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.wl-row:hover {
+  border-color: var(--border);
+  background: var(--surface-raised);
+}
+
+.wl-row__main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: baseline;
+  gap: var(--space-3);
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-2) var(--space-3);
+  background: none;
+  border: 0;
+  text-align: left;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.wl-row__identity {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.wl-row__ticker {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: var(--text-sm);
+}
+
+.wl-row__name,
+.wl-row__error {
+  font-size: var(--text-xs);
+  color: var(--text-subtle);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* A failed row stays visible and says why. Removing it would read as though
+   the app had deleted an entry the user added by hand. */
+.wl-row__error {
+  color: var(--down);
+}
+
+.wl-row__price,
+.wl-row__change {
+  font-size: var(--text-xs);
+  white-space: nowrap;
+}
+
+.wl-row__change {
+  font-weight: 600;
+  min-width: 4.75rem;
+  text-align: right;
+}
+
+.wl-row__change--up {
+  color: var(--up);
+}
+
+.wl-row__change--down {
+  color: var(--down);
+}
+
+/* Exact zero is neither a gain nor a loss, so it gets neither colour. */
+.wl-row__change--flat {
+  color: var(--text-subtle);
+}
+
+.wl-row__remove {
+  flex-shrink: 0;
+  width: 1.75rem;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: var(--radius-sm);
+  color: var(--text-subtle);
+  font-size: var(--text-lg);
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity var(--transition-fast), color var(--transition-fast);
+}
+
+.wl-row:hover .wl-row__remove,
+.wl-row__remove:focus-visible {
+  opacity: 1;
+}
+
+.wl-row__remove:hover {
+  color: var(--down);
+}
+
+/* Touch has no hover, so the control must not be hover-gated there. */
+@media (hover: none) {
+  .wl-row__remove {
+    opacity: 1;
+  }
+}
+
+.wl-meta {
+  margin-bottom: var(--space-3);
+  font-size: var(--text-2xs);
+  color: var(--text-subtle);
+  text-wrap: pretty;
+}

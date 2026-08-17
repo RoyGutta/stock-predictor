@@ -23,6 +23,9 @@ import {
 } from "./features/quote/QuotePanel";
 import { SearchBox } from "./features/search/SearchBox";
 import { SimulationPanel } from "./features/simulation/SimulationPanel";
+import { WatchlistPanel } from "./features/watchlist/WatchlistPanel";
+import { useWatchlist } from "./features/watchlist/useWatchlist";
+import { useWatchlistQuotes } from "./features/watchlist/useWatchlistQuotes";
 import {
   useCapabilities,
   useMarketStatus,
@@ -53,6 +56,9 @@ function App() {
   // requests in the app and most visits do not need either.
   const [backtestFor, setBacktestFor] = useState<string | null>(null);
   const [simulationFor, setSimulationFor] = useState<string | null>(null);
+
+  const watchlist = useWatchlist();
+  const watchlistQuotes = useWatchlistQuotes(watchlist.tickers);
 
   const capabilities = useCapabilities();
   const marketStatus = useMarketStatus();
@@ -163,7 +169,13 @@ function App() {
                   </Callout>
                 )}
                 {loading && !quote && <QuoteSkeleton />}
-                {quote && !error && <QuoteSummary quote={quote} />}
+                {quote && !error && (
+                  <QuoteSummary
+                    quote={quote}
+                    watched={watchlist.has(quote.ticker)}
+                    onToggleWatch={() => watchlist.toggle(quote.ticker)}
+                  />
+                )}
               </div>
 
               {showWelcome && (
@@ -295,6 +307,16 @@ function App() {
             </div>
 
             <div className="app__side">
+              <WatchlistPanel
+                rows={watchlistQuotes.rows}
+                loading={watchlistQuotes.loading}
+                updatedAt={watchlistQuotes.updatedAt}
+                tickers={watchlist.tickers}
+                onSelect={selectTicker}
+                onRemove={watchlist.remove}
+                onClear={watchlist.clear}
+                onRefresh={watchlistQuotes.refresh}
+              />
               <RecentSearches
                 quotes={recent}
                 onSelect={selectTicker}
