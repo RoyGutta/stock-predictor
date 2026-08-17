@@ -4,20 +4,24 @@ import {
   ApiError,
   fetchBacktest,
   fetchCapabilities,
+  fetchCorrelation,
   fetchMarketStatus,
   fetchMovers,
   fetchNews,
   fetchSectors,
+  fetchSimulation,
   isAbort,
 } from "../lib/api";
 import type {
   BacktestResponse,
   Capabilities,
+  CorrelationResponse,
   MarketStatus,
   MoversResponse,
   NewsResponse,
   Range,
   SectorPerformance,
+  SimulationResponse,
 } from "../types/market";
 
 function toMessage(error: unknown): string {
@@ -84,23 +88,36 @@ export function useSectors(enabled: boolean): AsyncState<SectorPerformance[]> {
   return useOnce(useCallback((signal: AbortSignal) => fetchSectors(signal), []), enabled);
 }
 
-/** News for whichever ticker is on screen. Refetches when the ticker changes. */
-export function useNews(ticker: string | null, enabled: boolean): AsyncState<NewsResponse> {
-  const [state, setState] = useState<AsyncState<NewsResponse>>({
-    data: null,
-    loading: false,
-    error: null,
-  });
+const DORMANT: AsyncState<never> = { data: null, loading: false, error: null };
+
+/**
+ * Load a value that belongs to a key, refetching whenever the key changes.
+ *
+ * A null key means "nothing to load" and resets to dormant rather than
+ * leaving the previous key's result on screen under a new name — the bug
+ * this shape exists to prevent.
+ *
+ * `loader` is called through a ref so an inline arrow at the call site does
+ * not retrigger the effect on every render; the key is what decides staleness.
+ */
+function useKeyed<T>(
+  key: string | null,
+  loader: (signal: AbortSignal) => Promise<T>,
+): AsyncState<T> {
+  const [state, setState] = useState<AsyncState<T>>(DORMANT);
+  const loaderRef = useRef(loader);
+  loaderRef.current = loader;
 
   useEffect(() => {
-    if (!ticker || !enabled) {
-      setState({ data: null, loading: false, error: null });
+    if (key === null) {
+      setState(DORMANT);
       return;
     }
     const controller = new AbortController();
     setState({ data: null, loading: true, error: null });
 
-    fetchNews(ticker, 8, controller.signal)
+    loaderRef
+      .current(controller.signal)
       .then((data) => {
         if (!controller.signal.aborted) setState({ data, loading: false, error: null });
       })
@@ -110,38 +127,40 @@ export function useNews(ticker: string | null, enabled: boolean): AsyncState<New
       });
 
     return () => controller.abort();
-  }, [ticker, enabled]);
+  }, [key]);
 
   return state;
 }
 
+/** News for whichever ticker is on screen. Refetches when the ticker changes. */
+export function useNews(ticker: string | null, enabled: boolean): AsyncState<NewsResponse> {
+  const key = ticker && enabled ? ticker : null;
+  return useKeyed(key, (signal) => fetchNews(ticker as string, 8, signal));
+}
+
 /** Backtest for whichever ticker is on screen. Only runs when asked. */
 export function useBacktest(ticker: string | null, range: Range): AsyncState<BacktestResponse> {
-  const [state, setState] = useState<AsyncState<BacktestResponse>>({
-    data: null,
-    loading: false,
-    error: null,
-  });
+  return useKeyed(ticker && `${ticker}:${range}`, (signal) =>
+    fetchBacktest(ticker as string, range, signal),
+  );
+}
 
-  useEffect(() => {
-    if (!ticker) {
-      setState({ data: null, loading: false, error: null });
-      return;
-    }
-    const controller = new AbortController();
-    setState({ data: null, loading: true, error: null });
+/** Dispersion simulation. Expensive, so it only runs when explicitly asked. */
+export function useSimulation(
+  ticker: string | null,
+  range: Range,
+): AsyncState<SimulationResponse> {
+  return useKeyed(ticker && `${ticker}:${range}`, (signal) =>
+    fetchSimulation(ticker as string, range, signal),
+  );
+}
 
-    fetchBacktest(ticker, range, controller.signal)
-      .then((data) => {
-        if (!controller.signal.aborted) setState({ data, loading: false, error: null });
-      })
-      .catch((error: unknown) => {
-        if (isAbort(error) || controller.signal.aborted) return;
-        setState({ data: null, loading: false, error: toMessage(error) });
-      });
-
-    return () => controller.abort();
-  }, [ticker, range]);
-
-  return state;
+/** Correlation across a basket. Null or fewer than two tickers stays dormant. */
+export function useCorrelation(
+  tickers: readonly string[],
+  range: Range,
+  enabled: boolean,
+): AsyncState<CorrelationResponse> {
+  const key = enabled && tickers.length >= 2 ? `${[...tickers].join(",")}:${range}` : null;
+  return useKeyed(key, (signal) => fetchCorrelation(tickers, range, signal));
 }

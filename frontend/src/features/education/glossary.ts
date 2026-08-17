@@ -198,6 +198,58 @@ export const GLOSSARY = {
       "cause real damage are the ones beyond this line.",
   },
 
+  conditionalValueAtRisk: {
+    term: "Expected shortfall",
+    short: "On the days worse than the Value at Risk line, this was the average loss.",
+    full:
+      "Value at Risk tells you where the bad days start. Expected shortfall tells you how " +
+      "bad they actually got, by averaging every day beyond that line. If VaR is −3% and " +
+      "expected shortfall is −5%, then on a bad day you lost about 3%, but on the genuinely " +
+      "bad days you lost about 5% on average.",
+    limits:
+      "It still only knows the losses that appear in this window. A crash worse than " +
+      "anything in the sample is invisible to it, and those are the ones that do real damage.",
+  },
+
+  beta: {
+    term: "Beta",
+    short: "How much this moved compared to the market as a whole.",
+    full:
+      "A beta of 1 means it historically moved roughly in step with the market. 1.5 means " +
+      "it tended to swing about 50% harder in both directions — better on the way up, worse " +
+      "on the way down. Below 1 means it was calmer than the market.",
+    limits:
+      "Beta only means something if the market actually explains this stock's movement — " +
+      "check the R² beside it. A high beta computed from an unrelated relationship is a " +
+      "real-looking number with nothing behind it. It is also entirely backward-looking.",
+  },
+
+  correlation: {
+    term: "Correlation",
+    short: "Whether two investments tend to move up and down together.",
+    full:
+      "Near 1 means two things rose and fell almost as one. Near 0 means they moved " +
+      "independently. Negative means one tended to rise when the other fell. It is the " +
+      "number underneath diversification: owning ten things that all move together is much " +
+      "closer to owning one thing than it looks.",
+    limits:
+      "Correlations are not fixed. They tend to rise toward 1 during a crash — meaning the " +
+      "protection you were counting on weakens at exactly the moment you need it.",
+  },
+
+  monteCarlo: {
+    term: "Simulation range",
+    short: "How far apart outcomes could be, if the future looked like the past.",
+    full:
+      "This takes the stock's own past daily moves, shuffles them thousands of times, and " +
+      "looks at where all those paths ended up. The width of the result is the useful part: " +
+      "a wide range means high uncertainty, a narrow one means less.",
+    limits:
+      "It is not a forecast and cannot tell you direction. It assumes the future is drawn " +
+      "from the same distribution as the past, which is false during any regime change, and " +
+      "it can never produce a shock bigger than one already in the sample.",
+  },
+
   volume: {
     term: "Volume",
     short: "How many shares changed hands.",

@@ -5,7 +5,6 @@ import {
   CartesianGrid,
   ComposedChart,
   Line,
-  ResponsiveContainer,
   Tooltip,
   type TooltipContentProps,
   XAxis,
@@ -13,6 +12,7 @@ import {
 } from "recharts";
 
 import { SERIES_COLORS, type ChartOptions } from "./chartConfig";
+import { useElementSize } from "../../hooks/useElementSize";
 import { buildChartData, describeChart, type ChartPoint } from "../../lib/chart";
 import { formatAxisTick, formatPrice, formatTimestamp, formatVolume } from "../../lib/format";
 import type { Candle, IndicatorSeries, Range } from "../../types/market";
@@ -82,6 +82,7 @@ export const PriceChart = memo(function PriceChart({
   currency,
   options,
 }: PriceChartProps) {
+  const [frameRef, { width, height }] = useElementSize<HTMLDivElement>();
   const intraday = INTRADAY_RANGES.has(range);
   const data = useMemo(() => buildChartData(candles, series), [candles, series]);
   const description = useMemo(
@@ -106,12 +107,20 @@ export const PriceChart = memo(function PriceChart({
 
   if (data.length === 0) return null;
 
+  // The frame is always rendered so it can be measured; the chart itself waits
+  // for a real measurement. Rendering it at an unknown size is what produced
+  // the `width(-1) and height(-1)` warning and the blank chart area on mount.
+  const measured = width > 0 && height > 0;
+
   return (
-    <div className="chart__frame" role="img" aria-label={description}>
-      {/* minWidth/minHeight of 0 stop Recharts warning about a -1 measurement
-          on the first frame, before the container has been laid out. */}
-      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
-        <ComposedChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+    <div className="chart__frame" role="img" aria-label={description} ref={frameRef}>
+      {measured && (
+        <ComposedChart
+          width={width}
+          height={height}
+          data={data}
+          margin={{ top: 8, right: 8, left: 0, bottom: 0 }}
+        >
           <CartesianGrid stroke="var(--grid)" strokeDasharray="2 4" vertical={false} />
           <XAxis
             dataKey="date"
@@ -225,7 +234,7 @@ export const PriceChart = memo(function PriceChart({
             tickFormatter={tickFormatter}
           />
         </ComposedChart>
-      </ResponsiveContainer>
+      )}
     </div>
   );
 });

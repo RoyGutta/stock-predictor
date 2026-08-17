@@ -9,6 +9,7 @@ import type {
   Analysis,
   BacktestResponse,
   Capabilities,
+  CorrelationResponse,
   MarketStatus,
   MoversResponse,
   NewsResponse,
@@ -16,6 +17,7 @@ import type {
   Range,
   SearchResult,
   SectorPerformance,
+  SimulationResponse,
 } from "../types/market";
 
 const BASE_URL: string = import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:8001";
@@ -129,6 +131,32 @@ export function searchTickers(
 ): Promise<SearchResult[]> {
   const params = new URLSearchParams({ q: query, limit: String(limit) });
   return request<SearchResult[]>(`/api/v1/market/search?${params}`, signal);
+}
+
+/**
+ * Bootstrapped dispersion of outcomes. Explicitly not a forecast — see the
+ * `disclaimer` field, which the backend guarantees is populated.
+ */
+export function fetchSimulation(
+  ticker: string,
+  range: Range,
+  signal?: AbortSignal,
+): Promise<SimulationResponse> {
+  const query = new URLSearchParams({ range });
+  return request<SimulationResponse>(
+    `/api/v1/stocks/${encodeURIComponent(ticker)}/simulation?${query}`,
+    signal,
+  );
+}
+
+/** Pairwise return correlation for a small basket of tickers. */
+export function fetchCorrelation(
+  tickers: readonly string[],
+  range: Range,
+  signal?: AbortSignal,
+): Promise<CorrelationResponse> {
+  const query = new URLSearchParams({ tickers: tickers.join(","), range });
+  return request<CorrelationResponse>(`/api/v1/market/correlation?${query}`, signal);
 }
 
 /** Walk-forward backtest of the built-in indicator rules. */

@@ -90,6 +90,16 @@ export interface IndicatorSeries {
   period: number;
 }
 
+export interface BenchmarkComparison {
+  benchmark_ticker: string;
+  /** Historical sensitivity to the benchmark. 1.3 means it moved ~30% more. */
+  beta: number | null;
+  alpha: number | null;
+  /** Share of movement the benchmark explains. Low means beta is weak evidence. */
+  r_squared: number | null;
+  observations: number;
+}
+
 export interface RiskMetrics {
   annualized_return: number | null;
   annualized_volatility: number | null;
@@ -105,6 +115,38 @@ export interface RiskMetrics {
   observations: number;
   frequency: string;
   basis: string;
+  /** Null when the benchmark could not be fetched or did not overlap this range. */
+  benchmark: BenchmarkComparison | null;
+}
+
+// --- scenario dispersion ---------------------------------------------------
+
+export interface SimulationResponse {
+  ticker: string;
+  company_name: string;
+  range: Range;
+  start_price: number;
+  horizon_days: number;
+  simulations: number;
+  /** Ending values at p5/p25/p50/p75/p95 of the simulated paths. */
+  percentiles: Record<string, number>;
+  /** Share of paths ending below the start price. Not a real-world probability. */
+  probability_of_loss: number;
+  observations: number;
+  method: string;
+  disclaimer: string;
+}
+
+export interface CorrelationResponse {
+  tickers: string[];
+  range: Range;
+  /** Row-major, ordered to match `tickers`. */
+  matrix: (number | null)[][];
+  observations: number;
+  resolved: Record<string, string>;
+  /** Tickers that could not be loaded, with why. Excluded from the matrix. */
+  unavailable: Record<string, string>;
+  note: string;
 }
 
 export interface Analysis {

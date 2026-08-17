@@ -22,6 +22,7 @@ import {
   RecentSearches,
 } from "./features/quote/QuotePanel";
 import { SearchBox } from "./features/search/SearchBox";
+import { SimulationPanel } from "./features/simulation/SimulationPanel";
 import {
   useCapabilities,
   useMarketStatus,
@@ -29,6 +30,7 @@ import {
   useMovers,
   useNews,
   useSectors,
+  useSimulation,
 } from "./hooks/useMarketData";
 import { useTheme } from "./hooks/useTheme";
 import { useTickerData } from "./hooks/useTickerData";
@@ -47,9 +49,10 @@ function App() {
   const [range, setRange] = useState<Range>("1Y");
   const [options, setOptions] = useState<ChartOptions>(DEFAULT_CHART_OPTIONS);
   const [recent, setRecent] = useState<Quote[]>([]);
-  // Backtesting is opt-in: it is the most expensive request in the app and most
-  // visits do not need it.
+  // Backtesting and simulation are both opt-in: they are the most expensive
+  // requests in the app and most visits do not need either.
   const [backtestFor, setBacktestFor] = useState<string | null>(null);
+  const [simulationFor, setSimulationFor] = useState<string | null>(null);
 
   const capabilities = useCapabilities();
   const marketStatus = useMarketStatus();
@@ -61,6 +64,7 @@ function App() {
   const sectors = useSectors(canShowSectors);
   const news = useNews(quote?.ticker ?? null, canShowNews);
   const backtest = useBacktest(backtestFor, range);
+  const simulation = useSimulation(simulationFor, range);
 
   // Keep the recent list in sync with whatever loaded last, most recent first.
   useEffect(() => {
@@ -68,9 +72,10 @@ function App() {
     setRecent((previous) =>
       [quote, ...previous.filter((item) => item.ticker !== quote.ticker)].slice(0, MAX_RECENT),
     );
-    // A backtest belongs to one ticker; looking up another must not leave the
+    // These results belong to one ticker; looking up another must not leave a
     // previous result on screen under the new name.
     setBacktestFor((current) => (current === quote.ticker ? current : null));
+    setSimulationFor((current) => (current === quote.ticker ? current : null));
   }, [quote]);
 
   const search = useCallback(
@@ -221,6 +226,18 @@ function App() {
                   This range has too few trading days to calculate risk statistics that would
                   mean anything. Try a longer range.
                 </Callout>
+              )}
+
+              {analysis?.risk && (
+                <SimulationPanel
+                  data={simulation.data}
+                  loading={simulation.loading}
+                  error={simulation.error}
+                  ticker={quote?.ticker ?? ""}
+                  currency={quote?.currency ?? "USD"}
+                  started={simulationFor === quote?.ticker}
+                  onRun={() => quote && setSimulationFor(quote.ticker)}
+                />
               )}
 
               {quote && !error && (

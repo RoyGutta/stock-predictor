@@ -1,6 +1,6 @@
 import { Card, Stat } from "../../components/ui";
 import { formatPercent, formatPercentPlain, formatRatio } from "../../lib/format";
-import type { RiskMetrics } from "../../types/market";
+import type { BenchmarkComparison, RiskMetrics } from "../../types/market";
 import "./analysis.css";
 
 function formatRecovery(risk: RiskMetrics): string {
@@ -53,6 +53,12 @@ export function RiskPanel({ risk }: { risk: RiskMetrics }) {
           note="Worst 1 day in 20"
         />
         <Stat
+          label="Expected shortfall"
+          term="conditionalValueAtRisk"
+          value={formatPercent(risk.conditional_value_at_risk_95)}
+          note="Average of those worst days"
+        />
+        <Stat
           label="Return"
           value={formatPercent(risk.annualized_return)}
           tone={
@@ -66,9 +72,53 @@ export function RiskPanel({ risk }: { risk: RiskMetrics }) {
         />
       </div>
 
+      {risk.benchmark && <BenchmarkRow benchmark={risk.benchmark} />}
+
       <p className="risk__basis">
         {risk.basis} Based on {risk.observations} {risk.frequency} observations.
       </p>
     </Card>
+  );
+}
+
+/**
+ * Beta against the market, with R-squared beside it rather than beneath it.
+ *
+ * A beta computed from a relationship the benchmark barely explains is close
+ * to meaningless, and quoting beta alone is the standard way that gets hidden.
+ * When R-squared is low this says so in words, because the reader most likely
+ * to misuse beta is the one least likely to know what R-squared is.
+ */
+function BenchmarkRow({ benchmark }: { benchmark: BenchmarkComparison }) {
+  const { beta, r_squared: rSquared, benchmark_ticker: ticker } = benchmark;
+  const weak = rSquared != null && rSquared < 0.3;
+
+  return (
+    <div className="risk-benchmark">
+      <div className="risk-grid">
+        <Stat
+          label={`Beta vs ${ticker}`}
+          term="beta"
+          value={formatRatio(beta)}
+          note={
+            beta == null
+              ? "Not computable over this window"
+              : `Moved about ${formatRatio(Math.abs(beta))}× the market`
+          }
+        />
+        <Stat
+          label="Explained by market"
+          value={rSquared == null ? formatRatio(null) : formatPercentPlain(rSquared)}
+          note={`R² against ${ticker}`}
+        />
+      </div>
+      {weak && (
+        <p className="risk__basis">
+          The market explains only {formatPercentPlain(rSquared)} of this stock&rsquo;s
+          movement over this window, so the beta above rests on a weak relationship and
+          should not be leaned on. Most of what moved this price was specific to it.
+        </p>
+      )}
+    </div>
   );
 }
