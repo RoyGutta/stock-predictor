@@ -10,7 +10,6 @@ from app.main import app
 from app.middleware.rate_limit import RateLimitMiddleware
 from app.routes import stocks
 from app.services import market_data
-from app.services.market_data import clear_caches
 
 STUB_CANDLES = [
     {"date": "2026-01-02", "price": 100.0, "open": 99.0, "high": 101.0, "low": 98.0, "volume": 10},
@@ -18,9 +17,6 @@ STUB_CANDLES = [
 ]
 
 
-@pytest.fixture(autouse=True)
-def _clear() -> None:
-    clear_caches()
 
 
 @pytest.fixture

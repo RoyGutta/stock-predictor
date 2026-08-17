@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import logging
 
 import pandas as pd
 from fastapi import APIRouter, HTTPException, Query
@@ -12,6 +13,7 @@ from app.analytics import risk
 from app.analytics.interpretation import interpret
 from app.schemas import (
     AnalysisResponse,
+    BenchmarkComparison,
     ErrorResponse,
     IndicatorSeries,
     ObservationOut,
@@ -20,6 +22,8 @@ from app.schemas import (
     TrendInterpretation,
 )
 from app.services.market_data import MarketDataError, get_quote
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/stocks", tags=["analysis"])
 
@@ -31,6 +35,10 @@ _FREQUENCY_BY_RANGE: dict[Range, str] = {
 
 # Below this many bars, annualized statistics are too noisy to be worth showing.
 _MIN_BARS_FOR_RISK = 30
+
+# Broad US market proxy. Beta against it is the conventional reading, and the
+# quote cache means every ticker's analysis shares one upstream fetch.
+DEFAULT_BENCHMARK = "SPY"
 
 
 def _to_frame(candles: list) -> pd.DataFrame:
@@ -46,7 +54,39 @@ def _to_frame(candles: list) -> pd.DataFrame:
     )
 
 
-def _build_risk(frame: pd.DataFrame, frequency: str) -> RiskMetrics | None:
+def _build_benchmark(
+    close: pd.Series, benchmark_close: pd.Series | None, ticker: str, frequency: str
+) -> BenchmarkComparison | None:
+    """Beta, alpha, and R-squared against the market proxy.
+
+    Returns None rather than raising when the benchmark is unavailable: this is
+    enrichment, and losing it must not cost the caller their risk statistics.
+    """
+    if benchmark_close is None or benchmark_close.empty:
+        return None
+
+    result = risk.beta_alpha(
+        risk.simple_returns(close), risk.simple_returns(benchmark_close), frequency=frequency
+    )
+
+    def clean(value: float) -> float | None:
+        return None if pd.isna(value) else round(float(value), 6)
+
+    return BenchmarkComparison(
+        benchmark_ticker=ticker,
+        beta=clean(result.beta),
+        alpha=clean(result.alpha),
+        r_squared=clean(result.r_squared),
+        observations=result.observations,
+    )
+
+
+def _build_risk(
+    frame: pd.DataFrame,
+    frequency: str,
+    benchmark_close: pd.Series | None = None,
+    benchmark_ticker: str = DEFAULT_BENCHMARK,
+) -> RiskMetrics | None:
     close = frame["close"]
     if len(close) < _MIN_BARS_FOR_RISK:
         return None
@@ -75,6 +115,7 @@ def _build_risk(frame: pd.DataFrame, frequency: str) -> RiskMetrics | None:
             "Computed from the price history in this range only. These describe what "
             "already happened over this window and would change with a different window."
         ),
+        benchmark=_build_benchmark(close, benchmark_close, benchmark_ticker, frequency),
     )
 
 
@@ -104,6 +145,24 @@ def _build_series(frame: pd.DataFrame, period: int) -> IndicatorSeries:
         macd_histogram=_to_optional_floats(macd_result.histogram),
         period=period,
     )
+
+
+async def _load_benchmark(ticker: str, range_: Range) -> pd.Series | None:
+    """Close series for the market proxy, or None if it is unavailable.
+
+    Skipped when the requested ticker *is* the benchmark: beta of an asset
+    against itself is 1.0 by construction and tells the reader nothing, so
+    there is no point paying for the fetch.
+    """
+    if ticker.upper() == DEFAULT_BENCHMARK:
+        return None
+    try:
+        benchmark = await get_quote(DEFAULT_BENCHMARK, range_)
+    except MarketDataError:
+        # Enrichment only. A missing benchmark costs beta, not the whole response.
+        logger.info("Benchmark %s unavailable for %s", DEFAULT_BENCHMARK, ticker)
+        return None
+    return _to_frame(benchmark.history)["close"]
 
 
 @router.get(
@@ -139,12 +198,13 @@ async def read_analysis(
 
     frame = _to_frame(quote.history)
     frequency = _FREQUENCY_BY_RANGE.get(range, "daily")
+    benchmark_close = await _load_benchmark(quote.ticker, range)
 
     # Indicator and risk math is CPU-bound over the whole series; keep it off
     # the event loop so one large request cannot stall other clients.
     interpretation, risk_metrics, series = await asyncio.gather(
         asyncio.to_thread(interpret, frame),
-        asyncio.to_thread(_build_risk, frame, frequency),
+        asyncio.to_thread(_build_risk, frame, frequency, benchmark_close, DEFAULT_BENCHMARK),
         asyncio.to_thread(_build_series, frame, period),
     )
 

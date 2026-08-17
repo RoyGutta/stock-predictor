@@ -103,6 +103,29 @@ class TrendInterpretation(BaseModel):
     disclaimer: str
 
 
+class BenchmarkComparison(BaseModel):
+    """How the asset moved relative to a market benchmark over this window.
+
+    `r_squared` ships alongside beta deliberately: beta computed from a
+    relationship the benchmark barely explains is close to meaningless, and
+    quoting it alone is the usual way that gets hidden.
+    """
+
+    benchmark_ticker: str
+    beta: float | None = Field(
+        default=None,
+        description="Historical sensitivity to the benchmark. 1.3 means it moved ~30% more.",
+    )
+    alpha: float | None = Field(
+        default=None, description="Annualized Jensen's alpha over this window."
+    )
+    r_squared: float | None = Field(
+        default=None,
+        description="Share of the asset's movement the benchmark explains. Low means beta is weak.",
+    )
+    observations: int = Field(description="Overlapping bars used. Fewer than 3 yields nulls.")
+
+
 class RiskMetrics(BaseModel):
     annualized_return: float | None
     annualized_volatility: float | None
@@ -121,6 +144,10 @@ class RiskMetrics(BaseModel):
     observations: int
     frequency: str
     basis: str
+    benchmark: BenchmarkComparison | None = Field(
+        default=None,
+        description="Null when the benchmark could not be fetched or did not overlap this range.",
+    )
 
 
 # --- market-wide ------------------------------------------------------------
@@ -265,6 +292,60 @@ class AnalysisResponse(BaseModel):
         default=None,
         description="Null when the range holds too few bars for the statistics to be meaningful.",
     )
+
+
+# --- scenario dispersion ----------------------------------------------------
+
+
+class SimulationResponse(BaseModel):
+    """Bootstrapped dispersion of outcomes. Explicitly not a forecast.
+
+    Every field here answers "how wide is the range if the future resembled
+    this past?" — a question about spread, not about direction. The premise is
+    routinely false, and `disclaimer` says so rather than leaving it to the UI.
+    """
+
+    ticker: str
+    company_name: str
+    range: Range
+    start_price: float = Field(description="Last close, the point every path starts from.")
+    horizon_days: int
+    simulations: int
+    percentiles: dict[str, float] = Field(
+        description="Ending values at the 5th/25th/50th/75th/95th percentile of simulated paths."
+    )
+    probability_of_loss: float = Field(
+        description=(
+            "Share of simulated paths ending below the start price. A property of the "
+            "resampled sample, not a real-world probability."
+        )
+    )
+    observations: int = Field(description="Historical returns resampled to build the paths.")
+    method: str
+    disclaimer: str
+
+
+class CorrelationResponse(BaseModel):
+    """Pairwise return correlation between tickers.
+
+    Computed on returns, never on price levels: correlating raw prices makes
+    any two assets that both drifted upward look near-identical.
+    """
+
+    tickers: list[str]
+    range: Range
+    matrix: list[list[float | None]] = Field(
+        description="Row-major, ordered to match `tickers`. Null where a pair is not computable."
+    )
+    observations: int
+    resolved: dict[str, str] = Field(
+        default_factory=dict, description="Ticker to company name, for labeling."
+    )
+    unavailable: dict[str, str] = Field(
+        default_factory=dict,
+        description="Tickers that could not be loaded, with why. Excluded from the matrix.",
+    )
+    note: str
 
 
 # --- backtesting ------------------------------------------------------------

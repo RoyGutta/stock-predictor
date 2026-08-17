@@ -18,6 +18,11 @@ from starlette.responses import Response
 
 _WINDOW_SECONDS = 60
 
+# Live instances, so a test can reset counters between cases. Without this the
+# limiter accumulates across every test sharing the app and cases begin failing
+# on ordering alone -- the flaky-signal problem CHANGELOG SM-2 exists to avoid.
+_instances: list[RateLimitMiddleware] = []
+
 
 class RateLimitMiddleware(BaseHTTPMiddleware):
     def __init__(self, app, requests_per_minute: int) -> None:
@@ -25,6 +30,12 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         self._limit = requests_per_minute
         self._hits: dict[str, deque[float]] = defaultdict(deque)
         self._lock = Lock()
+        _instances.append(self)
+
+    def reset(self) -> None:
+        """Test helper. Drops every recorded hit."""
+        with self._lock:
+            self._hits.clear()
 
     @staticmethod
     def _client_key(request: Request) -> str:
@@ -59,3 +70,9 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
             )
 
         return await call_next(request)
+
+
+def reset_rate_limits() -> None:
+    """Test helper. Clears counters on every live limiter."""
+    for instance in _instances:
+        instance.reset()

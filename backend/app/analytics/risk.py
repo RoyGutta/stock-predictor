@@ -20,6 +20,7 @@ import pandas as pd
 
 __all__ = [
     "annualization_factor",
+    "collapse_duplicate_index",
     "simple_returns",
     "log_returns",
     "annualized_return",
@@ -53,6 +54,21 @@ def annualization_factor(frequency: str) -> int:
         raise ValueError(
             f"unknown frequency '{frequency}'; expected one of {sorted(PERIODS_PER_YEAR)}"
         ) from None
+
+
+def collapse_duplicate_index(series: pd.Series) -> pd.Series:
+    """Keep the last observation for each repeated index label.
+
+    Real vendor feeds repeat timestamps -- the same failure that once made
+    `max_drawdown` raise. Aligning two series *by label* is undefined when
+    either side carries duplicates, and pandas raises rather than guessing, so
+    anything that joins on the index has to resolve them first. Keeping the
+    last print for a timestamp is the conventional resolution and is a
+    deliberate choice rather than a silent one.
+    """
+    if series.index.is_unique:
+        return series
+    return series[~series.index.duplicated(keep="last")]
 
 
 def simple_returns(prices: pd.Series) -> pd.Series:
@@ -255,9 +271,15 @@ def beta_alpha(
     alongside rather than buried.
 
     The two series are inner-joined on their index, so mismatched calendars or
-    differing histories are handled rather than silently misaligned.
+    differing histories are handled rather than silently misaligned. Repeated
+    timestamps are collapsed first -- a label-based join is undefined against
+    duplicates and raises.
     """
-    aligned = pd.concat([returns, benchmark_returns], axis=1, join="inner").dropna()
+    aligned = pd.concat(
+        [collapse_duplicate_index(returns), collapse_duplicate_index(benchmark_returns)],
+        axis=1,
+        join="inner",
+    ).dropna()
     aligned.columns = ["asset", "benchmark"]
     if len(aligned) < 3:
         return BetaAlpha(float("nan"), float("nan"), float("nan"), len(aligned))

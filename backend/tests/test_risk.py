@@ -17,6 +17,7 @@ from app.analytics.risk import (
     annualized_return,
     annualized_volatility,
     beta_alpha,
+    collapse_duplicate_index,
     conditional_value_at_risk,
     correlation_matrix,
     drawdown_series,
@@ -254,6 +255,29 @@ def test_beta_alpha_aligns_mismatched_indexes() -> None:
     asset = pd.Series([0.01, 0.02, -0.01, 0.03], index=[1, 2, 3, 4])
     benchmark = pd.Series([0.01, 0.02, -0.01], index=[2, 3, 4])
     assert beta_alpha(asset, benchmark).observations == 3
+
+
+def test_beta_alpha_handles_a_duplicated_index() -> None:
+    """Vendor data can repeat timestamps. A label-based join is undefined
+    against duplicates and pandas raises, so they are collapsed first --
+    the same failure mode `max_drawdown` was fixed for."""
+    asset = pd.Series([0.01, 0.02, -0.01, 0.03], index=["a", "a", "b", "c"])
+    benchmark = pd.Series([0.01, 0.02, -0.01, 0.03], index=["a", "a", "b", "c"])
+    result = beta_alpha(asset, benchmark)
+    assert result.beta == pytest.approx(1.0)
+    assert result.observations == 3  # 'a' collapsed to its last observation
+
+
+def test_collapse_duplicate_index_keeps_the_last_observation() -> None:
+    series = pd.Series([1.0, 2.0, 3.0], index=["a", "a", "b"])
+    collapsed = collapse_duplicate_index(series)
+    assert list(collapsed.index) == ["a", "b"]
+    assert collapsed.loc["a"] == 2.0
+
+
+def test_collapse_duplicate_index_leaves_a_unique_index_untouched() -> None:
+    series = pd.Series([1.0, 2.0], index=["a", "b"])
+    assert collapse_duplicate_index(series) is series
 
 
 def test_beta_alpha_is_nan_with_too_few_overlapping_points() -> None:

@@ -8,12 +8,6 @@ from fastapi.testclient import TestClient
 
 from app.main import app
 from app.services import market_data
-from app.services.market_data import clear_caches
-
-
-@pytest.fixture(autouse=True)
-def _clear() -> None:
-    clear_caches()
 
 
 @pytest.fixture
@@ -163,3 +157,54 @@ def test_series_rejects_out_of_range_periods(
     client: TestClient, stub_long_history: None, period: int
 ) -> None:
     assert client.get(f"/api/v1/stocks/AAPL/analysis?period={period}").status_code == 422
+
+
+# --- benchmark comparison ---------------------------------------------------
+
+
+def test_risk_includes_a_benchmark_comparison(client: TestClient, stub_long_history: None) -> None:
+    benchmark = client.get("/api/v1/stocks/AAPL/analysis").json()["risk"]["benchmark"]
+    assert benchmark is not None
+    assert benchmark["benchmark_ticker"] == "SPY"
+    assert benchmark["observations"] > 0
+
+
+def test_benchmark_reports_r_squared_beside_beta(
+    client: TestClient, stub_long_history: None
+) -> None:
+    """Beta from a relationship the benchmark barely explains is meaningless.
+    Quoting it without R-squared is the usual way that gets hidden."""
+    benchmark = client.get("/api/v1/stocks/AAPL/analysis").json()["risk"]["benchmark"]
+    assert benchmark["r_squared"] is not None
+    assert 0.0 <= benchmark["r_squared"] <= 1.0
+
+
+def test_benchmark_is_omitted_when_the_ticker_is_the_benchmark(
+    client: TestClient, stub_long_history: None
+) -> None:
+    """Beta of SPY against SPY is 1.0 by construction and tells nobody anything."""
+    assert client.get("/api/v1/stocks/SPY/analysis").json()["risk"]["benchmark"] is None
+
+
+def test_analysis_survives_an_unavailable_benchmark(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The benchmark is enrichment. Losing it must not cost the caller their
+    risk statistics, which is the regression this pins."""
+
+    def selective(ticker: str, period: str, interval: str) -> list[dict]:
+        if ticker == "SPY":
+            raise RuntimeError("benchmark provider is down")
+        return _candles(300)
+
+    monkeypatch.setattr(market_data, "_fetch_history_sync", selective)
+    monkeypatch.setattr(
+        market_data,
+        "_fetch_profile_sync",
+        lambda t: {"company_name": "Test Corp", "currency": "USD"},
+    )
+
+    body = client.get("/api/v1/stocks/AAPL/analysis").json()
+    assert body["risk"] is not None
+    assert body["risk"]["sharpe_ratio"] is not None
+    assert body["risk"]["benchmark"] is None

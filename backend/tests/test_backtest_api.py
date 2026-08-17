@@ -8,12 +8,6 @@ from fastapi.testclient import TestClient
 
 from app.main import app
 from app.services import market_data
-from app.services.market_data import clear_caches
-
-
-@pytest.fixture(autouse=True)
-def _clear() -> None:
-    clear_caches()
 
 
 @pytest.fixture
