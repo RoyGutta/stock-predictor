@@ -207,3 +207,97 @@ def test_correlation_reports_invalid_symbols_without_failing(
 
 def test_correlation_json_contains_no_nan_literals(client: TestClient, long_history: None) -> None:
     assert "NaN" not in client.get("/api/v1/market/correlation?tickers=AAPL,MSFT").text
+
+
+# --- momentum ranking -------------------------------------------------------
+
+
+def test_momentum_ranks_every_requested_ticker(client: TestClient, long_history: None) -> None:
+    body = client.get("/api/v1/market/momentum?tickers=AAPL,MSFT,GOOG").json()
+    assert {row["ticker"] for row in body["tickers"]} == {"AAPL", "MSFT", "GOOG"}
+
+
+def test_momentum_is_ordered_strongest_first(client: TestClient, long_history: None) -> None:
+    rows = client.get("/api/v1/market/momentum?tickers=AAPL,MSFT,GOOG").json()["tickers"]
+    scores = [row["score"] for row in rows]
+    assert scores == sorted(scores, reverse=True)
+
+
+def test_momentum_score_never_exceeds_total(client: TestClient, long_history: None) -> None:
+    for row in client.get("/api/v1/market/momentum?tickers=AAPL,MSFT").json()["tickers"]:
+        assert 0 <= row["score"] <= row["total"]
+
+
+def test_momentum_reports_insufficient_rather_than_scoring_partial_data(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Too little history is a different answer from weak momentum."""
+    _stub(monkeypatch, 40)
+    rows = client.get("/api/v1/market/momentum?tickers=AAPL").json()["tickers"]
+    assert rows[0]["state"] == "insufficient"
+    assert rows[0]["score"] == 0
+
+
+def test_momentum_sorts_unreadable_tickers_last(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """"No reading" must not be presented as "weak momentum"."""
+
+    def selective(ticker: str, period: str, interval: str) -> list[dict]:
+        return _candles(40) if ticker == "TINY" else _candles(300)
+
+    monkeypatch.setattr(market_data, "_fetch_history_sync", selective)
+    monkeypatch.setattr(
+        market_data,
+        "_fetch_profile_sync",
+        lambda t: {"company_name": "Test Corp", "currency": "USD"},
+    )
+
+    rows = client.get("/api/v1/market/momentum?tickers=TINY,AAPL,MSFT").json()["tickers"]
+    assert rows[-1]["ticker"] == "TINY"
+
+
+def test_momentum_names_tickers_it_could_not_load(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def selective(ticker: str, period: str, interval: str) -> list[dict]:
+        return [] if ticker == "ZZZZ" else _candles(300)
+
+    monkeypatch.setattr(market_data, "_fetch_history_sync", selective)
+    monkeypatch.setattr(
+        market_data,
+        "_fetch_profile_sync",
+        lambda t: {"company_name": "Test Corp", "currency": "USD"},
+    )
+
+    body = client.get("/api/v1/market/momentum?tickers=AAPL,ZZZZ").json()
+    assert "ZZZZ" in body["unavailable"]
+    assert all(row["ticker"] != "ZZZZ" for row in body["tickers"])
+
+
+def test_momentum_note_denies_being_a_buy_signal(client: TestClient, long_history: None) -> None:
+    """A ranked list of 'high momentum' names is the easiest thing here to read
+    as a shortlist to buy, so the payload says plainly that it is not."""
+    note = client.get("/api/v1/market/momentum?tickers=AAPL,MSFT").json()["note"]
+    assert "not a signal to buy" in note.lower()
+
+
+def test_momentum_response_contains_no_advice_language(
+    client: TestClient, long_history: None
+) -> None:
+    text = client.get("/api/v1/market/momentum?tickers=AAPL,MSFT").text.lower()
+    for phrase in ("you should", "we recommend", "time to buy", "strong buy", "guaranteed"):
+        assert phrase not in text
+
+
+def test_momentum_rejects_an_oversized_basket(client: TestClient, long_history: None) -> None:
+    many = ",".join(f"TK{i}" for i in range(40))
+    assert client.get(f"/api/v1/market/momentum?tickers={many}").status_code == 400
+
+
+def test_momentum_rejects_only_invalid_symbols(client: TestClient, long_history: None) -> None:
+    assert client.get("/api/v1/market/momentum?tickers=<script>").status_code == 422
+
+
+def test_momentum_json_contains_no_nan_literals(client: TestClient, long_history: None) -> None:
+    assert "NaN" not in client.get("/api/v1/market/momentum?tickers=AAPL,MSFT").text

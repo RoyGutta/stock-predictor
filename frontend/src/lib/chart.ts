@@ -18,7 +18,10 @@ export interface ChartPoint {
   high: number;
   low: number;
   volume: number;
-  sma: number | null;
+  /** The three fixed momentum windows. */
+  ma20: number | null;
+  ma50: number | null;
+  ma100: number | null;
   ema: number | null;
   bollingerUpper: number | null;
   bollingerLower: number | null;
@@ -63,7 +66,9 @@ export function buildChartData(
     high: candle.high,
     low: candle.low,
     volume: candle.volume,
-    sma: at(series?.sma, i),
+    ma20: at(series?.sma_20, i),
+    ma50: at(series?.sma_50, i),
+    ma100: at(series?.sma_100, i),
     ema: at(series?.ema, i),
     bollingerUpper: at(series?.bollinger_upper, i),
     bollingerLower: at(series?.bollinger_lower, i),

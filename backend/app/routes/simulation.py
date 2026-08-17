@@ -17,11 +17,13 @@ import logging
 import pandas as pd
 from fastapi import APIRouter, HTTPException, Query
 
-from app.analytics import risk
+from app.analytics import momentum, risk
 from app.routes.analysis import _to_frame
 from app.schemas import (
     CorrelationResponse,
     ErrorResponse,
+    MomentumRanking,
+    MomentumRankingResponse,
     Range,
     SimulationResponse,
 )
@@ -38,6 +40,35 @@ _MIN_BARS_FOR_SIMULATION = 31
 # Correlation over fewer than two assets is not a matrix.
 _MIN_TICKERS = 2
 _MAX_TICKERS = 8
+
+# Momentum ranks a watchlist, which is capped at 30 client-side.
+_MAX_RANKED = 30
+
+
+def _parse_tickers(raw: str, limit: int) -> tuple[list[str], dict[str, str]]:
+    """Split, validate and de-duplicate a comma-separated ticker list.
+
+    Symbols that fail validation are returned separately rather than dropped,
+    so the caller can say which ones were rejected and why.
+    """
+    requested: list[str] = []
+    invalid: dict[str, str] = {}
+    for candidate in (part.strip() for part in raw.split(",")):
+        if not candidate:
+            continue
+        try:
+            symbol = normalize_ticker(candidate)
+        except MarketDataError as exc:
+            invalid[candidate.upper()[:15]] = str(exc)
+            continue
+        if symbol not in requested:
+            requested.append(symbol)
+
+    if len(requested) > limit:
+        raise HTTPException(
+            status_code=400, detail=f"At most {limit} tickers can be requested at once."
+        )
+    return requested, invalid
 
 
 @router.get(
@@ -106,6 +137,101 @@ async def read_simulation(
     )
 
 
+MOMENTUM_NOTE = (
+    "Ranked by how many of the four moving-average conditions currently hold, then by "
+    "recent price change. A high rank means the averages are stacked the way an uptrend "
+    "looks — it is not a signal to buy, and it says nothing about whether the move is "
+    "early or nearly over. The same alignment appears partway up a rally and just before "
+    "a top. Use the backtest on any individual name to see whether trading this rule "
+    "would actually have beaten holding it."
+)
+
+
+@router.get(
+    "/market/momentum",
+    response_model=MomentumRankingResponse,
+    summary="Rank tickers by moving-average momentum",
+    responses={
+        400: {"model": ErrorResponse},
+        422: {"model": ErrorResponse, "description": "No ticker could be read"},
+        502: {"model": ErrorResponse},
+    },
+)
+async def read_momentum_ranking(
+    tickers: str = Query(
+        min_length=1,
+        max_length=400,
+        description=f"Comma-separated, up to {_MAX_RANKED} symbols.",
+    ),
+    range: Range = Query(  # noqa: A002
+        default=Range.YEAR_1,
+        description="Window to read momentum over. Needs enough bars to fill a 100-period average.",
+    ),
+) -> MomentumRankingResponse:
+    """Momentum state for a basket, strongest first.
+
+    Built for ranking a watchlist. A ticker whose history is too short reports
+    `insufficient` and sorts last rather than being scored on partial data.
+    """
+    requested, invalid = _parse_tickers(tickers, _MAX_RANKED)
+    if not requested:
+        raise HTTPException(status_code=422, detail="No valid ticker symbols were supplied.")
+
+    results = await asyncio.gather(
+        *(get_quote(symbol, range) for symbol in requested), return_exceptions=True
+    )
+
+    ranked: list[MomentumRanking] = []
+    unavailable = dict(invalid)
+    for symbol, result in zip(requested, results, strict=True):
+        if isinstance(result, MarketDataError):
+            unavailable[symbol] = str(result)
+            continue
+        if isinstance(result, BaseException):
+            logger.exception("Unexpected failure loading %s for momentum", symbol)
+            unavailable[symbol] = "Could not load this ticker."
+            continue
+
+        state = await asyncio.to_thread(momentum.assess, _to_frame(result.history))
+        ranked.append(
+            MomentumRanking(
+                ticker=result.ticker,
+                company_name=result.company_name,
+                state=state.state.value,
+                score=state.score,
+                total=state.total,
+                price=result.price,
+                change_percent=result.change_percent,
+                headline=state.headline,
+            )
+        )
+
+    if not ranked:
+        raise HTTPException(
+            status_code=422,
+            detail=(
+                "None of the requested tickers could be read. "
+                + (f"Could not load: {', '.join(sorted(unavailable))}." if unavailable else "")
+            ),
+        )
+
+    # Strongest stack first, then the bigger recent move as a tiebreak. An
+    # unreadable ticker sorts last rather than being treated as weak momentum,
+    # which is a different thing from "no reading".
+    ranked.sort(
+        key=lambda row: (
+            row.state != "insufficient",
+            row.score,
+            row.change_percent if row.change_percent is not None else float("-inf"),
+        ),
+        reverse=True,
+    )
+
+    return MomentumRankingResponse(
+        tickers=ranked, range=range, unavailable=unavailable, note=MOMENTUM_NOTE
+    )
+
+
 CORRELATION_NOTE = (
     "Correlation is computed on returns, not on price levels. Two unrelated stocks that "
     "both drifted upward would look almost identical if levels were used. A value near 1 "
@@ -139,25 +265,7 @@ async def read_correlation(
     Tickers that cannot be loaded are reported in `unavailable` and left out of
     the matrix rather than silently dropped or filled with a placeholder value.
     """
-    requested: list[str] = []
-    invalid: dict[str, str] = {}
-    for raw in tickers.split(","):
-        candidate = raw.strip()
-        if not candidate:
-            continue
-        try:
-            symbol = normalize_ticker(candidate)
-        except MarketDataError as exc:
-            invalid[candidate.upper()[:15]] = str(exc)
-            continue
-        if symbol not in requested:
-            requested.append(symbol)
-
-    if len(requested) > _MAX_TICKERS:
-        raise HTTPException(
-            status_code=400,
-            detail=f"At most {_MAX_TICKERS} tickers can be compared at once.",
-        )
+    requested, invalid = _parse_tickers(tickers, _MAX_TICKERS)
 
     results = await asyncio.gather(
         *(get_quote(symbol, range) for symbol in requested), return_exceptions=True

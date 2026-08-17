@@ -9,13 +9,14 @@ import pandas as pd
 from fastapi import APIRouter, HTTPException, Query
 
 from app.analytics import indicators as ind
-from app.analytics import risk
+from app.analytics import momentum, risk
 from app.analytics.interpretation import interpret
 from app.schemas import (
     AnalysisResponse,
     BenchmarkComparison,
     ErrorResponse,
     IndicatorSeries,
+    MomentumOut,
     ObservationOut,
     Range,
     RiskMetrics,
@@ -144,6 +145,12 @@ def _build_series(frame: pd.DataFrame, period: int) -> IndicatorSeries:
         macd_signal=_to_optional_floats(macd_result.signal),
         macd_histogram=_to_optional_floats(macd_result.histogram),
         period=period,
+        # Fixed windows, independent of the configurable `period` above. These
+        # are the three the momentum read is built on, so the chart can draw
+        # exactly what the indicator is judging rather than something adjacent.
+        sma_20=_to_optional_floats(ind.sma(close, momentum.FAST)),
+        sma_50=_to_optional_floats(ind.sma(close, momentum.MEDIUM)),
+        sma_100=_to_optional_floats(ind.sma(close, momentum.SLOW)),
     )
 
 
@@ -202,10 +209,11 @@ async def read_analysis(
 
     # Indicator and risk math is CPU-bound over the whole series; keep it off
     # the event loop so one large request cannot stall other clients.
-    interpretation, risk_metrics, series = await asyncio.gather(
+    interpretation, risk_metrics, series, momentum_state = await asyncio.gather(
         asyncio.to_thread(interpret, frame),
         asyncio.to_thread(_build_risk, frame, frequency, benchmark_close, DEFAULT_BENCHMARK),
         asyncio.to_thread(_build_series, frame, period),
+        asyncio.to_thread(momentum.assess, frame),
     )
 
     return AnalysisResponse(
@@ -227,4 +235,5 @@ async def read_analysis(
         ),
         series=series,
         risk=risk_metrics,
+        momentum=MomentumOut.from_domain(momentum_state),
     )

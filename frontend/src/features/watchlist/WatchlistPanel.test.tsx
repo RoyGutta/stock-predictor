@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import { WatchlistPanel } from "./WatchlistPanel";
 import type { WatchlistRow } from "./useWatchlistQuotes";
-import type { Quote } from "../../types/market";
+import type { MomentumRanking, Quote } from "../../types/market";
 
 function quote(overrides: Partial<Quote> = {}): Quote {
   return {
@@ -30,7 +30,27 @@ function row(overrides: Partial<WatchlistRow> = {}): WatchlistRow {
   return { ticker: "MSFT", quote: quote(), error: null, ...overrides };
 }
 
+function ranking(
+  ticker: string,
+  state: MomentumRanking["state"],
+  score: number,
+): MomentumRanking {
+  return {
+    ticker,
+    company_name: `${ticker} Inc.`,
+    state,
+    score,
+    total: 4,
+    price: 100,
+    change_percent: 1.5,
+    headline: `${score} of 4 conditions hold.`,
+  };
+}
+
 const handlers = {
+  momentum: new Map<string, MomentumRanking>(),
+  sortByMomentum: false,
+  onToggleSort: () => {},
   onSelect: () => {},
   onRemove: () => {},
   onClear: () => {},
@@ -147,6 +167,98 @@ describe("WatchlistPanel", () => {
     );
     await userEvent.click(screen.getByRole("button", { name: /remove msft/i }));
     expect(onRemove).toHaveBeenCalledWith("MSFT");
+  });
+
+  it("shows a momentum badge per row when the ranking has loaded", () => {
+    render(
+      <WatchlistPanel
+        {...handlers}
+        momentum={new Map([["MSFT", ranking("MSFT", "bullish", 4)]])}
+        rows={[row()]}
+        loading={false}
+        updatedAt={null}
+        tickers={["MSFT"]}
+      />,
+    );
+    expect(screen.getByText("4/4")).toBeInTheDocument();
+  });
+
+  it("orders by momentum strength when sorting is on", () => {
+    const rows = [row({ ticker: "WEAK" }), row({ ticker: "STRONG" })];
+    render(
+      <WatchlistPanel
+        {...handlers}
+        sortByMomentum
+        momentum={
+          new Map([
+            ["WEAK", ranking("WEAK", "bearish", 0)],
+            ["STRONG", ranking("STRONG", "bullish", 4)],
+          ])
+        }
+        rows={rows}
+        loading={false}
+        updatedAt={null}
+        tickers={["WEAK", "STRONG"]}
+      />,
+    );
+    const tickers = screen.getAllByRole("button", { name: /open /i }).map((b) => b.textContent);
+    expect(tickers[0]).toContain("STRONG");
+  });
+
+  it("sorts a ticker with no reading last rather than as weak momentum", () => {
+    /* "Not enough history" is a different answer from "momentum is against
+       it", and ranking them together would misorder the list. */
+    render(
+      <WatchlistPanel
+        {...handlers}
+        sortByMomentum
+        momentum={
+          new Map([
+            ["NEW", ranking("NEW", "insufficient", 0)],
+            ["BEAR", ranking("BEAR", "bearish", 0)],
+          ])
+        }
+        rows={[row({ ticker: "NEW" }), row({ ticker: "BEAR" })]}
+        loading={false}
+        updatedAt={null}
+        tickers={["NEW", "BEAR"]}
+      />,
+    );
+    const tickers = screen.getAllByRole("button", { name: /open /i }).map((b) => b.textContent);
+    expect(tickers[tickers.length - 1]).toContain("NEW");
+  });
+
+  it("keeps the original order when sorting is off", () => {
+    render(
+      <WatchlistPanel
+        {...handlers}
+        momentum={
+          new Map([
+            ["WEAK", ranking("WEAK", "bearish", 0)],
+            ["STRONG", ranking("STRONG", "bullish", 4)],
+          ])
+        }
+        rows={[row({ ticker: "WEAK" }), row({ ticker: "STRONG" })]}
+        loading={false}
+        updatedAt={null}
+        tickers={["WEAK", "STRONG"]}
+      />,
+    );
+    const tickers = screen.getAllByRole("button", { name: /open /i }).map((b) => b.textContent);
+    expect(tickers[0]).toContain("WEAK");
+  });
+
+  it("says the momentum column is not a list to buy from", () => {
+    render(
+      <WatchlistPanel
+        {...handlers}
+        rows={[row()]}
+        loading={false}
+        updatedAt={null}
+        tickers={["MSFT"]}
+      />,
+    );
+    expect(screen.getByText(/not a list to buy from/i)).toBeInTheDocument();
   });
 
   it("disables refresh while a pass is in flight", () => {

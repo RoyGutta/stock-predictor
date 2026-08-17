@@ -12,6 +12,7 @@ import type {
   CompanyProfile,
   CorrelationResponse,
   MarketStatus,
+  MomentumRankingResponse,
   MoversResponse,
   NewsResponse,
   Quote,
@@ -156,6 +157,16 @@ export function fetchSimulation(
     `/api/v1/stocks/${encodeURIComponent(ticker)}/simulation?${query}`,
     signal,
   );
+}
+
+/** Momentum state for a basket, ranked strongest first. */
+export function fetchMomentumRanking(
+  tickers: readonly string[],
+  range: Range,
+  signal?: AbortSignal,
+): Promise<MomentumRankingResponse> {
+  const query = new URLSearchParams({ tickers: tickers.join(","), range });
+  return request<MomentumRankingResponse>(`/api/v1/market/momentum?${query}`, signal);
 }
 
 /** Pairwise return correlation for a small basket of tickers. */

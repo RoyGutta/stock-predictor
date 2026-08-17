@@ -16,7 +16,9 @@ interface ChartControlsProps {
  * charting library back into the initial bundle.
  */
 const TOGGLES = [
-  { key: "showSMA", label: "SMA", color: SERIES_COLORS.sma, term: "movingAverage" },
+  { key: "showMA20", label: "20-day", color: SERIES_COLORS.ma20, term: "movingAverage" },
+  { key: "showMA50", label: "50-day", color: SERIES_COLORS.ma50, term: "movingAverage" },
+  { key: "showMA100", label: "100-day", color: SERIES_COLORS.ma100, term: "movingAverage" },
   { key: "showEMA", label: "EMA", color: SERIES_COLORS.ema, term: "movingAverage" },
   { key: "showBollinger", label: "Bollinger", color: SERIES_COLORS.bollinger, term: "bollinger" },
   { key: "showVolume", label: "Volume", color: SERIES_COLORS.volume, term: "volume" },

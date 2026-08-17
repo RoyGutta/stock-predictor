@@ -29,6 +29,7 @@ import { expect as vitestExpect } from "vitest";
 import { EvidenceLedger } from "../features/analysis/EvidenceLedger";
 import { RiskPanel } from "../features/analysis/RiskPanel";
 import { BacktestPanel } from "../features/backtest/BacktestPanel";
+import { MomentumPanel } from "../features/momentum/MomentumPanel";
 import { ProfilePanel } from "../features/profile/ProfilePanel";
 import { CorrelationPanel } from "../features/simulation/CorrelationPanel";
 import { SimulationPanel } from "../features/simulation/SimulationPanel";
@@ -263,6 +264,31 @@ describe("accessibility", () => {
     );
   });
 
+  it("momentum panel has no violations", async () => {
+    await expectNoViolations(
+      <MomentumPanel
+        ticker="AAPL"
+        momentum={{
+          state: "bullish",
+          score: 4,
+          total: 4,
+          headline: "All four conditions hold.",
+          conditions: [
+            { label: "Price above the 20-day average", met: true, detail: "305.93 vs 300.10." },
+            { label: "20-day above the 50-day", met: true, detail: "300.10 vs 290.40." },
+            { label: "50-day above the 100-day", met: false, detail: "290.40 vs 295.20." },
+            { label: "20-day average still rising", met: true, detail: "+1.20% over 5 bars." },
+          ],
+          caveat: "This describes how the averages are stacked right now.",
+          price: 305.93,
+          fast: 300.1,
+          medium: 290.4,
+          slow: 275.2,
+        }}
+      />,
+    );
+  });
+
   it("company profile has no violations", async () => {
     await expectNoViolations(
       <ProfilePanel
@@ -317,6 +343,9 @@ describe("accessibility", () => {
         loading={false}
         updatedAt={new Date("2026-08-17T02:10:00Z")}
         tickers={["AAPL"]}
+        momentum={new Map()}
+        sortByMomentum={false}
+        onToggleSort={noop}
         onSelect={noop}
         onRemove={noop}
         onClear={noop}
@@ -334,6 +363,9 @@ describe("accessibility", () => {
         loading={false}
         updatedAt={null}
         tickers={[]}
+        momentum={new Map()}
+        sortByMomentum={false}
+        onToggleSort={noop}
         onSelect={noop}
         onRemove={noop}
         onClear={noop}
@@ -349,6 +381,9 @@ describe("accessibility", () => {
         loading={false}
         updatedAt={null}
         tickers={["ZZZZ"]}
+        momentum={new Map()}
+        sortByMomentum={false}
+        onToggleSort={noop}
         onSelect={noop}
         onRemove={noop}
         onClear={noop}

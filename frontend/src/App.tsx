@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { Button, Callout, Card } from "./components/ui";
 import { EvidenceLedger } from "./features/analysis/EvidenceLedger";
@@ -21,6 +21,7 @@ import {
   RangeSelector,
   RecentSearches,
 } from "./features/quote/QuotePanel";
+import { MomentumPanel } from "./features/momentum/MomentumPanel";
 import { ProfilePanel } from "./features/profile/ProfilePanel";
 import { SearchBox } from "./features/search/SearchBox";
 import { SimulationPanel } from "./features/simulation/SimulationPanel";
@@ -33,6 +34,7 @@ import {
   useBacktest,
   useMovers,
   useNews,
+  useMomentumRanking,
   useProfile,
   useSectors,
   useSimulation,
@@ -61,6 +63,15 @@ function App() {
 
   const watchlist = useWatchlist();
   const watchlistQuotes = useWatchlistQuotes(watchlist.tickers);
+  // Momentum needs enough bars to fill a 100-period average, so it is read over
+  // 1Y regardless of the chart range the user is looking at.
+  const watchlistMomentum = useMomentumRanking(watchlist.tickers, "1Y");
+  const [sortByMomentum, setSortByMomentum] = useState(false);
+
+  const momentumByTicker = useMemo(
+    () => new Map((watchlistMomentum.data?.tickers ?? []).map((row) => [row.ticker, row])),
+    [watchlistMomentum.data],
+  );
 
   const capabilities = useCapabilities();
   const marketStatus = useMarketStatus();
@@ -240,6 +251,10 @@ function App() {
                 />
               )}
 
+              {analysis?.momentum && quote && (
+                <MomentumPanel momentum={analysis.momentum} ticker={quote.ticker} />
+              )}
+
               {analysis && !analysisError && (
                 <EvidenceLedger interpretation={analysis.interpretation} />
               )}
@@ -325,6 +340,9 @@ function App() {
                 loading={watchlistQuotes.loading}
                 updatedAt={watchlistQuotes.updatedAt}
                 tickers={watchlist.tickers}
+                momentum={momentumByTicker}
+                sortByMomentum={sortByMomentum}
+                onToggleSort={() => setSortByMomentum((value) => !value)}
                 onSelect={selectTicker}
                 onRemove={watchlist.remove}
                 onClear={watchlist.clear}

@@ -88,6 +88,52 @@ export interface IndicatorSeries {
   macd_signal: (number | null)[];
   macd_histogram: (number | null)[];
   period: number;
+  /** Fixed 20/50/100 windows — the three the momentum read is built on. */
+  sma_20: (number | null)[];
+  sma_50: (number | null)[];
+  sma_100: (number | null)[];
+}
+
+// --- momentum --------------------------------------------------------------
+
+export type MomentumStateName = "bullish" | "bearish" | "mixed" | "insufficient";
+
+export interface MomentumCondition {
+  label: string;
+  met: boolean;
+  detail: string;
+}
+
+export interface Momentum {
+  state: MomentumStateName;
+  score: number;
+  total: number;
+  headline: string;
+  conditions: MomentumCondition[];
+  /** What this reading cannot tell you. The backend guarantees it is present. */
+  caveat: string;
+  price: number | null;
+  fast: number | null;
+  medium: number | null;
+  slow: number | null;
+}
+
+export interface MomentumRanking {
+  ticker: string;
+  company_name: string | null;
+  state: MomentumStateName;
+  score: number;
+  total: number;
+  price: number | null;
+  change_percent: number | null;
+  headline: string;
+}
+
+export interface MomentumRankingResponse {
+  tickers: MomentumRanking[];
+  range: Range;
+  unavailable: Record<string, string>;
+  note: string;
 }
 
 export interface BenchmarkComparison {
@@ -160,6 +206,8 @@ export interface Analysis {
   series: IndicatorSeries;
   /** Null when the range holds too few bars for the statistics to be meaningful. */
   risk: RiskMetrics | null;
+  /** Reports `insufficient` rather than guessing when history is too short. */
+  momentum: Momentum;
 }
 
 // --- market-wide -----------------------------------------------------------

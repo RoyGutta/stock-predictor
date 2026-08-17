@@ -258,6 +258,80 @@ class CapabilityStatus(BaseModel):
     )
 
 
+# --- momentum ---------------------------------------------------------------
+
+
+class MomentumCondition(BaseModel):
+    label: str
+    met: bool
+    detail: str = Field(description="The raw comparison, so the reader sees more than a tick.")
+
+
+class MomentumOut(BaseModel):
+    """Moving-average alignment. A description of now, not a recommendation.
+
+    `state` reports how the 20/50/100 averages are stacked. It deliberately does
+    not collapse to a buy/sell call: the same alignment appears partway up a
+    rally and immediately before a top, and nothing here can tell them apart.
+    """
+
+    state: str = Field(description="bullish | bearish | mixed | insufficient")
+    score: int = Field(description="How many of the conditions hold.")
+    total: int
+    headline: str
+    conditions: list[MomentumCondition]
+    caveat: str = Field(description="What this reading cannot tell you. Never empty.")
+    price: float | None = None
+    fast: float | None = Field(default=None, description="20-period simple moving average.")
+    medium: float | None = Field(default=None, description="50-period simple moving average.")
+    slow: float | None = Field(default=None, description="100-period simple moving average.")
+
+    @classmethod
+    def from_domain(cls, momentum: object) -> MomentumOut:
+        return cls(
+            state=momentum.state.value,  # type: ignore[attr-defined]
+            score=momentum.score,  # type: ignore[attr-defined]
+            total=momentum.total,  # type: ignore[attr-defined]
+            headline=momentum.headline,  # type: ignore[attr-defined]
+            conditions=[
+                MomentumCondition(label=c.label, met=c.met, detail=c.detail)
+                for c in momentum.conditions  # type: ignore[attr-defined]
+            ],
+            caveat=momentum.caveat,  # type: ignore[attr-defined]
+            price=momentum.price,  # type: ignore[attr-defined]
+            fast=momentum.fast,  # type: ignore[attr-defined]
+            medium=momentum.medium,  # type: ignore[attr-defined]
+            slow=momentum.slow,  # type: ignore[attr-defined]
+        )
+
+
+class MomentumRanking(BaseModel):
+    """One ticker's momentum, for ranking a watchlist."""
+
+    ticker: str
+    company_name: str | None = None
+    state: str
+    score: int
+    total: int
+    price: float | None = None
+    change_percent: float | None = Field(
+        default=None, description="Change across the window the momentum was read over."
+    )
+    headline: str
+
+
+class MomentumRankingResponse(BaseModel):
+    tickers: list[MomentumRanking] = Field(
+        description="Ordered strongest to weakest by score, then by recent change."
+    )
+    range: Range
+    unavailable: dict[str, str] = Field(
+        default_factory=dict,
+        description="Tickers that could not be read, with why. Never silently dropped.",
+    )
+    note: str
+
+
 class IndicatorSeries(BaseModel):
     """Indicator values aligned index-for-index with the quote's `history`.
 
@@ -275,6 +349,12 @@ class IndicatorSeries(BaseModel):
     macd_signal: list[float | None]
     macd_histogram: list[float | None]
     period: int = Field(description="Window used for SMA, EMA, and Bollinger Bands.")
+    sma_20: list[float | None] = Field(
+        default_factory=list,
+        description="Fixed 20-period average. The three fixed windows back the momentum read.",
+    )
+    sma_50: list[float | None] = Field(default_factory=list)
+    sma_100: list[float | None] = Field(default_factory=list)
 
 
 class AnalysisResponse(BaseModel):
@@ -291,6 +371,9 @@ class AnalysisResponse(BaseModel):
     risk: RiskMetrics | None = Field(
         default=None,
         description="Null when the range holds too few bars for the statistics to be meaningful.",
+    )
+    momentum: MomentumOut = Field(
+        description="Moving-average alignment. Reports `insufficient` rather than guessing."
     )
 
 

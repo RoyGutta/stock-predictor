@@ -12,6 +12,9 @@ function series(overrides: Partial<IndicatorSeries> = {}): IndicatorSeries {
   return {
     dates: ["2026-01-02", "2026-01-03"],
     sma: [null, 102],
+    sma_20: [null, 102],
+    sma_50: [null, 101.5],
+    sma_100: [null, 100.5],
     ema: [null, 102.5],
     bollinger_upper: [null, 105],
     bollinger_lower: [null, 99],
@@ -64,19 +67,19 @@ describe("buildHistoryCsv", () => {
 
   it("names indicator columns with the period actually used", () => {
     const header = buildHistoryCsv(candles, series({ period: 50 })).split("\r\n")[0];
-    expect(header).toContain("sma_50");
+    expect(header).toContain("sma_20");
     expect(header).toContain("ema_50");
   });
 
   it("leaves undefined indicator values blank rather than zero", () => {
     const [, first] = buildHistoryCsv(candles, series()).split("\r\n");
     // A 0 here would read as a real indicator value of zero.
-    expect(first).toBe("2026-01-02,100,102,99,101,1000,,,,,");
+    expect(first).toBe("2026-01-02,100,102,99,101,1000,,,,,,,");
   });
 
   it("includes indicator values once they are defined", () => {
     const [, , second] = buildHistoryCsv(candles, series()).split("\r\n");
-    expect(second).toBe("2026-01-03,101,104,100,103,2000,102,102.5,105,99,61.2");
+    expect(second).toBe("2026-01-03,101,104,100,103,2000,102,101.5,100.5,102.5,105,99,61.2");
   });
 
   it("omits indicator columns entirely when no series is given", () => {

@@ -30,7 +30,15 @@ export function buildHistoryCsv(
 ): string {
   const header = ["date", "open", "high", "low", "close", "volume"];
   if (series) {
-    header.push(`sma_${series.period}`, `ema_${series.period}`, "bollinger_upper", "bollinger_lower", "rsi_14");
+    header.push(
+      "sma_20",
+      "sma_50",
+      "sma_100",
+      `ema_${series.period}`,
+      "bollinger_upper",
+      "bollinger_lower",
+      "rsi_14",
+    );
   }
 
   const rows: (string | number | null)[][] = [header];
@@ -45,7 +53,9 @@ export function buildHistoryCsv(
     ];
     if (series) {
       row.push(
-        series.sma[i] ?? null,
+        series.sma_20[i] ?? null,
+        series.sma_50[i] ?? null,
+        series.sma_100[i] ?? null,
         series.ema[i] ?? null,
         series.bollinger_upper[i] ?? null,
         series.bollinger_lower[i] ?? null,

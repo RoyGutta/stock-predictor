@@ -6,6 +6,7 @@ import {
   fetchCapabilities,
   fetchCorrelation,
   fetchMarketStatus,
+  fetchMomentumRanking,
   fetchMovers,
   fetchNews,
   fetchProfile,
@@ -19,6 +20,7 @@ import type {
   CompanyProfile,
   CorrelationResponse,
   MarketStatus,
+  MomentumRankingResponse,
   MoversResponse,
   NewsResponse,
   Range,
@@ -161,6 +163,15 @@ export function useSimulation(
   return useKeyed(ticker && `${ticker}:${range}`, (signal) =>
     fetchSimulation(ticker as string, range, signal),
   );
+}
+
+/** Momentum ranking for a basket. Dormant when the basket is empty. */
+export function useMomentumRanking(
+  tickers: readonly string[],
+  range: Range,
+): AsyncState<MomentumRankingResponse> {
+  const key = tickers.length > 0 ? `${[...tickers].join(",")}:${range}` : null;
+  return useKeyed(key, (signal) => fetchMomentumRanking(tickers, range, signal));
 }
 
 /** Correlation across a basket. Null or fewer than two tickers stays dormant. */

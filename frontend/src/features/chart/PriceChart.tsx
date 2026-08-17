@@ -51,7 +51,9 @@ function ChartTooltip({
     ["Low", formatPrice(point.low, currency)],
     ["Volume", formatVolume(point.volume)],
   ];
-  if (point.sma != null) rows.push([`SMA ${period}`, formatPrice(point.sma, currency)]);
+  if (point.ma20 != null) rows.push(["20-day", formatPrice(point.ma20, currency)]);
+  if (point.ma50 != null) rows.push(["50-day", formatPrice(point.ma50, currency)]);
+  if (point.ma100 != null) rows.push(["100-day", formatPrice(point.ma100, currency)]);
   if (point.ema != null) rows.push([`EMA ${period}`, formatPrice(point.ema, currency)]);
   if (point.rsi != null) rows.push(["RSI", point.rsi.toFixed(1)]);
 
@@ -189,12 +191,40 @@ export const PriceChart = memo(function PriceChart({
             </>
           )}
 
-          {options.showSMA && (
+          {/* Drawn slowest first so the fast average sits on top where the
+              stack is tight — the crossings are the part being read. */}
+          {options.showMA100 && (
             <Line
               yAxisId="price"
               type="monotone"
-              dataKey="sma"
-              stroke={SERIES_COLORS.sma}
+              dataKey="ma100"
+              stroke={SERIES_COLORS.ma100}
+              strokeWidth={1.75}
+              dot={false}
+              connectNulls={false}
+              isAnimationActive={false}
+            />
+          )}
+
+          {options.showMA50 && (
+            <Line
+              yAxisId="price"
+              type="monotone"
+              dataKey="ma50"
+              stroke={SERIES_COLORS.ma50}
+              strokeWidth={1.5}
+              dot={false}
+              connectNulls={false}
+              isAnimationActive={false}
+            />
+          )}
+
+          {options.showMA20 && (
+            <Line
+              yAxisId="price"
+              type="monotone"
+              dataKey="ma20"
+              stroke={SERIES_COLORS.ma20}
               strokeWidth={1.5}
               dot={false}
               connectNulls={false}

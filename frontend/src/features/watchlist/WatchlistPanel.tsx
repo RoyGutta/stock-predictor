@@ -1,6 +1,8 @@
 import { Button, Callout, Card, Skeleton } from "../../components/ui";
 import { formatPercent, formatPrice, formatTimestamp } from "../../lib/format";
 import { WATCHLIST_RANGE_LABEL, type WatchlistRow } from "./useWatchlistQuotes";
+import type { MomentumRanking, MomentumStateName } from "../../types/market";
+import "../momentum/momentum.css";
 import "./watchlist.css";
 
 interface WatchlistPanelProps {
@@ -8,18 +10,58 @@ interface WatchlistPanelProps {
   loading: boolean;
   updatedAt: Date | null;
   tickers: string[];
+  /** Momentum by ticker, when the ranking has loaded. */
+  momentum: Map<string, MomentumRanking>;
+  sortByMomentum: boolean;
+  onToggleSort: () => void;
   onSelect: (ticker: string) => void;
   onRemove: (ticker: string) => void;
   onClear: () => void;
   onRefresh: () => void;
 }
 
+const MOMENTUM_BADGE: Record<MomentumStateName, { short: string; tone: string; title: string }> = {
+  bullish: {
+    short: "▲",
+    tone: "bullish",
+    title: "All four moving-average conditions hold",
+  },
+  mixed: { short: "◆", tone: "mixed", title: "Some conditions hold, some do not" },
+  bearish: { short: "▼", tone: "bearish", title: "No conditions hold" },
+  insufficient: {
+    short: "—",
+    tone: "unknown",
+    title: "Not enough history to read momentum",
+  },
+};
+
+function MomentumBadge({ ranking }: { ranking: MomentumRanking }) {
+  const badge = MOMENTUM_BADGE[ranking.state];
+  const readable = ranking.state !== "insufficient";
+  return (
+    <span
+      className={`mo-badge mo-badge--${badge.tone}`}
+      title={`${badge.title}. ${ranking.headline}`}
+    >
+      <span aria-hidden="true">{badge.short}</span>
+      {readable ? `${ranking.score}/${ranking.total}` : "n/a"}
+      <span className="visually-hidden">
+        {readable
+          ? ` momentum, ${ranking.score} of ${ranking.total} conditions met`
+          : " momentum unavailable, not enough history"}
+      </span>
+    </span>
+  );
+}
+
 function Row({
   row,
+  ranking,
   onSelect,
   onRemove,
 }: {
   row: WatchlistRow;
+  ranking: MomentumRanking | undefined;
   onSelect: (ticker: string) => void;
   onRemove: (ticker: string) => void;
 }) {
@@ -37,7 +79,10 @@ function Row({
         aria-label={`Open ${ticker}`}
       >
         <span className="wl-row__identity">
-          <span className="wl-row__ticker">{ticker}</span>
+          <span className="wl-row__ticker">
+            {ticker}
+            {ranking && <MomentumBadge ranking={ranking} />}
+          </span>
           <span className="wl-row__name">
             {error ? <span className="wl-row__error">{error}</span> : quote?.company_name}
           </span>
@@ -88,12 +133,28 @@ export function WatchlistPanel({
   loading,
   updatedAt,
   tickers,
+  momentum,
+  sortByMomentum,
+  onToggleSort,
   onSelect,
   onRemove,
   onClear,
   onRefresh,
 }: WatchlistPanelProps) {
   const empty = tickers.length === 0;
+
+  // Strongest stack first when sorting by momentum. A row with no reading sorts
+  // last rather than as weak: "not enough history" is a different answer from
+  // "momentum is against it", and collapsing them would misrank the list.
+  const ordered = sortByMomentum
+    ? [...rows].sort((a, b) => {
+        const left = momentum.get(a.ticker);
+        const right = momentum.get(b.ticker);
+        const rank = (entry: MomentumRanking | undefined) =>
+          !entry || entry.state === "insufficient" ? -1 : entry.score;
+        return rank(right) - rank(left);
+      })
+    : rows;
 
   return (
     <Card
@@ -102,6 +163,15 @@ export function WatchlistPanel({
       action={
         empty ? undefined : (
           <div className="wl-actions">
+            <Button
+              variant="ghost"
+              small
+              onClick={onToggleSort}
+              aria-pressed={sortByMomentum}
+              title="Order the list by momentum strength"
+            >
+              {sortByMomentum ? "✓ Momentum" : "Momentum"}
+            </Button>
             <Button variant="ghost" small onClick={onRefresh} disabled={loading}>
               {loading ? "Refreshing…" : "Refresh"}
             </Button>
@@ -123,8 +193,14 @@ export function WatchlistPanel({
           <ul className="wl-list">
             {loading && rows.length === 0
               ? tickers.map((ticker) => <Skeleton key={ticker} height={44} />)
-              : rows.map((row) => (
-                  <Row key={row.ticker} row={row} onSelect={onSelect} onRemove={onRemove} />
+              : ordered.map((row) => (
+                  <Row
+                    key={row.ticker}
+                    row={row}
+                    ranking={momentum.get(row.ticker)}
+                    onSelect={onSelect}
+                    onRemove={onRemove}
+                  />
                 ))}
           </ul>
 
@@ -139,8 +215,8 @@ export function WatchlistPanel({
 
       {tickers.length > 0 && (
         <Callout tone="note">
-          Saved in this browser only. Clearing site data or opening the app elsewhere will
-          not carry it over.
+          Momentum shows how many of four moving-average conditions hold — a description of
+          the trend right now, not a list to buy from. Saved in this browser only.
         </Callout>
       )}
     </Card>
