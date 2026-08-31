@@ -7,6 +7,7 @@
 
 import type {
   Analysis,
+  PortfolioSimulationResponse,
   BacktestResponse,
   Capabilities,
   CompanyProfile,
@@ -190,4 +191,19 @@ export function fetchBacktest(
     `/api/v1/stocks/${encodeURIComponent(ticker)}/backtest?${query}`,
     signal,
   );
+}
+
+/** Hypothetical historical simulation of a fixed-weight portfolio. */
+export function fetchPortfolioSimulation(
+  holdings: { ticker: string; weight: number }[],
+  options: { range: Range; initial: number; monthly: number },
+  signal?: AbortSignal,
+): Promise<PortfolioSimulationResponse> {
+  const query = new URLSearchParams({
+    holdings: holdings.map((h) => `${h.ticker}:${h.weight.toFixed(4)}`).join(","),
+    range: options.range,
+    initial: String(options.initial),
+    monthly: String(options.monthly),
+  });
+  return request<PortfolioSimulationResponse>(`/api/v1/portfolio/simulation?${query}`, signal);
 }

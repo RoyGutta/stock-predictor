@@ -1,0 +1,275 @@
+.pf-intro {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  max-width: 68ch;
+  text-wrap: pretty;
+  margin-bottom: var(--space-4);
+}
+
+/* --- form ------------------------------------------------------------------ */
+
+.pf-form {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.pf-legs {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.pf-leg {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 7rem auto;
+  gap: var(--space-2);
+  align-items: end;
+}
+
+.pf-leg__field {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.pf-leg__label {
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-subtle);
+}
+
+.pf-leg input,
+.pf-param input,
+.pf-param select {
+  padding: var(--space-2) var(--space-3);
+  background: var(--surface);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-md);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--text-sm);
+  width: 100%;
+}
+
+.pf-legs-actions {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.pf-total {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--text-xs);
+  color: var(--text-subtle);
+}
+
+.pf-total--off {
+  color: var(--down);
+  font-weight: 600;
+}
+
+.pf-params {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--space-3);
+  align-items: end;
+  padding-top: var(--space-3);
+  border-top: var(--border-width) solid var(--border);
+}
+
+.pf-param {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.pf-loading {
+  display: grid;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+/* --- results ----------------------------------------------------------------- */
+
+.pf-results {
+  display: grid;
+  gap: var(--space-4);
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: var(--border-width) solid var(--border);
+}
+
+.pf-results__label {
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.pf-results__summary {
+  font-size: var(--text-sm);
+  max-width: 70ch;
+  text-wrap: pretty;
+}
+
+/* --- chart --------------------------------------------------------------------- */
+
+.pf-chart {
+  margin: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.pf-chart__svg {
+  width: 100%;
+  height: auto;
+  background: var(--surface-raised);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.pf-chart__baseline {
+  stroke: var(--border-strong);
+  stroke-width: 0.3;
+  stroke-dasharray: 1.5 1.5;
+}
+
+.pf-chart__line {
+  fill: none;
+  vector-effect: non-scaling-stroke;
+  stroke-width: 1.6px;
+}
+
+.pf-chart__line--portfolio {
+  stroke: var(--accent);
+}
+
+.pf-chart__line--benchmark {
+  stroke: var(--text-subtle);
+}
+
+.pf-chart__legend {
+  display: flex;
+  gap: var(--space-4);
+  align-items: baseline;
+  flex-wrap: wrap;
+  font-size: var(--text-xs);
+}
+
+.pf-chart__key {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 600;
+}
+
+.pf-chart__key::before {
+  content: "";
+  width: 12px;
+  height: 3px;
+  border-radius: 999px;
+}
+
+.pf-chart__key--portfolio::before {
+  background: var(--accent);
+}
+
+.pf-chart__key--benchmark {
+  color: var(--text-muted);
+}
+
+.pf-chart__key--benchmark::before {
+  background: var(--text-subtle);
+}
+
+.pf-chart__note {
+  color: var(--text-subtle);
+}
+
+/* --- stats table ------------------------------------------------------------------ */
+
+.pf-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+
+.pf-table th,
+.pf-table td {
+  padding: var(--space-2) var(--space-3);
+  text-align: right;
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+.pf-table th[scope="row"],
+.pf-table thead th:first-child {
+  text-align: left;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.pf-table thead th {
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-subtle);
+}
+
+/* --- weight drift ------------------------------------------------------------------- */
+
+.pf-drift {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.pf-drift__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: var(--space-1);
+}
+
+.pf-drift__row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+  padding: var(--space-1) 0;
+}
+
+.pf-drift__ticker {
+  font-family: var(--font-mono);
+  font-weight: 700;
+}
+
+.pf-drift__note {
+  font-size: var(--text-xs);
+  color: var(--text-subtle);
+  max-width: 70ch;
+  text-wrap: pretty;
+}
+
+.pf-method {
+  font-size: var(--text-xs);
+  color: var(--text-subtle);
+  text-wrap: pretty;
+}
+
+.pf-method--warn {
+  margin-top: var(--space-2);
+  color: var(--text-muted);
+}
+
+@media (max-width: 560px) {
+  .pf-leg {
+    grid-template-columns: minmax(0, 1fr) 5.5rem auto;
+  }
+}

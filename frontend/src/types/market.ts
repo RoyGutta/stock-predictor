@@ -354,3 +354,55 @@ export interface BacktestResponse {
   method: string;
   disclaimer: string;
 }
+
+// --- portfolio simulation ----------------------------------------------------
+
+export interface PortfolioLeg {
+  ticker: string;
+  /** Target weight; all legs sum to 1. */
+  weight: number;
+  /** Weight at the end of the window. Buy-and-hold drifts toward winners. */
+  end_weight: number;
+}
+
+/** Statistics on the flow-adjusted (time-weighted) series — deposits stripped out. */
+export interface PortfolioStats {
+  total_return: number;
+  annualized_return: number;
+  annualized_volatility: number | null;
+  sharpe_ratio: number | null;
+  max_drawdown: number;
+}
+
+export interface PortfolioSimulationOut {
+  bars: number;
+  start_date: string;
+  end_date: string;
+  initial_investment: number;
+  monthly_contribution: number;
+  contribution_count: number;
+  total_contributed: number;
+  ending_value: number;
+  cost_paid: number;
+  stats: PortfolioStats;
+  largest_end_weight: number;
+  dates: string[];
+  /** Account value including deposits. Display only — statistics use stats. */
+  values: number[];
+  /** Time-weighted growth of 1.0 — the statistically honest curve. */
+  growth_index: number[];
+}
+
+export interface PortfolioSimulationResponse {
+  legs: PortfolioLeg[];
+  portfolio: PortfolioSimulationOut;
+  benchmark_ticker: string;
+  benchmark: PortfolioSimulationOut;
+  excess_return: number;
+  invalid_tickers: Record<string, string>;
+  cost_bps: number;
+  range: Range;
+  source: string;
+  method: string;
+  disclaimer: string;
+}

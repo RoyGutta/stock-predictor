@@ -485,3 +485,69 @@ class BacktestResponse(BaseModel):
     strategies_beating_benchmark: int
     method: str
     disclaimer: str
+
+
+# --- portfolio simulation -----------------------------------------------------
+
+
+class PortfolioLeg(BaseModel):
+    ticker: str
+    weight: float = Field(gt=0, le=1, description="Target weight. All weights sum to 1.")
+    end_weight: float = Field(
+        description="Weight at the end of the simulation. Buy-and-hold drifts toward winners."
+    )
+
+
+class PortfolioStats(BaseModel):
+    """Statistics on the flow-adjusted (time-weighted) return series.
+
+    Contributions are stripped out before anything is measured, so a deposit can
+    neither read as a gain nor hide a drawdown.
+    """
+
+    total_return: float
+    annualized_return: float
+    annualized_volatility: float | None
+    sharpe_ratio: float | None
+    max_drawdown: float
+
+
+class PortfolioSimulationOut(BaseModel):
+    bars: int
+    start_date: str
+    end_date: str
+    initial_investment: float
+    monthly_contribution: float
+    contribution_count: int
+    total_contributed: float
+    ending_value: float
+    cost_paid: float
+    stats: PortfolioStats
+    largest_end_weight: float = Field(
+        description="Concentration at the end of the window; 1.0 means a single holding."
+    )
+    dates: list[str]
+    values: list[float] = Field(
+        description="Account value including deposits. Display only -- statistics use stats."
+    )
+    growth_index: list[float] = Field(
+        description="Time-weighted growth of 1.0. The statistically honest curve."
+    )
+
+
+class PortfolioSimulationResponse(BaseModel):
+    legs: list[PortfolioLeg]
+    portfolio: PortfolioSimulationOut
+    benchmark_ticker: str
+    benchmark: PortfolioSimulationOut = Field(
+        description="The identical cash flows into the benchmark, measured identically."
+    )
+    excess_return: float = Field(
+        description="Portfolio time-weighted return minus benchmark, percentage points."
+    )
+    invalid_tickers: dict[str, str] = Field(default_factory=dict)
+    cost_bps: float
+    range: Range
+    source: str
+    method: str
+    disclaimer: str

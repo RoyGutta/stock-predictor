@@ -30,6 +30,7 @@ import { EvidenceLedger } from "../features/analysis/EvidenceLedger";
 import { RiskPanel } from "../features/analysis/RiskPanel";
 import { BacktestPanel } from "../features/backtest/BacktestPanel";
 import { MomentumPanel } from "../features/momentum/MomentumPanel";
+import { PortfolioBuilder } from "../features/portfolio/PortfolioBuilder";
 import { ProfilePanel } from "../features/profile/ProfilePanel";
 import { CorrelationPanel } from "../features/simulation/CorrelationPanel";
 import { SimulationPanel } from "../features/simulation/SimulationPanel";
@@ -321,6 +322,12 @@ describe("accessibility", () => {
     await expectNoViolations(
       <CorrelationPanel data={correlation} loading={false} error={null} />,
     );
+  });
+
+  it("portfolio builder form has no violations", async () => {
+    // The form state exercises labels on every input, the status region, and
+    // the button group -- the states where a11y bugs in forms actually live.
+    await expectNoViolations(<PortfolioBuilder />);
   });
 
   it("backtest panel has no violations when populated", async () => {

@@ -22,6 +22,7 @@ import {
   RecentSearches,
 } from "./features/quote/QuotePanel";
 import { MomentumPanel } from "./features/momentum/MomentumPanel";
+import { PortfolioBuilder } from "./features/portfolio/PortfolioBuilder";
 import { ProfilePanel } from "./features/profile/ProfilePanel";
 import { SearchBox } from "./features/search/SearchBox";
 import { SimulationPanel } from "./features/simulation/SimulationPanel";
@@ -332,6 +333,8 @@ function App() {
                   error={sectors.error}
                 />
               )}
+
+              <PortfolioBuilder />
             </div>
 
             <div className="app__side">
