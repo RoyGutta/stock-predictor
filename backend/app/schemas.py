@@ -551,3 +551,45 @@ class PortfolioSimulationResponse(BaseModel):
     source: str
     method: str
     disclaimer: str
+
+
+# --- security comparison --------------------------------------------------------
+
+
+class CompareRow(BaseModel):
+    """One security's historical characteristics over the shared window.
+
+    Statistics that cannot be computed from the available history are null,
+    never zero -- a missing Sharpe rendered as 0.00 reads as a real, bad value.
+    """
+
+    ticker: str
+    company_name: str | None
+    price: float | None
+    change_percent: float | None = Field(
+        description="Percent change across the requested window."
+    )
+    annualized_return: float | None
+    annualized_volatility: float | None
+    sharpe_ratio: float | None
+    sortino_ratio: float | None
+    max_drawdown: float | None
+    momentum_state: str | None = Field(
+        default=None, description="bullish | bearish | mixed | insufficient"
+    )
+    momentum_score: int | None = None
+    momentum_total: int | None = None
+    bars: int
+
+
+class CompareResponse(BaseModel):
+    rows: list[CompareRow]
+    range: Range
+    frequency: str
+    unavailable: dict[str, str] = Field(
+        default_factory=dict,
+        description="Tickers that could not be fetched, with why. Never silently dropped.",
+    )
+    source: str
+    note: str
+    disclaimer: str

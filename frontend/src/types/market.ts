@@ -406,3 +406,32 @@ export interface PortfolioSimulationResponse {
   method: string;
   disclaimer: string;
 }
+
+// --- security comparison -----------------------------------------------------
+
+export interface CompareRow {
+  ticker: string;
+  company_name: string | null;
+  price: number | null;
+  change_percent: number | null;
+  annualized_return: number | null;
+  annualized_volatility: number | null;
+  sharpe_ratio: number | null;
+  sortino_ratio: number | null;
+  max_drawdown: number | null;
+  momentum_state: string | null;
+  momentum_score: number | null;
+  momentum_total: number | null;
+  bars: number;
+}
+
+export interface CompareResponse {
+  rows: CompareRow[];
+  range: Range;
+  frequency: string;
+  /** Tickers that could not be fetched, with why. Never silently dropped. */
+  unavailable: Record<string, string>;
+  source: string;
+  note: string;
+  disclaimer: string;
+}

@@ -1,0 +1,118 @@
+.cmp-intro {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  max-width: 68ch;
+  text-wrap: pretty;
+  margin-bottom: var(--space-4);
+}
+
+.cmp-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: var(--space-3);
+  align-items: end;
+}
+
+.cmp-field {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.cmp-label {
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-subtle);
+}
+
+.cmp-field input,
+.cmp-field select {
+  padding: var(--space-2) var(--space-3);
+  background: var(--surface);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-md);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  width: 100%;
+}
+
+.cmp-hint {
+  margin-top: var(--space-3);
+  font-size: var(--text-xs);
+  color: var(--text-subtle);
+}
+
+.cmp-loading {
+  margin-top: var(--space-4);
+}
+
+.cmp-results {
+  display: grid;
+  gap: var(--space-4);
+  margin-top: var(--space-5);
+}
+
+/* Wide tables scroll inside their own container; the page never scrolls
+   sideways. */
+.cmp-scroll {
+  overflow-x: auto;
+}
+
+.cmp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+  min-width: 34rem;
+}
+
+.cmp-table th,
+.cmp-table td {
+  padding: var(--space-2) var(--space-3);
+  text-align: right;
+  border-bottom: var(--border-width) solid var(--border);
+  white-space: nowrap;
+}
+
+.cmp-table th[scope="row"],
+.cmp-table thead th:first-child {
+  text-align: left;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.cmp-table thead th {
+  vertical-align: bottom;
+}
+
+.cmp-ticker {
+  display: block;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: var(--text-sm);
+}
+
+.cmp-company {
+  display: block;
+  font-size: var(--text-2xs);
+  font-weight: 400;
+  color: var(--text-subtle);
+  max-width: 10rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cmp-note {
+  font-size: var(--text-xs);
+  color: var(--text-subtle);
+  max-width: 70ch;
+  text-wrap: pretty;
+}
+
+@media (max-width: 640px) {
+  .cmp-form {
+    grid-template-columns: 1fr;
+  }
+}

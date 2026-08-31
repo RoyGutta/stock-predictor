@@ -4,6 +4,7 @@ import {
   ApiError,
   fetchBacktest,
   fetchCapabilities,
+  fetchCompare,
   fetchCorrelation,
   fetchMarketStatus,
   fetchMomentumRanking,
@@ -16,6 +17,7 @@ import {
 } from "../lib/api";
 import type {
   BacktestResponse,
+  CompareResponse,
   Capabilities,
   CompanyProfile,
   CorrelationResponse,
@@ -172,6 +174,15 @@ export function useMomentumRanking(
 ): AsyncState<MomentumRankingResponse> {
   const key = tickers.length > 0 ? `${[...tickers].join(",")}:${range}` : null;
   return useKeyed(key, (signal) => fetchMomentumRanking(tickers, range, signal));
+}
+
+/** Side-by-side comparison of a basket. Dormant below two tickers. */
+export function useCompare(
+  tickers: readonly string[],
+  range: Range,
+): AsyncState<CompareResponse> {
+  const key = tickers.length >= 2 ? `cmp:${[...tickers].join(",")}:${range}` : null;
+  return useKeyed(key, (signal) => fetchCompare(tickers, range, signal));
 }
 
 /** Correlation across a basket. Null or fewer than two tickers stays dormant. */

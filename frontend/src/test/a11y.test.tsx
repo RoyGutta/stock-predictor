@@ -30,6 +30,7 @@ import { EvidenceLedger } from "../features/analysis/EvidenceLedger";
 import { RiskPanel } from "../features/analysis/RiskPanel";
 import { BacktestPanel } from "../features/backtest/BacktestPanel";
 import { MomentumPanel } from "../features/momentum/MomentumPanel";
+import { ComparePanel } from "../features/compare/ComparePanel";
 import { PortfolioBuilder } from "../features/portfolio/PortfolioBuilder";
 import { ProfilePanel } from "../features/profile/ProfilePanel";
 import { CorrelationPanel } from "../features/simulation/CorrelationPanel";
@@ -322,6 +323,10 @@ describe("accessibility", () => {
     await expectNoViolations(
       <CorrelationPanel data={correlation} loading={false} error={null} />,
     );
+  });
+
+  it("compare panel form has no violations", async () => {
+    await expectNoViolations(<ComparePanel />);
   });
 
   it("portfolio builder form has no violations", async () => {

@@ -7,6 +7,7 @@
 
 import type {
   Analysis,
+  CompareResponse,
   PortfolioSimulationResponse,
   BacktestResponse,
   Capabilities,
@@ -206,4 +207,14 @@ export function fetchPortfolioSimulation(
     monthly: String(options.monthly),
   });
   return request<PortfolioSimulationResponse>(`/api/v1/portfolio/simulation?${query}`, signal);
+}
+
+/** Historical characteristics of several securities, measured identically. */
+export function fetchCompare(
+  tickers: readonly string[],
+  range: Range,
+  signal?: AbortSignal,
+): Promise<CompareResponse> {
+  const query = new URLSearchParams({ tickers: tickers.join(","), range });
+  return request<CompareResponse>(`/api/v1/market/compare?${query}`, signal);
 }

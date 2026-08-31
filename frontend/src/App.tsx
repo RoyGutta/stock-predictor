@@ -4,6 +4,7 @@ import { Button, Callout, Card } from "./components/ui";
 import { EvidenceLedger } from "./features/analysis/EvidenceLedger";
 import { RiskPanel } from "./features/analysis/RiskPanel";
 import { BacktestPanel } from "./features/backtest/BacktestPanel";
+import { ComparePanel } from "./features/compare/ComparePanel";
 import { ChartControls } from "./features/chart/ChartControls";
 import { LazyPriceChart } from "./features/chart/LazyPriceChart";
 import { DEFAULT_CHART_OPTIONS, type ChartOptions } from "./features/chart/chartConfig";
@@ -335,6 +336,8 @@ function App() {
               )}
 
               <PortfolioBuilder />
+
+              <ComparePanel />
             </div>
 
             <div className="app__side">
