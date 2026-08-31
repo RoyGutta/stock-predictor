@@ -593,3 +593,57 @@ class CompareResponse(BaseModel):
     source: str
     note: str
     disclaimer: str
+
+
+# --- exploration / preference matching ------------------------------------------
+
+
+class ExploreCriterion(BaseModel):
+    """One preference check, with the measurement that decided it.
+
+    The measured value always ships with the verdict so the user can see what
+    the check actually compared -- a bare tick would hide the evidence.
+    """
+
+    name: str
+    met: bool
+    detail: str
+
+
+class ExploreMatch(BaseModel):
+    ticker: str
+    name: str
+    asset_class: str
+    breadth: str = Field(
+        description="broad | sector | single-asset. A fact about fund construction."
+    )
+    category: str
+    tracks: str
+
+    # Measured over the stated window; null when history was insufficient.
+    annualized_return: float | None
+    annualized_volatility: float | None
+    max_drawdown: float | None
+    momentum_state: str | None
+    correlation_to_benchmark: float | None = Field(
+        description="Return correlation with SPY over the window. Context, not a criterion."
+    )
+    bars: int
+
+    score: int = Field(description="Criteria met. A preference match count, nothing more.")
+    total: int
+    criteria: list[ExploreCriterion]
+
+
+class ExploreResponse(BaseModel):
+    matches: list[ExploreMatch] = Field(
+        description="Every fund in the universe that could be measured, sorted by criteria met."
+    )
+    unavailable: dict[str, str] = Field(default_factory=dict)
+    range: Range
+    frequency: str
+    benchmark_ticker: str
+    universe_note: str
+    available_interests: list[str]
+    method: str
+    disclaimer: str

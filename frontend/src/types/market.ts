@@ -435,3 +435,50 @@ export interface CompareResponse {
   note: string;
   disclaimer: string;
 }
+
+// --- exploration / preference matching ---------------------------------------
+
+export interface ExploreCriterion {
+  name: string;
+  met: boolean;
+  /** The measurement that decided the check. Never empty. */
+  detail: string;
+}
+
+export interface ExploreMatch {
+  ticker: string;
+  name: string;
+  asset_class: string;
+  breadth: string;
+  category: string;
+  tracks: string;
+  annualized_return: number | null;
+  annualized_volatility: number | null;
+  max_drawdown: number | null;
+  momentum_state: string | null;
+  correlation_to_benchmark: number | null;
+  bars: number;
+  /** Criteria met. A preference match count, nothing more. */
+  score: number;
+  total: number;
+  criteria: ExploreCriterion[];
+}
+
+export interface ExplorePreferences {
+  volatility: "lower" | "moderate" | "higher";
+  diversification: "broad" | "any";
+  horizon: "shorter" | "longer";
+  interests: string[];
+}
+
+export interface ExploreResponse {
+  matches: ExploreMatch[];
+  unavailable: Record<string, string>;
+  range: Range;
+  frequency: string;
+  benchmark_ticker: string;
+  universe_note: string;
+  available_interests: string[];
+  method: string;
+  disclaimer: string;
+}

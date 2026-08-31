@@ -10,7 +10,16 @@ from fastapi.responses import JSONResponse
 
 from app.config import get_settings
 from app.middleware.rate_limit import RateLimitMiddleware
-from app.routes import analysis, backtest, compare, market, portfolio, simulation, stocks
+from app.routes import (
+    analysis,
+    backtest,
+    compare,
+    explore,
+    market,
+    portfolio,
+    simulation,
+    stocks,
+)
 
 logging.basicConfig(
     level=logging.INFO,
@@ -78,3 +87,4 @@ app.include_router(backtest.router, prefix="/api/v1")
 app.include_router(simulation.router, prefix="/api/v1")
 app.include_router(portfolio.router, prefix="/api/v1")
 app.include_router(compare.router, prefix="/api/v1")
+app.include_router(explore.router, prefix="/api/v1")

@@ -8,6 +8,8 @@
 import type {
   Analysis,
   CompareResponse,
+  ExplorePreferences,
+  ExploreResponse,
   PortfolioSimulationResponse,
   BacktestResponse,
   Capabilities,
@@ -217,4 +219,20 @@ export function fetchCompare(
 ): Promise<CompareResponse> {
   const query = new URLSearchParams({ tickers: tickers.join(","), range });
   return request<CompareResponse>(`/api/v1/market/compare?${query}`, signal);
+}
+
+/** Match the curated fund universe against stated preferences. */
+export function fetchExploreMatch(
+  preferences: ExplorePreferences,
+  signal?: AbortSignal,
+): Promise<ExploreResponse> {
+  const query = new URLSearchParams({
+    volatility: preferences.volatility,
+    diversification: preferences.diversification,
+    horizon: preferences.horizon,
+  });
+  if (preferences.interests.length > 0) {
+    query.set("interests", preferences.interests.join(","));
+  }
+  return request<ExploreResponse>(`/api/v1/explore/match?${query}`, signal);
 }

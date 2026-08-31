@@ -5,6 +5,7 @@ import { useRoute, type Page } from "./app/routes";
 import { AnalyzePage } from "./pages/AnalyzePage";
 import { ComparePage } from "./pages/ComparePage";
 import { DashboardPage } from "./pages/DashboardPage";
+import { ExplorePage } from "./pages/ExplorePage";
 import { LearnPage } from "./pages/LearnPage";
 import { PortfolioPage } from "./pages/PortfolioPage";
 import { useMarketStatus } from "./hooks/useMarketData";
@@ -19,6 +20,7 @@ import "./App.css";
 const NAV_ITEMS: { page: Page; label: string }[] = [
   { page: "dashboard", label: "Dashboard" },
   { page: "analyze", label: "Analyze" },
+  { page: "explore", label: "Explore" },
   { page: "compare", label: "Compare" },
   { page: "portfolio", label: "Portfolio" },
   { page: "learn", label: "Learn" },
@@ -36,9 +38,7 @@ function CurrentPage() {
     case "learn":
       return <LearnPage />;
     case "explore":
-      // Explore ships with the preference-matching engine; until then the
-      // router already treats it as a known page so links can be added first.
-      return <DashboardPage />;
+      return <ExplorePage />;
     default:
       return <DashboardPage />;
   }
