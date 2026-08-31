@@ -225,7 +225,7 @@
         "misleading_language_hits_outside_negations": 0
       },
       "size": {
-        "api_endpoints": 19,
+        "api_endpoints": 16,
         "commits": 33,
         "pages": 6
       }
