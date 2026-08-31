@@ -1,6 +1,6 @@
 # State
 
-**Updated:** 2026-08-31 · **Commit:** `f5bd110` · **Cycle:** 5
+**Updated:** 2026-08-31 · **Commit:** `a7e5ca5` · **Cycle:** 7
 
 ## Objective
 
@@ -52,8 +52,15 @@ frontend/ React 19 + TS strict + Vite      backend/ FastAPI + Python 3.11+
   (time-weighted) returns so deposits never read as gains or hide drawdowns
 - **Security comparison** (FA6): 2-6 tickers over one window, same method,
   nulls never zeros, correlation matrix alongside, no ranking
+- **Multi-page shell**: dependency-free hash router; Dashboard / Analyze /
+  Explore / Compare / Portfolio / Learn; deep links (#/analyze/AAPL),
+  back/forward, aria-current, focus moved to main on navigation
+- **Explore (FA10)**: transparent preference matching over a disclosed 20-ETF
+  universe; tercile-based checks with the measurement on every criterion;
+  losers returned, never hidden; category performance strip labeled with
+  window and bar frequency
 
-**Baseline metrics:** `METRICS.json` (354 backend tests, 187 frontend, 0 failing).
+**Baseline metrics:** `METRICS.json` (369 backend tests, 206 frontend, 0 failing).
 
 ## Blocked / needs your decision
 
@@ -69,19 +76,22 @@ standing manual step.
 
 ## Next highest-value actions (unblocked, in order)
 
-1. Educational questionnaire (FA10): map volatility comfort and horizon to
-   *historical* characteristics, never advice.
-2. Multi-page routing. `App.tsx` is ~380 lines and holds every panel; the page
-   is now long enough that a tools/overview split would help discovery.
-3. Complete Phase 8: support/resistance, gap detection, candlestick patterns.
-4. Landing/onboarding polish (FA1): the welcome card and glossary exist; a
-   guided first-run tour of the tools does not.
+1. Phase-8 historical pattern detection (crossovers, volatility regimes,
+   drawdown recoveries) as HISTORICAL observations with detection dates,
+   sample sizes, and limitations -- never as predictions. Write the
+   adversarial tests first (tiny samples must say so; no lookahead in
+   detection dates).
+2. Per-ticker recent-searches persistence across navigations (page-local
+   state resets when leaving Analyze).
+3. Landing/onboarding polish: a guided first-run tour of the tools.
+4. Consider replacing the price-history provider before public deployment
+   (T-3).
 
 ## Cold-start checklist for the next session
 
 ```bash
-cd backend && source .venv/bin/activate && ruff check . && pytest   # expect 354 passed
-cd frontend && npm run typecheck && npm run lint && npm test        # expect 187 passed
+cd backend && source .venv/bin/activate && ruff check . && pytest   # expect 369 passed
+cd frontend && npm run typecheck && npm run lint && npm test        # expect 206 passed
 ```
 Stop dev servers before running tests (T-5 — now also guarded by a 20s
 `testTimeout`, so a missed step produces a slow run rather than a false red).

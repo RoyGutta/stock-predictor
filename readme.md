@@ -28,10 +28,12 @@ provider — those are listed as not started rather than stubbed with fake data.
 | Momentum (20/50/100) | ✅ evidence shown; insufficient history is not bearish |
 | Hypothetical portfolio simulator | ✅ time-weighted stats; deposits never read as gains |
 | Security comparison | ✅ 2–6 tickers, same window and method, no ranking |
+| Multi-page app shell | ✅ hash routing, deep links, keyboard/AT navigation |
+| Explore (preference matching) | ✅ disclosed ETF universe, every criterion shows its measurement |
 | Watchlist | ✅ persisted locally, live quotes, momentum sorting |
 | Design system | ✅ tokens, light + dark, responsive, accessible |
 | Beginner glossary | ✅ plain English, each entry states its limits |
-| Tests | ✅ 354 backend, 187 frontend (18 automated a11y checks) |
+| Tests | ✅ 369 backend, 206 frontend (19 automated a11y checks) |
 | CI | ✅ lint, types, tests, build, secret scan |
 | Live market data | ✅ movers, sector heatmap, session status |
 | News + ticker search | ✅ real headlines, debounced autocomplete |
@@ -125,6 +127,7 @@ plunging to zero.
 | `GET /api/v1/stocks/{ticker}/backtest` | Walk-forward backtest of indicator rules |
 | `GET /api/v1/stocks/{ticker}/simulation` | Dispersion of bootstrapped outcomes |
 | `GET /api/v1/portfolio/simulation?holdings=` | Hypothetical portfolio replay vs benchmark |
+| `GET /api/v1/explore/match` | Preference matching over a disclosed 20-ETF universe |
 
 `range` accepts `1D`, `5D`, `1M`, `3M`, `6M`, `1Y`, `5Y`, `MAX`. Each maps to a candle
 interval that suits the period, so `1D` returns intraday 5-minute bars rather than a
@@ -161,12 +164,12 @@ are returned as `null`, never as `0`.
 # Backend
 cd backend
 pip install -r requirements-dev.txt
-pytest              # 354 tests
+pytest              # 369 tests
 ruff check .        # lint
 
 # Frontend
 cd frontend
-npm test            # 187 tests
+npm test            # 206 tests
 npm run typecheck
 npm run lint
 npm run build
