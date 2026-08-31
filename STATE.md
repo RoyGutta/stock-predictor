@@ -1,6 +1,6 @@
 # State
 
-**Updated:** 2026-08-17 · **Commit:** `pending` · **Cycle:** 4
+**Updated:** 2026-08-31 · **Commit:** `f5bd110` · **Cycle:** 5
 
 ## Objective
 
@@ -44,19 +44,23 @@ frontend/ React 19 + TS strict + Vite      backend/ FastAPI + Python 3.11+
 - **Expected shortfall** surfaced alongside VaR
 - **Watchlist**, persisted locally through a validated storage layer
 - CI: lint, typecheck, tests, build, and a secret-scan job
-- **14 automated accessibility checks** over every panel, including empty and
+- **18 automated accessibility checks** over every panel, including empty and
   error states
+- **Company profile panel** and **momentum indicator** with watchlist ranking
+- **Hypothetical portfolio simulator** (FA7): fixed-weight replay with monthly
+  contributions vs identical cash flows into SPY; statistics on flow-adjusted
+  (time-weighted) returns so deposits never read as gains or hide drawdowns
+- **Security comparison** (FA6): 2-6 tickers over one window, same method,
+  nulls never zeros, correlation matrix alongside, no ranking
 
-**Baseline metrics:** `METRICS.json` (278 backend tests, 151 frontend, 0 failing).
+**Baseline metrics:** `METRICS.json` (354 backend tests, 187 frontend, 0 failing).
 
 ## Blocked / needs your decision
 
 1. **T-2** — `backend/venv/` (a stale Windows virtualenv) should be deleted;
    awaiting your OK since it is your file.
 2. **T-4** — stock screener needs a paid FMP plan.
-3. **T-7** — a price forecaster was requested in a later brief, which reverses
-   the T-1 decision. Not built. See `TENSIONS.md`; this needs your explicit call.
-4. **Rotate the FMP key.** Not a repository problem — the repo is clean and
+3. **Rotate the FMP key.** Not a repository problem — the repo is clean and
    always was — but that key was printed to a terminal by httpx before the
    log-level fix. Details in `personal.md`.
 
@@ -65,21 +69,19 @@ standing manual step.
 
 ## Next highest-value actions (unblocked, in order)
 
-1. Company profile panel — `GET /market/profile/{ticker}` exists and nothing
-   consumes it. Smallest remaining gap between built and reachable.
-2. Paper-trading portfolio, on the existing storage layer. Largest single
-   feature still unbuilt that needs no new provider.
-3. Complete Phase 8: support/resistance, gap detection, candlestick patterns —
-   all computable from data already fetched.
-4. Stock comparison view, consuming the correlation endpoint for a basket.
-5. Multi-page routing. `App.tsx` is ~320 lines and holds every panel; it is the
-   next thing to become unwieldy, though it is not painful yet.
+1. Educational questionnaire (FA10): map volatility comfort and horizon to
+   *historical* characteristics, never advice.
+2. Multi-page routing. `App.tsx` is ~380 lines and holds every panel; the page
+   is now long enough that a tools/overview split would help discovery.
+3. Complete Phase 8: support/resistance, gap detection, candlestick patterns.
+4. Landing/onboarding polish (FA1): the welcome card and glossary exist; a
+   guided first-run tour of the tools does not.
 
 ## Cold-start checklist for the next session
 
 ```bash
-cd backend && source .venv/bin/activate && ruff check . && pytest   # expect 278 passed
-cd frontend && npm run typecheck && npm run lint && npm test        # expect 151 passed
+cd backend && source .venv/bin/activate && ruff check . && pytest   # expect 354 passed
+cd frontend && npm run typecheck && npm run lint && npm test        # expect 187 passed
 ```
 Stop dev servers before running tests (T-5 — now also guarded by a 20s
 `testTimeout`, so a missed step produces a slow run rather than a false red).

@@ -23,15 +23,19 @@ provider — those are listed as not started rather than stubbed with fake data.
 | Risk statistics | ✅ Sharpe, Sortino, drawdown, VaR, beta/alpha, Monte Carlo |
 | Interpretation engine | ✅ evidence-based, no buy/sell verdicts |
 | Interactive chart | ✅ zoom, crosshair, indicator overlays, CSV export |
-| Analytics in the UI | ✅ evidence ledger and risk panel |
+| Analytics in the UI | ✅ evidence ledger, risk panel, dispersion, correlation |
+| Walk-forward backtesting | ✅ lookahead-guarded, costs on, benchmark always shown |
+| Momentum (20/50/100) | ✅ evidence shown; insufficient history is not bearish |
+| Hypothetical portfolio simulator | ✅ time-weighted stats; deposits never read as gains |
+| Security comparison | ✅ 2–6 tickers, same window and method, no ranking |
+| Watchlist | ✅ persisted locally, live quotes, momentum sorting |
 | Design system | ✅ tokens, light + dark, responsive, accessible |
-| Beginner glossary | ✅ 16 terms in plain English |
-| Tests | ✅ 247 backend, 76 frontend |
+| Beginner glossary | ✅ plain English, each entry states its limits |
+| Tests | ✅ 354 backend, 187 frontend (18 automated a11y checks) |
 | CI | ✅ lint, types, tests, build, secret scan |
 | Live market data | ✅ movers, sector heatmap, session status |
 | News + ticker search | ✅ real headlines, debounced autocomplete |
 | Stock screener | ⛔ needs a paid data plan — see below |
-| Portfolio / watchlists | ⬜ not started (needs a database) |
 
 A full inventory is in [AUDIT.md](AUDIT.md); current priorities are in [ROADMAP.md](ROADMAP.md).
 
@@ -115,6 +119,12 @@ plunging to zero.
 | `GET /api/v1/market/search?q=` | Ticker search |
 | `GET /api/v1/market/news/{ticker}` | Recent company news |
 | `GET /api/v1/market/profile/{ticker}` | Company fundamentals |
+| `GET /api/v1/market/momentum?tickers=` | Momentum ranking for a basket |
+| `GET /api/v1/market/correlation?tickers=` | Return correlation matrix |
+| `GET /api/v1/market/compare?tickers=` | Side-by-side historical characteristics |
+| `GET /api/v1/stocks/{ticker}/backtest` | Walk-forward backtest of indicator rules |
+| `GET /api/v1/stocks/{ticker}/simulation` | Dispersion of bootstrapped outcomes |
+| `GET /api/v1/portfolio/simulation?holdings=` | Hypothetical portfolio replay vs benchmark |
 
 `range` accepts `1D`, `5D`, `1M`, `3M`, `6M`, `1Y`, `5Y`, `MAX`. Each maps to a candle
 interval that suits the period, so `1D` returns intraday 5-minute bars rather than a
@@ -151,12 +161,12 @@ are returned as `null`, never as `0`.
 # Backend
 cd backend
 pip install -r requirements-dev.txt
-pytest              # 247 tests
+pytest              # 354 tests
 ruff check .        # lint
 
 # Frontend
 cd frontend
-npm test            # 76 tests
+npm test            # 187 tests
 npm run typecheck
 npm run lint
 npm run build

@@ -171,6 +171,34 @@
         "api_endpoints": 12,
         "commits": 24
       }
+    },
+    {
+      "date": "2026-08-31",
+      "commit": "f5bd110",
+      "note": "Cycle 5. Portfolio simulator (FA7) and security comparison (FA6).",
+      "reliability": {
+        "backend_tests_passing": 354,
+        "backend_tests_failing": 0,
+        "frontend_tests_passing": 187,
+        "frontend_tests_failing": 0,
+        "backend_lint_clean": true,
+        "frontend_lint_clean": true,
+        "typecheck_clean": true,
+        "production_build_passing": true,
+        "browser_console_errors": 0,
+        "a11y_checks": 18,
+        "how": "cd backend && ruff check . && pytest ; cd frontend && npm run typecheck && npm run lint && npm test && npm run build"
+      },
+      "portfolio_validity": {
+        "contributions_never_counted_as_returns": true,
+        "deposits_cannot_hide_drawdowns": true,
+        "costs_on_by_default_bps": 10.0,
+        "note": "Validity properties pinned by adversarial tests; portfolio RETURNS remain facts about the market, not targets."
+      },
+      "size": {
+        "api_endpoints": 17,
+        "commits": 20
+      }
     }
   ]
 }

@@ -115,27 +115,10 @@ exists and nothing consumes it. Tracked as the top item in STATE.md.
 
 ---
 
-## T-7 — A price forecaster was requested, reversing T-1 (OPEN, needs your call)
+## T-7 — A price forecaster was requested, reversing T-1 (RESOLVED 2026-08-31)
 
-A later brief asked to "preserve and improve the existing ML stock prediction
-system", and to add bear/base/bull scenario forecasts.
-
-Two problems, so it was not built:
-
-1. **There is no existing ML system to preserve.** `app/ml/predictor.py` was a
-   0-byte file and has been deleted along with the rest of the empty scaffolding.
-2. **T-1 explicitly rejected building one.** Option B — a real forecaster — was
-   considered and turned down on the grounds that retail-grade price prediction
-   is not reliably better than chance, and that shipping one would contradict the
-   product's entire position even behind a research flag. Hard constraint 10 is
-   "No predictions".
-
-What was built instead is the honest reading of the same request: walk-forward
-backtesting already answers "would this rule have worked on unseen data", and
-the dispersion simulation already shows a range of outcomes with its assumptions
-stated. Both are explainable and neither claims direction.
-
-Reversing T-1 is a product decision with real consequences for what this app is,
-and it is yours to make rather than mine to infer from a brief that did not know
-T-1 existed. Say the word and it gets built — with honest evaluation, published
-out-of-sample metrics, and no presentation as advice.
+**Resolved by operator instruction.** The 2026-08-31 brief reaffirms the
+product philosophy explicitly: "THE APPLICATION DOES NOT CLAIM TO PREDICT
+FUTURE STOCK PRICES" and "The project deliberately refuses unsupported
+BUY/SELL predictions." No forecaster will be built; walk-forward backtesting
+(T-1, option C) remains the out-of-sample measurement.
