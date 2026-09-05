@@ -647,3 +647,57 @@ class ExploreResponse(BaseModel):
     available_interests: list[str]
     method: str
     disclaimer: str
+
+
+# --- historical pattern detection ---------------------------------------------
+
+
+class PatternEventOut(BaseModel):
+    pattern: str
+    label: str
+    date: str
+    values: dict[str, float]
+    explanation: str
+    caveat: str = Field(description="The pattern's known failure mode. Never empty.")
+
+
+class PatternOutcomesOut(BaseModel):
+    """Historical outcomes after events of one type. Description, not forecast."""
+
+    window: int = Field(description="Bars after the event.")
+    sample_size: int
+    excluded: int = Field(
+        description="Events too close to the end of the data for this window."
+    )
+    mean: float | None
+    median: float | None
+    positive_share: float | None
+    worst: float | None
+    best: float | None
+    small_sample: bool = Field(
+        description="True when the sample is too small to mean much. Shown, not hidden."
+    )
+
+
+class PatternSummaryOut(BaseModel):
+    pattern: str
+    label: str
+    definition: str
+    caveat: str
+    occurrences: int
+    outcomes: list[PatternOutcomesOut]
+
+
+class PatternsResponse(BaseModel):
+    ticker: str
+    company_name: str
+    range: Range
+    bars: int
+    start_date: str
+    end_date: str
+    events: list[PatternEventOut] = Field(description="Chronological, oldest first.")
+    summaries: list[PatternSummaryOut]
+    insufficient: bool
+    note: str
+    method: str
+    disclaimer: str

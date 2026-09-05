@@ -16,6 +16,7 @@ from app.routes import (
     compare,
     explore,
     market,
+    patterns,
     portfolio,
     simulation,
     stocks,
@@ -88,3 +89,4 @@ app.include_router(simulation.router, prefix="/api/v1")
 app.include_router(portfolio.router, prefix="/api/v1")
 app.include_router(compare.router, prefix="/api/v1")
 app.include_router(explore.router, prefix="/api/v1")
+app.include_router(patterns.router, prefix="/api/v1")
