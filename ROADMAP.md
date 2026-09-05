@@ -52,8 +52,11 @@ sides, production build passing with no console warnings.
   no AI summarization yet: summarizing financial news without a labeled,
   reviewable pipeline risks putting words in a source's mouth.
 - **Phase 8** — mostly done. SMA, EMA, VWAP, RSI, MACD, Stochastic, ATR,
-  Bollinger, ADX (+DI/−DI), OBV, Ichimoku. Missing: Volume Profile,
-  support/resistance, candlestick patterns, gap detection.
+  Bollinger, ADX (+DI/−DI), OBV, Ichimoku. Historical pattern detection
+  shipped 2026-09-04: ten event types with anti-lookahead guarantees tested
+  by future-bar mutation, plus outcome tables with sample sizes always shown.
+  Missing: Volume Profile, support/resistance, candlestick patterns, gap
+  detection.
 - **Phase 9** — foundation done, deterministic. Evidence grouped bull/bear/neutral,
   conflicts surfaced, per-indicator caveats always visible, agreement score
   explicitly not a probability, no buy/sell output. LLM prose layer not started.
@@ -65,8 +68,8 @@ sides, production build passing with no console warnings.
   PNG/PDF export.
 - **Phase 18** — partial. Lazy-loaded chart, memoization, downsampling, no
   unnecessary refetch on display toggles. No virtualization or Lighthouse run.
-- **Phase 19** — partial. 227 unit/integration/component tests. No E2E or
-  automated accessibility tests.
+- **Phase 19** — partial. 612 unit/integration/component tests including 20
+  automated accessibility checks (vitest-axe). No E2E suite.
 - **Phase 20** — partial. README, AUDIT, ROADMAP, personal.md, generated OpenAPI
   docs. No architecture, deployment, contributing, or user guide.
 
@@ -76,13 +79,11 @@ sides, production build passing with no console warnings.
 
 Ordered by leverage.
 
-### 1. Automated accessibility tests
-The UI was checked by hand in a browser. `vitest-axe` over the rendered
-components would keep it honest as the surface grows.
+### 1. Automated accessibility tests — done 2026-08-17
+`vitest-axe` runs over every panel including empty and error states.
 
-### 2. Surface Monte Carlo and correlation
-Both are computed, tested, and unreachable from the UI. Dispersion in particular
-is the clearest way to show a beginner what volatility actually means.
+### 2. Surface Monte Carlo and correlation — done 2026-08-17
+Dispersion simulation (box plot, opt-in) and the correlation panel shipped.
 
 ### 3. Phase 8 completion
 Support/resistance, gap detection, candlestick patterns, Volume Profile — all

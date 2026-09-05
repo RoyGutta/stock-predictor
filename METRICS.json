@@ -229,6 +229,45 @@
         "commits": 33,
         "pages": 6
       }
+    },
+    {
+      "date": "2026-09-04",
+      "commit": "323cd32",
+      "note": "Cycle 8. Historical pattern detection (Phase 8) with anti-lookahead guarantees, plus the pattern UI.",
+      "reliability": {
+        "backend_tests_passing": 395,
+        "backend_tests_failing": 0,
+        "frontend_tests_passing": 217,
+        "frontend_tests_failing": 0,
+        "backend_lint_clean": true,
+        "frontend_lint_clean": true,
+        "typecheck_clean": true,
+        "production_build_passing": true,
+        "browser_console_errors": 0,
+        "browser_console_warnings": 0,
+        "how": "cd backend && ruff check . && pytest ; cd frontend && npm run typecheck && npm run lint && node ./node_modules/vitest/vitest.mjs run --no-file-parallelism && npm run build"
+      },
+      "pattern_validity": {
+        "future_mutation_invariance_tests_passing": 2,
+        "note": "Mutating every bar after a cutoff (x5 melt-up and x0.2 crash) leaves all detections at or before the cutoff byte-identical. Baselines shift one bar so no statistic includes the bar it judges. Outcome windows use future bars only to DESCRIBE history, never to decide detection; boundary events are excluded and counted; zero-sample stats are null; samples under 10 are flagged."
+      },
+      "performance": {
+        "initial_js_bundle_bytes": 279990,
+        "initial_js_gzip_bytes": 86870,
+        "lazy_chart_chunk_bytes": 323150,
+        "lazy_chart_gzip_bytes": 96560,
+        "css_bytes": 49620,
+        "css_gzip_bytes": 8090,
+        "how": "cd frontend && npm run build"
+      },
+      "size": {
+        "backend_python_loc": 6245,
+        "frontend_ts_loc": 9357,
+        "api_endpoints": 17,
+        "commits": 36,
+        "pages": 6,
+        "how": "git rev-list --count HEAD ; find backend/app -name '*.py' | xargs wc -l ; find frontend/src -name '*.ts' -o -name '*.tsx' | xargs wc -l"
+      }
     }
   ]
 }

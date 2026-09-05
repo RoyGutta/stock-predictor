@@ -33,7 +33,8 @@ provider — those are listed as not started rather than stubbed with fake data.
 | Watchlist | ✅ persisted locally, live quotes, momentum sorting |
 | Design system | ✅ tokens, light + dark, responsive, accessible |
 | Beginner glossary | ✅ plain English, each entry states its limits |
-| Tests | ✅ 369 backend, 206 frontend (19 automated a11y checks) |
+| Historical patterns | ✅ anti-lookahead by tested property, sample sizes always shown |
+| Tests | ✅ 395 backend, 217 frontend (20 automated a11y checks) |
 | CI | ✅ lint, types, tests, build, secret scan |
 | Live market data | ✅ movers, sector heatmap, session status |
 | News + ticker search | ✅ real headlines, debounced autocomplete |
@@ -125,6 +126,7 @@ plunging to zero.
 | `GET /api/v1/market/correlation?tickers=` | Return correlation matrix |
 | `GET /api/v1/market/compare?tickers=` | Side-by-side historical characteristics |
 | `GET /api/v1/stocks/{ticker}/backtest` | Walk-forward backtest of indicator rules |
+| `GET /api/v1/stocks/{ticker}/patterns` | Historical pattern events and what followed them |
 | `GET /api/v1/stocks/{ticker}/simulation` | Dispersion of bootstrapped outcomes |
 | `GET /api/v1/portfolio/simulation?holdings=` | Hypothetical portfolio replay vs benchmark |
 | `GET /api/v1/explore/match` | Preference matching over a disclosed 20-ETF universe |
@@ -164,12 +166,12 @@ are returned as `null`, never as `0`.
 # Backend
 cd backend
 pip install -r requirements-dev.txt
-pytest              # 369 tests
+pytest              # 395 tests
 ruff check .        # lint
 
 # Frontend
 cd frontend
-npm test            # 206 tests
+npm test            # 217 tests
 npm run typecheck
 npm run lint
 npm run build

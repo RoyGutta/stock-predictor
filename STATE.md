@@ -1,6 +1,6 @@
 # State
 
-**Updated:** 2026-08-31 · **Commit:** `a7e5ca5` · **Cycle:** 7
+**Updated:** 2026-09-04 · **Commit:** `323cd32` · **Cycle:** 8
 
 ## Objective
 
@@ -59,8 +59,17 @@ frontend/ React 19 + TS strict + Vite      backend/ FastAPI + Python 3.11+
   universe; tercile-based checks with the measurement on every criterion;
   losers returned, never hidden; category performance strip labeled with
   window and bar frequency
+- **Historical pattern detection (Phase 8)**: ten technical events (MA
+  crossovers, RSI extremes, MACD crossings, Bollinger breaks, outsized moves,
+  drawdown recoveries) detected using only bars at or before each event's own
+  date. The guarantee is a tested property: two future-mutation tests assert
+  detections at or before a cutoff are byte-identical after every later bar is
+  multiplied x5 or x0.2. Outcomes over the next 5/20/60 bars describe history
+  only; boundary events excluded and counted; N=0 is null; N<10 flagged.
+  Opt-in panel on Analyze: occurrence counts, sample-size-first outcome
+  tables, filterable most-recent-first timeline, method + disclaimer callout.
 
-**Baseline metrics:** `METRICS.json` (369 backend tests, 206 frontend, 0 failing).
+**Baseline metrics:** `METRICS.json` (395 backend tests, 217 frontend, 0 failing).
 
 ## Blocked / needs your decision
 
@@ -76,11 +85,9 @@ standing manual step.
 
 ## Next highest-value actions (unblocked, in order)
 
-1. Phase-8 historical pattern detection (crossovers, volatility regimes,
-   drawdown recoveries) as HISTORICAL observations with detection dates,
-   sample sizes, and limitations -- never as predictions. Write the
-   adversarial tests first (tiny samples must say so; no lookahead in
-   detection dates).
+1. Learn-section expansion: glossary entries for expense ratios, dividends,
+   bonds/treasuries, index funds, survivorship bias, overfitting, and
+   lookahead bias (Phase 6 topics not yet covered).
 2. Per-ticker recent-searches persistence across navigations (page-local
    state resets when leaving Analyze).
 3. Landing/onboarding polish: a guided first-run tour of the tools.
@@ -90,8 +97,8 @@ standing manual step.
 ## Cold-start checklist for the next session
 
 ```bash
-cd backend && source .venv/bin/activate && ruff check . && pytest   # expect 369 passed
-cd frontend && npm run typecheck && npm run lint && npm test        # expect 206 passed
+cd backend && source .venv/bin/activate && ruff check . && pytest   # expect 395 passed
+cd frontend && npm run typecheck && npm run lint && npm test        # expect 217 passed
 ```
 Stop dev servers before running tests (T-5 — now also guarded by a 20s
 `testTimeout`, so a missed step produces a slow run rather than a false red).
