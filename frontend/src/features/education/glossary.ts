@@ -259,6 +259,100 @@ export const GLOSSARY = {
       "same move on thin trading.",
     limits: "Volume says how much trading happened, never whether the price will move.",
   },
+
+  indexFund: {
+    term: "Index fund",
+    short: "A fund that copies a list of companies instead of trying to pick winners.",
+    full:
+      "An index is a published list — the S&P 500 is the 500 largest US companies. An index " +
+      "fund simply buys that list. Nobody is paid to guess which companies will do best, " +
+      "which is why index funds are cheap, and decades of results show most professional " +
+      "stock pickers fail to beat the index they are compared against after fees.",
+    limits:
+      "An index fund earns the market's return, whatever that turns out to be — including " +
+      "every crash in full. It removes the risk of picking badly, not the risk of markets.",
+  },
+
+  expenseRatio: {
+    term: "Expense ratio",
+    short: "What a fund charges you every year, taken out automatically.",
+    full:
+      "A 0.03% expense ratio costs you $3 a year on a $10,000 investment; a 1% fund costs " +
+      "$100. That difference compounds: over 30 years at 7% growth, the 1% fee eats roughly " +
+      "a quarter of your final balance. It is one of the few things about a fund you know " +
+      "in advance with certainty.",
+    limits:
+      "A low fee cannot make a bad fund good — it only stops a good one being quietly " +
+      "drained. Compare fees between funds doing the same job, not across different jobs.",
+  },
+
+  dividend: {
+    term: "Dividend",
+    short: "Cash a company pays its owners out of its profits.",
+    full:
+      "Some companies pay part of their profit to shareholders in cash, usually quarterly. " +
+      "A $100 stock paying $3 a year has a 3% dividend yield. On the day a dividend is " +
+      "paid, the share price drops by about the same amount — the money moved from the " +
+      "company's account to yours, so nothing was created.",
+    limits:
+      "A high yield is not free income and can be a warning: yield rises when the price " +
+      "falls, and companies in trouble often show tempting yields right before cutting them.",
+  },
+
+  bond: {
+    term: "Bond",
+    short: "A loan you make to a government or company, repaid with interest.",
+    full:
+      "Buying a bond means lending money — to the US government (a Treasury) or a company — " +
+      "for fixed interest payments and your money back at the end. Treasuries are treated " +
+      "as the closest thing to risk-free, which is why bonds usually move less than stocks " +
+      "and are used to steady a portfolio.",
+    limits:
+      "Bond prices fall when interest rates rise, and inflation can quietly eat a return " +
+      "that looks safe. Corporate bonds add the risk that the borrower fails to pay.",
+  },
+
+  survivorshipBias: {
+    term: "Survivorship bias",
+    short: "Judging by the winners because the losers are no longer around to count.",
+    full:
+      "Study today's fund list and the funds that failed have already been deleted from it, " +
+      "so the average looks better than what an investor at the time would have gotten. The " +
+      "same trap: 'the market always recovers' is drawn from the US, one of the few markets " +
+      "that survived the century intact.",
+    limits:
+      "This bias hides in any list of things that still exist. The question that exposes " +
+      "it: who started and is no longer being counted?",
+  },
+
+  overfitting: {
+    term: "Overfitting",
+    short: "A rule tuned until it fits the past perfectly — and only the past.",
+    full:
+      "Try enough rules on the same history and one will look brilliant by luck alone. It " +
+      "memorized the noise in that particular stretch of data rather than learning anything " +
+      "real, so it falls apart on data it has not seen. This is why the backtest here picks " +
+      "settings on one stretch and scores them on a later stretch it never touched — the " +
+      "drop between the two is overfitting made visible.",
+    limits:
+      "Even honest out-of-sample testing only shows a rule worked on one unseen window. It " +
+      "cannot certify the rule will keep working.",
+  },
+
+  lookaheadBias: {
+    term: "Lookahead bias",
+    short: "Accidentally letting a test peek at information it could not have had.",
+    full:
+      "A backtest that buys at today's close using a signal computed from today's close has " +
+      "cheated: in real life the signal is not known until the close happens. Even tiny " +
+      "leaks like this make results look far better than anything achievable. This app " +
+      "guards against it structurally — trades execute one bar after their signal, and " +
+      "pattern detection is tested by rewriting the future and checking that no past " +
+      "detection changes.",
+    limits:
+      "Guards catch the leaks someone thought to test for. Any impressive backtest you " +
+      "see elsewhere deserves the question: what did it know, and when?",
+  },
 } as const satisfies Record<string, GlossaryEntry>;
 
 export type GlossaryKey = keyof typeof GLOSSARY;
@@ -269,7 +363,14 @@ export const LEARNING_PATH: GlossaryKey[] = [
   "risk",
   "diversification",
   "etf",
+  "indexFund",
+  "expenseRatio",
+  "dividend",
+  "bond",
   "compounding",
   "marketCap",
   "volatility",
+  "survivorshipBias",
+  "overfitting",
+  "lookaheadBias",
 ];
