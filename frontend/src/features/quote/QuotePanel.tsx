@@ -7,6 +7,7 @@ import {
   formatVolume,
 } from "../../lib/format";
 import { INTRADAY_RANGES, RANGES, RANGE_LABELS, type Quote, type Range } from "../../types/market";
+import type { RecentSearch } from "./useRecentSearches";
 import "./quote.css";
 
 // --- range selector --------------------------------------------------------
@@ -114,54 +115,48 @@ export function QuoteSkeleton() {
 // --- recent searches -------------------------------------------------------
 
 interface RecentSearchesProps {
-  quotes: Quote[];
+  entries: RecentSearch[];
   onSelect: (ticker: string) => void;
   onClear: () => void;
 }
 
-export function RecentSearches({ quotes, onSelect, onClear }: RecentSearchesProps) {
+/**
+ * Persisted navigation history. Deliberately shows no price or change: these
+ * entries can be days old, and a number from a previous visit rendered without
+ * a timestamp would be stale market data presented as current. Live figures
+ * belong to the watchlist, which refetches them.
+ */
+export function RecentSearches({ entries, onSelect, onClear }: RecentSearchesProps) {
   return (
     <Card
       title="Recent"
       as="aside"
       action={
-        quotes.length > 0 ? (
+        entries.length > 0 ? (
           <Button variant="ghost" small onClick={onClear}>
             Clear
           </Button>
         ) : undefined
       }
     >
-      {quotes.length === 0 ? (
+      {entries.length === 0 ? (
         <p style={{ fontSize: "var(--text-sm)", color: "var(--text-subtle)" }}>
-          Tickers you look up will appear here.
+          Tickers you look up will appear here, and stay here across visits.
         </p>
       ) : (
         <ul className="recent">
-          {quotes.map((quote) => {
-            const positive = quote.change_points >= 0;
-            return (
-              <li key={quote.ticker}>
-                <button
-                  type="button"
-                  className="recent__button"
-                  onClick={() => onSelect(quote.ticker)}
-                >
-                  <span className="recent__top">
-                    <span className="recent__ticker">{quote.ticker}</span>
-                    <span
-                      className="recent__change"
-                      style={{ color: positive ? "var(--up)" : "var(--down)" }}
-                    >
-                      <span aria-hidden="true">{positive ? "▲" : "▼"}</span>{" "}
-                      {formatPercent(quote.change_percent / 100)}
-                    </span>
-                  </span>
-                  <span className="recent__company">{quote.company_name}</span>
-                </button>
-              </li>
-            );
-          })}
+          {entries.map((entry) => (
+            <li key={entry.ticker}>
+              <button
+                type="button"
+                className="recent__button"
+                onClick={() => onSelect(entry.ticker)}
+              >
+                <span className="recent__ticker">{entry.ticker}</span>
+                <span className="recent__company">{entry.company_name}</span>
+              </button>
+            </li>
+          ))}
         </ul>
       )}
     </Card>

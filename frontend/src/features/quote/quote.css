@@ -144,24 +144,10 @@
   background: var(--surface-raised);
 }
 
-.recent__top {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--space-2);
-}
-
 .recent__ticker {
   font-family: var(--font-mono);
   font-weight: 700;
   font-size: var(--text-sm);
-}
-
-.recent__change {
-  font-family: var(--font-mono);
-  font-variant-numeric: tabular-nums;
-  font-size: var(--text-xs);
-  font-weight: 600;
 }
 
 .recent__company {

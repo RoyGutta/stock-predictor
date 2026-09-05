@@ -17,6 +17,7 @@ import {
   RangeSelector,
   RecentSearches,
 } from "../features/quote/QuotePanel";
+import { useRecentSearches } from "../features/quote/useRecentSearches";
 import { SearchBox } from "../features/search/SearchBox";
 import { SimulationPanel } from "../features/simulation/SimulationPanel";
 import { WatchlistPanel } from "../features/watchlist/WatchlistPanel";
@@ -34,10 +35,9 @@ import {
 } from "../hooks/useMarketData";
 import { useTickerData } from "../hooks/useTickerData";
 import { buildHistoryCsv, downloadCsv } from "../lib/export";
-import type { Quote, Range } from "../types/market";
+import type { Range } from "../types/market";
 
 const EXAMPLE_TICKERS = ["AAPL", "MSFT", "VOO", "NVDA"];
-const MAX_RECENT = 8;
 
 /**
  * Security detail. The route parameter (#/analyze/AAPL) is the source of
@@ -52,7 +52,7 @@ export function AnalyzePage() {
   const [tickerInput, setTickerInput] = useState(param ?? "");
   const [range, setRange] = useState<Range>("1Y");
   const [options, setOptions] = useState<ChartOptions>(DEFAULT_CHART_OPTIONS);
-  const [recent, setRecent] = useState<Quote[]>([]);
+  const recent = useRecentSearches();
   // Backtesting, simulation, and pattern scans are all opt-in: they are the
   // most expensive requests in the app and most visits do not need them.
   const [backtestFor, setBacktestFor] = useState<string | null>(null);
@@ -91,17 +91,17 @@ export function AnalyzePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [param, load]);
 
+  const recordRecent = recent.record;
   useEffect(() => {
     if (!quote) return;
-    setRecent((previous) =>
-      [quote, ...previous.filter((item) => item.ticker !== quote.ticker)].slice(0, MAX_RECENT),
-    );
+    // Only successful lookups enter the history — a typo that 404s never does.
+    recordRecent(quote.ticker, quote.company_name);
     // These results belong to one ticker; looking up another must not leave a
     // previous result on screen under the new name.
     setBacktestFor((current) => (current === quote.ticker ? current : null));
     setSimulationFor((current) => (current === quote.ticker ? current : null));
     setPatternsFor((current) => (current === quote.ticker ? current : null));
-  }, [quote]);
+  }, [quote, recordRecent]);
 
   const selectTicker = useCallback(
     (symbol: string) => {
@@ -316,9 +316,9 @@ export function AnalyzePage() {
             onRefresh={watchlistQuotes.refresh}
           />
           <RecentSearches
-            quotes={recent}
+            entries={recent.entries}
             onSelect={selectTicker}
-            onClear={() => setRecent([])}
+            onClear={recent.clear}
           />
         </div>
       </div>
