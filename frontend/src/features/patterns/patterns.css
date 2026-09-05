@@ -1,0 +1,209 @@
+.pt-intro {
+  display: grid;
+  gap: var(--space-4);
+  justify-items: start;
+}
+
+.pt-intro__body {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  max-width: 62ch;
+  text-wrap: pretty;
+}
+
+.pt-loading {
+  display: grid;
+  gap: var(--space-3);
+}
+
+/* --- per-pattern summaries -------------------------------------------------------- */
+
+.pt-summaries {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.pt-summary {
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.pt-summary__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  padding: var(--space-3) var(--space-4);
+  cursor: pointer;
+  font-size: var(--text-sm);
+}
+
+.pt-summary__head::marker {
+  color: var(--text-subtle);
+}
+
+.pt-summary__label {
+  font-weight: 600;
+}
+
+.pt-summary__count {
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+}
+
+/* Wide outcome tables scroll inside the summary; the page never scrolls sideways. */
+.pt-summary__body {
+  display: grid;
+  gap: var(--space-3);
+  padding: 0 var(--space-4) var(--space-4);
+  overflow-x: auto;
+}
+
+.pt-definition {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  max-width: 68ch;
+  text-wrap: pretty;
+}
+
+.pt-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+  min-width: 30rem;
+}
+
+.pt-table th,
+.pt-table td {
+  padding: var(--space-2) var(--space-3);
+  text-align: right;
+  border-bottom: var(--border-width) solid var(--border);
+  white-space: nowrap;
+}
+
+.pt-table th[scope="row"],
+.pt-table thead th:first-child {
+  text-align: left;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+/* The sample size is the honesty column: small samples and exclusions are words,
+   not footnotes. */
+.pt-small-sample {
+  font-family: var(--font-sans);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.pt-excluded {
+  font-family: var(--font-sans);
+  font-size: var(--text-2xs);
+  color: var(--text-subtle);
+}
+
+.pt-outcome-empty {
+  font-size: var(--text-sm);
+  color: var(--text-subtle);
+}
+
+.pt-caveat {
+  font-size: var(--text-xs);
+  color: var(--text-subtle);
+  max-width: 68ch;
+  text-wrap: pretty;
+}
+
+/* --- event timeline ---------------------------------------------------------------- */
+
+.pt-timeline {
+  display: grid;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+  justify-items: start;
+}
+
+.pt-timeline__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.pt-filter select {
+  font: inherit;
+  font-size: var(--text-xs);
+  color: var(--text);
+  background: var(--surface);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-1) var(--space-2);
+}
+
+.pt-events {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.pt-event {
+  display: grid;
+  grid-template-columns: 6.5rem 1fr;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  border-bottom: var(--border-width) solid var(--border);
+  font-size: var(--text-sm);
+}
+
+.pt-event:last-child {
+  border-bottom: none;
+}
+
+.pt-event__date {
+  color: var(--text-subtle);
+  font-size: var(--text-xs);
+  padding-top: 2px;
+}
+
+.pt-event__body {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.pt-event__label {
+  font-weight: 600;
+}
+
+.pt-event__explanation {
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+  max-width: 72ch;
+  text-wrap: pretty;
+}
+
+.pt-method {
+  font-size: var(--text-xs);
+  max-width: 76ch;
+  text-wrap: pretty;
+}
+
+.pt-method--warn {
+  margin-top: var(--space-2);
+  color: var(--text-muted);
+}
+
+@media (max-width: 480px) {
+  .pt-event {
+    grid-template-columns: 1fr;
+    gap: var(--space-1);
+  }
+}

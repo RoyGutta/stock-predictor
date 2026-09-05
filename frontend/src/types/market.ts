@@ -482,3 +482,52 @@ export interface ExploreResponse {
   method: string;
   disclaimer: string;
 }
+
+// --- historical pattern detection ---------------------------------------------
+
+export interface PatternEvent {
+  pattern: string;
+  label: string;
+  date: string;
+  values: Record<string, number>;
+  explanation: string;
+  /** The pattern's known failure mode. Never empty. */
+  caveat: string;
+}
+
+/** Historical outcomes after events of one type. Description, not forecast. */
+export interface PatternOutcomes {
+  window: number;
+  sample_size: number;
+  excluded: number;
+  mean: number | null;
+  median: number | null;
+  positive_share: number | null;
+  worst: number | null;
+  best: number | null;
+  small_sample: boolean;
+}
+
+export interface PatternSummary {
+  pattern: string;
+  label: string;
+  definition: string;
+  caveat: string;
+  occurrences: number;
+  outcomes: PatternOutcomes[];
+}
+
+export interface PatternsResponse {
+  ticker: string;
+  company_name: string;
+  range: Range;
+  bars: number;
+  start_date: string;
+  end_date: string;
+  events: PatternEvent[];
+  summaries: PatternSummary[];
+  insufficient: boolean;
+  note: string;
+  method: string;
+  disclaimer: string;
+}

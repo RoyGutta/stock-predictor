@@ -9,6 +9,7 @@ import { LazyPriceChart } from "../features/chart/LazyPriceChart";
 import { DEFAULT_CHART_OPTIONS, type ChartOptions } from "../features/chart/chartConfig";
 import { CapabilityNotice, NewsPanel } from "../features/market/MarketPanels";
 import { MomentumPanel } from "../features/momentum/MomentumPanel";
+import { PatternsPanel } from "../features/patterns/PatternsPanel";
 import { ProfilePanel } from "../features/profile/ProfilePanel";
 import {
   QuoteSkeleton,
@@ -27,6 +28,7 @@ import {
   useCapabilities,
   useMomentumRanking,
   useNews,
+  usePatterns,
   useProfile,
   useSimulation,
 } from "../hooks/useMarketData";
@@ -51,10 +53,11 @@ export function AnalyzePage() {
   const [range, setRange] = useState<Range>("1Y");
   const [options, setOptions] = useState<ChartOptions>(DEFAULT_CHART_OPTIONS);
   const [recent, setRecent] = useState<Quote[]>([]);
-  // Backtesting and simulation are both opt-in: they are the most expensive
-  // requests in the app and most visits do not need either.
+  // Backtesting, simulation, and pattern scans are all opt-in: they are the
+  // most expensive requests in the app and most visits do not need them.
   const [backtestFor, setBacktestFor] = useState<string | null>(null);
   const [simulationFor, setSimulationFor] = useState<string | null>(null);
+  const [patternsFor, setPatternsFor] = useState<string | null>(null);
 
   const watchlist = useWatchlist();
   const watchlistQuotes = useWatchlistQuotes(watchlist.tickers);
@@ -75,6 +78,7 @@ export function AnalyzePage() {
   const profile = useProfile(quote?.ticker ?? null, canShowProfile);
   const backtest = useBacktest(backtestFor, range);
   const simulation = useSimulation(simulationFor, range);
+  const patterns = usePatterns(patternsFor, range);
 
   // The URL drives the data. Range and period intentionally stay out of the
   // dependency list: changing them re-loads through their own handlers, and
@@ -96,6 +100,7 @@ export function AnalyzePage() {
     // previous result on screen under the new name.
     setBacktestFor((current) => (current === quote.ticker ? current : null));
     setSimulationFor((current) => (current === quote.ticker ? current : null));
+    setPatternsFor((current) => (current === quote.ticker ? current : null));
   }, [quote]);
 
   const selectTicker = useCallback(
@@ -264,6 +269,17 @@ export function AnalyzePage() {
               ticker={quote.ticker}
               started={backtestFor === quote.ticker}
               onRun={() => setBacktestFor(quote.ticker)}
+            />
+          )}
+
+          {quote && !error && (
+            <PatternsPanel
+              data={patterns.data}
+              loading={patterns.loading}
+              error={patterns.error}
+              ticker={quote.ticker}
+              started={patternsFor === quote.ticker}
+              onRun={() => setPatternsFor(quote.ticker)}
             />
           )}
 

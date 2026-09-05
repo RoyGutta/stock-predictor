@@ -6,6 +6,7 @@ import {
   fetchCapabilities,
   fetchCompare,
   fetchCorrelation,
+  fetchPatterns,
   fetchMarketStatus,
   fetchMomentumRanking,
   fetchMovers,
@@ -25,6 +26,7 @@ import type {
   MomentumRankingResponse,
   MoversResponse,
   NewsResponse,
+  PatternsResponse,
   Range,
   SectorPerformance,
   SimulationResponse,
@@ -183,6 +185,15 @@ export function useCompare(
 ): AsyncState<CompareResponse> {
   const key = tickers.length >= 2 ? `cmp:${[...tickers].join(",")}:${range}` : null;
   return useKeyed(key, (signal) => fetchCompare(tickers, range, signal));
+}
+
+/** Historical pattern report for one ticker. Dormant until requested. */
+export function usePatterns(
+  ticker: string | null,
+  range: Range,
+): AsyncState<PatternsResponse> {
+  const key = ticker ? `pat:${ticker}:${range}` : null;
+  return useKeyed(key, (signal) => fetchPatterns(ticker as string, range, signal));
 }
 
 /** Correlation across a basket. Null or fewer than two tickers stays dormant. */

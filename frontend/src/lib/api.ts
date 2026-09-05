@@ -10,6 +10,7 @@ import type {
   CompareResponse,
   ExplorePreferences,
   ExploreResponse,
+  PatternsResponse,
   PortfolioSimulationResponse,
   BacktestResponse,
   Capabilities,
@@ -235,4 +236,17 @@ export function fetchExploreMatch(
     query.set("interests", preferences.interests.join(","));
   }
   return request<ExploreResponse>(`/api/v1/explore/match?${query}`, signal);
+}
+
+/** Historical pattern events and what followed them. */
+export function fetchPatterns(
+  ticker: string,
+  range: Range,
+  signal?: AbortSignal,
+): Promise<PatternsResponse> {
+  const query = new URLSearchParams({ range });
+  return request<PatternsResponse>(
+    `/api/v1/stocks/${encodeURIComponent(ticker)}/patterns?${query}`,
+    signal,
+  );
 }
