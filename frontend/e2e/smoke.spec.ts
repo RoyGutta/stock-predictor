@@ -212,7 +212,7 @@ test("portfolio replay labels itself hypothetical and strips deposits from retur
 test("learn opens with the philosophy and lists the full learning path", async ({ page }) => {
   await page.goto("/#/learn");
   await expect(page.getByText("Why this app refuses to predict.")).toBeVisible();
-  await expect(page.locator(".learn__item")).toHaveCount(14);
+  await expect(page.locator(".learn__item")).toHaveCount(17);
   await noHorizontalOverflow(page);
 });
 

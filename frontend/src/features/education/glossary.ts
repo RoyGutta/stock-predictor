@@ -353,6 +353,50 @@ export const GLOSSARY = {
       "Guards catch the leaks someone thought to test for. Any impressive backtest you " +
       "see elsewhere deserves the question: what did it know, and when?",
   },
+
+  multipleTesting: {
+    term: "Multiple testing",
+    short: "Try enough rules and one will look great by luck alone.",
+    full:
+      "Flip twenty coins and one will probably land heads five times in a row. Test twenty " +
+      "trading rules on the same history and one will probably look brilliant for the same " +
+      "reason. This is why the backtest here returns every rule it tried -- and how many " +
+      "settings each one tried -- rather than showing you only the winner. The count of " +
+      "attempts is part of the result, because a winner picked from twenty means far less " +
+      "than a winner picked from one.",
+    limits:
+      "Reporting every attempt makes the luck visible; it does not remove it. The honest " +
+      "response to a rule that won out of many is more suspicion, not more confidence.",
+  },
+
+  sampleSize: {
+    term: "Sample size",
+    short: "How many observations a number is built on -- small means fragile.",
+    full:
+      "An average of 3 events can be dragged anywhere by one unusual case; an average of " +
+      "300 cannot. That is why every outcome table in the pattern scanner puts the sample " +
+      "size before the statistics and stamps anything under 10 as a small sample. Two " +
+      "golden crosses followed by gains is an anecdote, not a pattern, however tidy the " +
+      "percentage looks.",
+    limits:
+      "A large sample fixes noise, not bias. Three hundred observations from one long bull " +
+      "market still describe only a bull market.",
+  },
+
+  benchmark: {
+    term: "Benchmark",
+    short: "The boring alternative a result has to beat before it means anything.",
+    full:
+      "Making 20% sounds good until you learn that simply holding an index fund made 25% " +
+      "over the same months. The benchmark is that comparison: the same money, the same " +
+      "window, the least effort. The backtest always shows buy-and-hold beside every rule, " +
+      "and the portfolio replay pours the identical deposits into an S&P 500 fund, so a " +
+      "result is never judged against nothing.",
+    limits:
+      "A benchmark has to be fair to be useful. Comparing a bond fund to a stock index " +
+      "proves nothing in either direction, and a strategy that beat its benchmark once in " +
+      "the past has not been shown to do so again.",
+  },
 } as const satisfies Record<string, GlossaryEntry>;
 
 export type GlossaryKey = keyof typeof GLOSSARY;
@@ -370,7 +414,10 @@ export const LEARNING_PATH: GlossaryKey[] = [
   "compounding",
   "marketCap",
   "volatility",
+  "sampleSize",
+  "benchmark",
   "survivorshipBias",
   "overfitting",
+  "multipleTesting",
   "lookaheadBias",
 ];
