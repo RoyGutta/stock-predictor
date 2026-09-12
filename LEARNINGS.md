@@ -199,3 +199,22 @@ against the variables the code actually reads, in both directions, whenever
 either changes. Configuration for future features belongs in ROADMAP, where
 being unbuilt is the point, not in a file whose entire purpose is telling
 someone what to set up right now.
+
+## L-11 · A verification command piped through grep cannot gate a commit
+
+While landing the glossary additions, the browser suite was run as
+`npx playwright test | grep ... | tail -3 && git commit`. Two tests failed --
+the preview server was still serving the previous build -- but the pipeline's
+exit status was `tail`'s, so `&&` saw success and the commit went through
+before the check had actually passed. The commit was correct (the unit suite
+had verified the change), but only by luck: the gate that was supposed to
+catch a regression was decorative.
+
+Two separate lessons. First, `set -o pipefail` or run the verifier un-piped
+before any `&&` that has side effects; filter the output afterwards. Second,
+a local E2E runner with `reuseExistingServer: true` verifies whatever build the
+running server happens to hold -- kill the preview server (or rebuild) before
+treating its result as evidence about the current tree.
+
+**Applies from now on:** nothing that mutates state (commit, push, tag) goes
+after a pipe. Verify, look at the exit code, then act.
