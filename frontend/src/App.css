@@ -68,6 +68,11 @@
   margin: 0 auto;
   padding: var(--space-5);
   display: grid;
+  /* minmax(0, 1fr) rather than the implicit `auto`: an auto track grows to
+     its content's min-content width, so a wide table inside a scroll wrapper
+     inflated the whole page past the viewport at 390px instead of scrolling
+     inside its wrapper. */
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-5);
   align-content: start;
 }
@@ -188,8 +193,13 @@
 
 .page {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-5);
   align-content: start;
+}
+
+.page > * {
+  min-width: 0;
 }
 
 .page--single {

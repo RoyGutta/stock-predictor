@@ -51,6 +51,7 @@
 
 .cmp-results {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-4);
   margin-top: var(--space-5);
 }
@@ -59,6 +60,10 @@
    sideways. */
 .cmp-scroll {
   overflow-x: auto;
+  /* A scroll wrapper only helps if its own box cannot grow past its parent:
+     as a grid item it would otherwise take the table's min-content width. */
+  min-width: 0;
+  max-width: 100%;
 }
 
 .cmp-table {
