@@ -1,9 +1,10 @@
 import { useCallback, useId, useRef, useState } from "react";
 
-import { Button, Callout, Card, Skeleton } from "../../components/ui";
+import { Button, Callout, Card, InfoTip, Skeleton } from "../../components/ui";
 import { ApiError, fetchPortfolioSimulation, isAbort } from "../../lib/api";
 import { formatPercentPlain, formatPrice, formatRatio } from "../../lib/format";
 import type { PortfolioSimulationResponse, Range } from "../../types/market";
+import type { GlossaryKey } from "../education/glossary";
 import "./portfolio.css";
 
 /**
@@ -84,13 +85,15 @@ function GrowthChart({ data }: { data: PortfolioSimulationResponse }) {
 function ResultStats({ data }: { data: PortfolioSimulationResponse }) {
   const ours = data.portfolio.stats;
   const theirs = data.benchmark.stats;
-  const rows: [string, string, string][] = [
-    ["Historical return", formatPercentPlain(ours.total_return), formatPercentPlain(theirs.total_return)],
-    ["Annualized", formatPercentPlain(ours.annualized_return), formatPercentPlain(theirs.annualized_return)],
-    ["Volatility", formatPercentPlain(ours.annualized_volatility), formatPercentPlain(theirs.annualized_volatility)],
-    ["Sharpe", formatRatio(ours.sharpe_ratio), formatRatio(theirs.sharpe_ratio)],
-    ["Max drawdown", formatPercentPlain(ours.max_drawdown), formatPercentPlain(theirs.max_drawdown)],
-    ["Ending value", formatPrice(data.portfolio.ending_value), formatPrice(data.benchmark.ending_value)],
+  // Each statistic that has a glossary entry carries its definition inline, so a
+  // beginner never has to leave the table to learn what "Sharpe" means.
+  const rows: [string, string, string, GlossaryKey | null][] = [
+    ["Historical return", formatPercentPlain(ours.total_return), formatPercentPlain(theirs.total_return), null],
+    ["Annualized", formatPercentPlain(ours.annualized_return), formatPercentPlain(theirs.annualized_return), null],
+    ["Volatility", formatPercentPlain(ours.annualized_volatility), formatPercentPlain(theirs.annualized_volatility), "volatility"],
+    ["Sharpe", formatRatio(ours.sharpe_ratio), formatRatio(theirs.sharpe_ratio), "sharpe"],
+    ["Max drawdown", formatPercentPlain(ours.max_drawdown), formatPercentPlain(theirs.max_drawdown), "drawdown"],
+    ["Ending value", formatPrice(data.portfolio.ending_value), formatPrice(data.benchmark.ending_value), null],
   ];
 
   return (
@@ -106,9 +109,12 @@ function ResultStats({ data }: { data: PortfolioSimulationResponse }) {
         </tr>
       </thead>
       <tbody>
-        {rows.map(([name, portfolioValue, benchmarkValue]) => (
+        {rows.map(([name, portfolioValue, benchmarkValue, term]) => (
           <tr key={name}>
-            <th scope="row">{name}</th>
+            <th scope="row">
+              {name}
+              {term && <InfoTip term={term} />}
+            </th>
             <td className="numeric">{portfolioValue}</td>
             <td className="numeric">{benchmarkValue}</td>
           </tr>
@@ -342,7 +348,8 @@ export function PortfolioBuilder() {
               Nothing is rebalanced, so weights drift toward whatever rose most —
               concentration ended at {formatPercentPlain(data.portfolio.largest_end_weight)}{" "}
               in a single holding. Costs of {formatPrice(data.portfolio.cost_paid)} were
-              charged across {data.portfolio.contribution_count + 1} purchases.
+              charged across {data.portfolio.contribution_count + 1}{" "}
+              {data.portfolio.contribution_count + 1 === 1 ? "purchase" : "purchases"}.
             </p>
           </div>
 
