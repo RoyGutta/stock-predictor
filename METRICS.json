@@ -268,6 +268,58 @@
         "pages": 6,
         "how": "git rev-list --count HEAD ; find backend/app -name '*.py' | xargs wc -l ; find frontend/src -name '*.ts' -o -name '*.tsx' | xargs wc -l"
       }
+    },
+    {
+      "date": "2026-09-12",
+      "commit": "7a35848",
+      "note": "Cycle 9. Recent-search persistence, first-run onboarding, page audit fixes (mobile nav, compare overflow, zero-neutral backtest cell), API hardening tests, Playwright smoke suite, provider documentation.",
+      "reliability": {
+        "backend_tests_passing": 424,
+        "backend_tests_failing": 0,
+        "frontend_unit_tests_passing": 243,
+        "frontend_unit_tests_failing": 0,
+        "browser_smoke_tests_passing": 22,
+        "browser_smoke_tests_skipped": 2,
+        "browser_smoke_note": "11 scenarios x 2 viewports (1280px, 390px) over the production build with fixture-mocked API; the 2 skipped are the opt-in @live test (E2E_LIVE=1).",
+        "backend_lint_clean": true,
+        "frontend_lint_clean": true,
+        "typecheck_clean": true,
+        "production_build_passing": true,
+        "browser_console_errors": 0,
+        "browser_console_warnings": 0,
+        "npm_audit_vulnerabilities_all_groups": 0,
+        "how": "cd backend && ruff check . && pytest ; cd frontend && npm run typecheck && npm run lint && node ./node_modules/vitest/vitest.mjs run --no-file-parallelism && npm run build && npm run test:e2e ; npm audit"
+      },
+      "api_hardening": {
+        "malformed_requests_probed_live": 29,
+        "server_errors_500": 0,
+        "stack_trace_leaks": 0,
+        "pinned_as_tests": 29,
+        "note": "Every route answered malformed input with a 4xx and a plain detail string; providers stubbed to raise if reached."
+      },
+      "performance": {
+        "initial_js_bundle_bytes": 288080,
+        "initial_js_gzip_bytes": 89920,
+        "lazy_chart_chunk_bytes": 323150,
+        "lazy_chart_gzip_bytes": 96560,
+        "css_bytes": 50630,
+        "css_gzip_bytes": 8210,
+        "analyze_page_unique_api_requests": 6,
+        "how": "cd frontend && npm run build ; Playwright network log on #/analyze/AAPL",
+        "note": "+8.1 kB initial JS vs cycle 8 for the tool guide, persisted recent searches, and inline glossary tips."
+      },
+      "accessibility": {
+        "axe_checks_passing": 22,
+        "color_contrast_machine_checked": false
+      },
+      "size": {
+        "backend_python_loc": 6247,
+        "frontend_ts_loc": 10241,
+        "api_endpoints": 17,
+        "commits": 51,
+        "pages": 6,
+        "how": "git rev-list --count HEAD ; find backend/app -name '*.py' | xargs wc -l ; find frontend/src frontend/e2e -name '*.ts' -o -name '*.tsx' | grep -v fixtures | xargs wc -l"
+      }
     }
   ]
 }

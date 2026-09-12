@@ -1,6 +1,6 @@
 # State
 
-**Updated:** 2026-09-04 · **Commit:** `323cd32` · **Cycle:** 8
+**Updated:** 2026-09-12 · **Commit:** `7a35848` · **Cycle:** 9
 
 ## Objective
 
@@ -43,8 +43,8 @@ frontend/ React 19 + TS strict + Vite      backend/ FastAPI + Python 3.11+
   beta and a plain-English warning when the relationship is weak (T-6)
 - **Expected shortfall** surfaced alongside VaR
 - **Watchlist**, persisted locally through a validated storage layer
-- CI: lint, typecheck, tests, build, and a secret-scan job
-- **18 automated accessibility checks** over every panel, including empty and
+- CI: lint, typecheck, unit tests, build, browser smoke suite, and a secret-scan job
+- **22 automated accessibility checks** over every panel, including empty and
   error states
 - **Company profile panel** and **momentum indicator** with watchlist ranking
 - **Hypothetical portfolio simulator** (FA7): fixed-weight replay with monthly
@@ -69,7 +69,26 @@ frontend/ React 19 + TS strict + Vite      backend/ FastAPI + Python 3.11+
   Opt-in panel on Analyze: occurrence counts, sample-size-first outcome
   tables, filterable most-recent-first timeline, method + disclaimer callout.
 
-**Baseline metrics:** `METRICS.json` (395 backend tests, 217 frontend, 0 failing).
+- **Recent searches persist** (cycle 9): ticker + company name only, bounded at 8,
+  newest first, validated on read; survives navigation and reload; typos never enter.
+- **First-run onboarding**: Dashboard tool guide (each page named by the question it
+  answers, why nothing predicts, where the data comes from); Learn philosophy note;
+  inline glossary tips in the portfolio statistics table.
+- **Page audit fixes**: nav wraps at narrow widths (Portfolio/Learn were off-screen at
+  390px); Compare no longer scrolls the page sideways at 390px; zero excess return in
+  the backtest is neutral; 404s tell the user to check spelling or search by name;
+  news disclaimer disowns ratings/forecasts inside headlines.
+- **API hardening pinned**: 28 malformed requests across every route must return 4xx
+  with a plain detail and no traceback; providers stubbed to raise if reached.
+- **Browser smoke suite** (Playwright, fixture-mocked API, desktop + 390px, in CI):
+  orientation, nav visibility, deep links, recent-search persistence, unknown ticker,
+  patterns language, compare, portfolio, learn, explore, theme persistence. Opt-in
+  `@live` test via `E2E_LIVE=1`.
+- **Provider documentation**: per-provider freshness, limits, cache windows, failure
+  codes, licensing, and deployment status in the readme.
+
+**Baseline metrics:** `METRICS.json` (424 backend tests, 243 frontend unit, 22 browser
+smoke, 0 failing; npm audit 0 across all groups).
 
 ## Blocked / needs your decision
 
@@ -85,20 +104,19 @@ standing manual step.
 
 ## Next highest-value actions (unblocked, in order)
 
-1. Learn-section expansion: glossary entries for expense ratios, dividends,
-   bonds/treasuries, index funds, survivorship bias, overfitting, and
-   lookahead bias (Phase 6 topics not yet covered).
-2. Per-ticker recent-searches persistence across navigations (page-local
-   state resets when leaving Analyze).
-3. Landing/onboarding polish: a guided first-run tour of the tools.
-4. Consider replacing the price-history provider before public deployment
-   (T-3).
+1. Lighthouse measurement of the production build (performance and a11y scores
+   recorded, not estimated); act only on measured findings.
+2. Learn: multiple testing, sample size, and benchmark selection entries, each
+   tied to the backtest and pattern features that expose them.
+3. Consider replacing the price-history provider before public deployment
+   (T-3) -- the only path to a public deployment.
 
 ## Cold-start checklist for the next session
 
 ```bash
-cd backend && source .venv/bin/activate && ruff check . && pytest   # expect 395 passed
-cd frontend && npm run typecheck && npm run lint && npm test        # expect 217 passed
+cd backend && source .venv/bin/activate && ruff check . && pytest   # expect 424 passed
+cd frontend && npm run typecheck && npm run lint && npm test        # expect 243 passed
+cd frontend && npm run test:e2e                                      # expect 22 passed, 2 skipped
 ```
 Stop dev servers before running tests (T-5 — now also guarded by a 20s
 `testTimeout`, so a missed step produces a slow run rather than a false red).

@@ -2,9 +2,10 @@
 
 Living document. Updated as milestones land.
 
-**Last updated:** 2026-08-17
-**Current state:** 247 backend tests, 76 frontend tests, lint and types clean both
-sides, production build passing with no console warnings.
+**Last updated:** 2026-09-12
+**Current state:** 424 backend tests, 243 frontend unit tests, 22 browser smoke
+tests, lint and types clean both sides, production build passing with no console
+errors or warnings.
 
 > Day-to-day state now lives in `STATE.md`; open problems in `TENSIONS.md`.
 > This file tracks product phases only.
@@ -40,8 +41,12 @@ sides, production build passing with no console warnings.
 - **Phase 3** — complete for the current surface. Design tokens, brass accent,
   tabular numerals, light and dark, responsive to 390 px, animations respecting
   `prefers-reduced-motion`. Verified in a browser in both themes.
-- **Phase 4** — foundation done. 16-term glossary, each entry ending with what the
-  concept does *not* tell you. No multi-step onboarding flow yet.
+- **Phase 4** — mostly done. 21-term glossary (14 on the learning path), each entry
+  ending with what the concept does *not* tell you. First-run orientation shipped
+  2026-09-12: the Dashboard names every tool by the question it answers and states
+  why nothing predicts and where the data comes from; Learn opens with the same
+  rationale; portfolio statistics carry inline definitions. Deliberately no
+  multi-step tour overlay.
 - **Phase 7** — mostly done. Movers, sector heatmap, session status, live prices.
   Missing: economic calendar, Fear & Greed, 52-week ranges (none on the free tiers).
 - **Phase 11** — **blocked.** FMP serves its screener only on paid plans (HTTP
@@ -61,15 +66,18 @@ sides, production build passing with no console warnings.
   conflicts surfaced, per-indicator caveats always visible, agreement score
   explicitly not a probability, no buy/sell output. LLM prose layer not started.
 - **Phase 10** — computed and displayed. Volatility, drawdown with recovery dates,
-  VaR, CVaR, Sharpe, Sortino, beta/alpha with R², correlation, Monte Carlo.
-  Monte Carlo and correlation are not yet surfaced in the UI. No sector exposure.
+  VaR, CVaR, Sharpe, Sortino, beta/alpha with R², correlation, Monte Carlo --
+  all surfaced in the UI (dispersion box plot, correlation panel). No sector exposure.
 - **Phase 13** — partial. Zoom via brush, crosshair, tooltips, timeframes,
   multiple indicators, CSV export. No pan, drawing tools, fullscreen, compare,
   PNG/PDF export.
 - **Phase 18** — partial. Lazy-loaded chart, memoization, downsampling, no
   unnecessary refetch on display toggles. No virtualization or Lighthouse run.
-- **Phase 19** — partial. 612 unit/integration/component tests including 20
-  automated accessibility checks (vitest-axe). No E2E suite.
+- **Phase 19** — mostly done. 667 unit/integration/component tests including 22
+  automated accessibility checks (vitest-axe), plus a Playwright smoke suite
+  (11 scenarios at desktop and 390px) over the production build with a
+  fixture-mocked API, run in CI. Not covered: real-provider E2E in CI
+  (deliberately -- it would make CI depend on live market data).
 - **Phase 20** — partial. README, AUDIT, ROADMAP, personal.md, generated OpenAPI
   docs. No architecture, deployment, contributing, or user guide.
 
@@ -89,8 +97,8 @@ Dispersion simulation (box plot, opt-in) and the correlation panel shipped.
 Support/resistance, gap detection, candlestick patterns, Volume Profile — all
 computable from data already fetched.
 
-### 4. Phase 4 completion — onboarding flow
-A guided first-run path rather than a glossary panel alone.
+### 4. Phase 4 completion — onboarding flow — done 2026-09-12
+Dashboard tool guide plus Learn philosophy note; no tour overlay by design.
 
 ### 5. Phases 5/6/14/15/16 — persistence
 Database, auth, portfolio builder, watchlists, paper trading. Largest chunk;
@@ -121,4 +129,5 @@ Not negotiable; these shape every decision above.
   needs Redis (`REDIS_URL` is already in `.env.example`).
 - Recharts is 329 kB and is the whole lazy chunk. A lighter charting approach
   would help, but not before the chart feature set is settled.
-- No E2E tests, no Lighthouse measurement.
+- No Lighthouse measurement. (Browser smoke tests exist since 2026-09-12; they
+  mock the API from fixtures and so do not exercise a real provider in CI.)
