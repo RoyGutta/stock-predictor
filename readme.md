@@ -198,6 +198,29 @@ serve, and the UI explains any missing feature rather than rendering an empty
 panel. **The screener is not implemented** because the free tier cannot serve it —
 building a UI that returns invented rows would be worse than not having one.
 
+### What each provider supplies, how fresh it is, and what it permits
+
+Nothing in the app is real-time, and nothing claims to be. Every quote carries
+its own timestamp and every chart states its bar frequency.
+
+| | `yfinance` (default) | Finnhub | FMP `/stable` |
+|---|---|---|---|
+| **Used for** | Price history, quotes, company name; every indicator, risk statistic, backtest, pattern, comparison, and portfolio replay | Company news, ticker search | Biggest movers, sector snapshot, company profile |
+| **Calls made** | `Ticker.history()`, `Ticker.info` | `company-news`, `search` | `biggest-gainers`, `biggest-losers`, `most-actives`, `sector-performance-snapshot`, `profile` |
+| **Freshness** | Delayed. Daily bars up to 1Y, weekly for 5Y, monthly for MAX; 5-minute bars for 1D only | As published by the provider; each headline shows its own timestamp | Provider-delayed intraday for movers; sector snapshot is dated |
+| **Provider limit** | Undocumented; aggressive | 60 calls/min (free) | 250 calls/day (free); screener is paid-only |
+| **Server cache** | Quotes 60 s, profiles 24 h | News 15 min, search 5 min | Movers and sectors 5 min, profile 24 h |
+| **On failure** | `404` unknown ticker, `502` upstream error | `501` not configured, `429` limit hit, `502`/`503` upstream | Same as Finnhub; screener reports unavailable via capabilities |
+| **License** | Unofficial Yahoo Finance client. **Not licensed for redistribution or commercial use** | Free-tier terms; confirm before any public deployment | Free-tier terms; confirm before any public deployment |
+| **Public deployment** | **Not established** — see `TENSIONS.md` T-3 | Not established | Not established |
+
+Cache windows are the `*_CACHE_TTL_SECONDS` settings in `.env.example`; the app
+itself rate-limits clients at 60 requests/min (`RATE_LIMIT_PER_MINUTE`). The
+provider layer (`app/services/providers/`) hides each vendor behind one
+interface with typed `ProviderError` / `ProviderNotConfigured` /
+`ProviderPlanRequired` outcomes, so replacing `yfinance` with a licensed feed is
+a one-module change. Until that happens this is a local, personal-use tool.
+
 ---
 
 ## Scope and honesty
