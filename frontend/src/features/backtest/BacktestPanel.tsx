@@ -95,12 +95,17 @@ function StrategyRow({ result }: { result: StrategyResult }) {
       <dl className="bt-stats">
         <div>
           <dt>vs buy &amp; hold</dt>
+          {/* Zero is neither ahead nor behind: no sign, no color (L-8). */}
           <dd
             className={`numeric ${
-              result.excess_return >= 0 ? "bt-positive" : "bt-negative"
+              result.excess_return > 0
+                ? "bt-positive"
+                : result.excess_return < 0
+                  ? "bt-negative"
+                  : ""
             }`}
           >
-            {result.excess_return >= 0 ? "+" : "−"}
+            {result.excess_return > 0 ? "+" : result.excess_return < 0 ? "−" : ""}
             {Math.abs(result.excess_return * 100).toFixed(1)}pp
           </dd>
         </div>

@@ -91,6 +91,23 @@ describe("BacktestPanel", () => {
     expect(value?.className).not.toContain("negative");
   });
 
+  it("colours a zero excess return as neither ahead nor behind", () => {
+    /* L-8 again, one row down: tying the benchmark exactly is not a gain. */
+    const { container } = render(
+      <BacktestPanel
+        {...shown}
+        ticker="AAPL"
+        data={response({ strategies: [strategy({ excess_return: 0 })] })}
+      />,
+    );
+    const cell = Array.from(container.querySelectorAll("dd")).find(
+      (node) => node.textContent?.includes("pp"),
+    );
+    expect(cell?.className).not.toContain("bt-positive");
+    expect(cell?.className).not.toContain("bt-negative");
+    expect(cell?.textContent).toBe("0.0pp");
+  });
+
   it("explains a rule that never traded instead of leaving a bare zero", () => {
     render(
       <BacktestPanel
