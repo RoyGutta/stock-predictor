@@ -82,7 +82,7 @@
 
   --text: #e8edf4;
   --text-muted: #8896ab;
-  --text-subtle: #5f6d80;
+  --text-subtle: #7a899d; /* >= 4.5:1 on every dark surface (was #5f6d80, 3.1:1) */
 
   --accent: var(--brass-400);
   --accent-hover: var(--brass-500);
@@ -109,7 +109,7 @@
 
   --text: #16202c;
   --text-muted: #5c6675;
-  --text-subtle: #838d9c;
+  --text-subtle: #646e7e; /* >= 4.5:1 on every light surface (was #838d9c, 3.05:1) */
 
   --accent: var(--brass-600);
   --accent-hover: var(--brass-500);
@@ -133,7 +133,7 @@
     --border-strong: #cfc9bd;
     --text: #16202c;
     --text-muted: #5c6675;
-    --text-subtle: #838d9c;
+    --text-subtle: #646e7e; /* >= 4.5:1 on every light surface (was #838d9c, 3.05:1) */
     --accent: var(--brass-600);
     --accent-hover: var(--brass-500);
     --accent-contrast: #ffffff;

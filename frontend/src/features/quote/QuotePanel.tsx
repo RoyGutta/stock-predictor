@@ -27,7 +27,8 @@ export function RangeSelector({ value, onChange, disabled = false }: RangeSelect
           type="button"
           className="ranges__option"
           aria-pressed={value === range}
-          aria-label={RANGE_LABELS[range]}
+          // WCAG 2.5.3: the visible text must appear inside the accessible name.
+          aria-label={`${range}, ${RANGE_LABELS[range]}`}
           disabled={disabled}
           onClick={() => onChange(range)}
         >
