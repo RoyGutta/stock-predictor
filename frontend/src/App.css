@@ -223,12 +223,14 @@
     row-gap: var(--space-2);
   }
 
+  /* Wrap rather than scroll: a horizontal scroller hides the last links with
+     no visual cue that they exist (Portfolio and Learn were off-screen at
+     390px). Six short chips wrap onto two rows and every destination stays
+     visible and tappable. */
   .app__nav {
     order: 3;
     width: 100%;
     justify-content: flex-start;
-    overflow-x: auto;
-    flex-wrap: nowrap;
-    padding-bottom: 2px;
+    flex-wrap: wrap;
   }
 }
