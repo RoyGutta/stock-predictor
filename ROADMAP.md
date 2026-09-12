@@ -72,7 +72,9 @@ errors or warnings.
   multiple indicators, CSV export. No pan, drawing tools, fullscreen, compare,
   PNG/PDF export.
 - **Phase 18** — partial. Lazy-loaded chart, memoization, downsampling, no
-  unnecessary refetch on display toggles. No virtualization or Lighthouse run.
+  unnecessary refetch on display toggles. Lighthouse 100/100/100 (a11y, best
+  practices, SEO) and lab LCP 116 ms on the production build, 2026-09-12. No
+  virtualization.
 - **Phase 19** — mostly done. 667 unit/integration/component tests including 22
   automated accessibility checks (vitest-axe), plus a Playwright smoke suite
   (11 scenarios at desktop and 390px) over the production build with a
@@ -129,5 +131,6 @@ Not negotiable; these shape every decision above.
   needs Redis (`REDIS_URL` is already in `.env.example`).
 - Recharts is 329 kB and is the whole lazy chunk. A lighter charting approach
   would help, but not before the chart feature set is settled.
-- No Lighthouse measurement. (Browser smoke tests exist since 2026-09-12; they
-  mock the API from fixtures and so do not exercise a real provider in CI.)
+- Browser smoke tests (since 2026-09-12) mock the API from fixtures and so do not
+  exercise a real provider in CI; Lighthouse is measured manually (METRICS.json),
+  not in CI.

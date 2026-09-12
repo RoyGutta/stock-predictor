@@ -271,12 +271,12 @@
     },
     {
       "date": "2026-09-12",
-      "commit": "see git log; entry finalized at cycle end",
+      "commit": "a411756",
       "note": "Cycle 9. Recent-search persistence, first-run onboarding, page audit fixes (mobile nav, compare overflow, zero-neutral backtest cell), API hardening tests, Playwright smoke suite, provider documentation.",
       "reliability": {
         "backend_tests_passing": 424,
         "backend_tests_failing": 0,
-        "frontend_unit_tests_passing": 243,
+        "frontend_unit_tests_passing": 244,
         "frontend_unit_tests_failing": 0,
         "browser_smoke_tests_passing": 22,
         "browser_smoke_tests_skipped": 2,
@@ -288,7 +288,8 @@
         "browser_console_errors": 0,
         "browser_console_warnings": 0,
         "npm_audit_vulnerabilities_all_groups": 0,
-        "how": "cd backend && ruff check . && pytest ; cd frontend && npm run typecheck && npm run lint && node ./node_modules/vitest/vitest.mjs run --no-file-parallelism && npm run build && npm run test:e2e ; npm audit"
+        "how": "cd backend && ruff check . && pytest ; cd frontend && npm run typecheck && npm run lint && node ./node_modules/vitest/vitest.mjs run --no-file-parallelism && npm run build && npm run test:e2e ; npm audit",
+        "how_note": "244 = 243 at first cycle-9 measurement + 1 backtest zero-excess regression test"
       },
       "api_hardening": {
         "malformed_requests_probed_live": 29,

@@ -1,6 +1,6 @@
 # State
 
-**Updated:** 2026-09-12 · **Commit:** `7a35848` · **Cycle:** 9
+**Updated:** 2026-09-12 · **Commit:** `a411756` · **Cycle:** 9
 
 ## Objective
 
@@ -87,8 +87,9 @@ frontend/ React 19 + TS strict + Vite      backend/ FastAPI + Python 3.11+
 - **Provider documentation**: per-provider freshness, limits, cache windows, failure
   codes, licensing, and deployment status in the readme.
 
-**Baseline metrics:** `METRICS.json` (424 backend tests, 243 frontend unit, 22 browser
-smoke, 0 failing; npm audit 0 across all groups).
+**Baseline metrics:** `METRICS.json` (424 backend tests, 244 frontend unit, 22 browser
+smoke, 0 failing; npm audit 0 across all groups; Lighthouse a11y/best-practices/SEO
+100/100/100 on the production build).
 
 ## Blocked / needs your decision
 
@@ -104,18 +105,20 @@ standing manual step.
 
 ## Next highest-value actions (unblocked, in order)
 
-1. Lighthouse measurement of the production build (performance and a11y scores
-   recorded, not estimated); act only on measured findings.
-2. Learn: multiple testing, sample size, and benchmark selection entries, each
-   tied to the backtest and pattern features that expose them.
-3. Consider replacing the price-history provider before public deployment
-   (T-3) -- the only path to a public deployment.
+1. Replace the price-history provider with a licensed feed behind the existing
+   provider interface (T-3) -- the only path to a public deployment. Nothing
+   else on this list unblocks publishing.
+2. Remaining Phase 8 detectors (gap detection, support/resistance) under the
+   same anti-lookahead test regime as the ten shipped patterns.
+3. An opt-in, scheduled live-provider run of the browser smoke suite
+   (`E2E_LIVE=1`) outside CI, so provider drift is noticed without making CI
+   depend on market data.
 
 ## Cold-start checklist for the next session
 
 ```bash
 cd backend && source .venv/bin/activate && ruff check . && pytest   # expect 424 passed
-cd frontend && npm run typecheck && npm run lint && npm test        # expect 243 passed
+cd frontend && npm run typecheck && npm run lint && npm test        # expect 244 passed
 cd frontend && npm run test:e2e                                      # expect 22 passed, 2 skipped
 ```
 Stop dev servers before running tests (T-5 — now also guarded by a 20s

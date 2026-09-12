@@ -34,7 +34,7 @@ provider — those are listed as not started rather than stubbed with fake data.
 | Design system | ✅ tokens, light + dark, responsive, accessible |
 | Beginner glossary | ✅ plain English, each entry states its limits |
 | Historical patterns | ✅ anti-lookahead by tested property, sample sizes always shown |
-| Tests | ✅ 424 backend, 243 frontend unit, 22 browser smoke (22 automated a11y checks) |
+| Tests | ✅ 424 backend, 244 frontend unit, 22 browser smoke (22 automated a11y checks) |
 | CI | ✅ lint, types, unit tests, build, browser smoke, secret scan |
 | Live market data | ✅ movers, sector heatmap, session status |
 | News + ticker search | ✅ real headlines, debounced autocomplete |
@@ -171,7 +171,7 @@ ruff check .        # lint
 
 # Frontend
 cd frontend
-npm test            # 243 unit tests
+npm test            # 244 unit tests
 npm run test:e2e    # 22 browser smoke tests (fixture-backed, no live data)
 npm run typecheck
 npm run lint
