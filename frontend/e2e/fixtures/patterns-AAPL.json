@@ -1,0 +1,1071 @@
+{
+ "ticker": "AAPL",
+ "company_name": "Apple Inc.",
+ "range": "1Y",
+ "bars": 251,
+ "start_date": "2025-09-12",
+ "end_date": "2026-09-11",
+ "events": [
+  {
+   "pattern": "rsi_overbought",
+   "label": "RSI entered overbought",
+   "date": "2025-10-20",
+   "values": {
+    "rsi": 71.6983
+   },
+   "explanation": "RSI(14) rose to 71.7, entering the conventional overbought zone.",
+   "caveat": "'Overbought' means recent gains dominated recent losses. Strong uptrends hold RSI above 70 for long stretches; this is not a sell signal."
+  },
+  {
+   "pattern": "rsi_overbought",
+   "label": "RSI entered overbought",
+   "date": "2025-10-27",
+   "values": {
+    "rsi": 72.7324
+   },
+   "explanation": "RSI(14) rose to 72.7, entering the conventional overbought zone.",
+   "caveat": "'Overbought' means recent gains dominated recent losses. Strong uptrends hold RSI above 70 for long stretches; this is not a sell signal."
+  },
+  {
+   "pattern": "bollinger_break_upper",
+   "label": "Closed above upper Bollinger band",
+   "date": "2025-10-27",
+   "values": {
+    "close": 267.8207,
+    "upper_band": 266.7029
+   },
+   "explanation": "The close (267.82) finished above the upper band (266.70).",
+   "caveat": "Statistically unusual is not wrong: prices ride the upper band through strong rallies. Treating a band touch as a reversal is a common and expensive mistake."
+  },
+  {
+   "pattern": "rsi_overbought",
+   "label": "RSI entered overbought",
+   "date": "2025-11-04",
+   "values": {
+    "rsi": 70.5721
+   },
+   "explanation": "RSI(14) rose to 70.6, entering the conventional overbought zone.",
+   "caveat": "'Overbought' means recent gains dominated recent losses. Strong uptrends hold RSI above 70 for long stretches; this is not a sell signal."
+  },
+  {
+   "pattern": "macd_bear_cross",
+   "label": "MACD crossed below signal",
+   "date": "2025-11-10",
+   "values": {
+    "macd": 5.1142,
+    "signal": 5.2641
+   },
+   "explanation": "MACD (5.114) crossed below its signal line (5.264).",
+   "caveat": "The mirror of the bullish cross, with the same lag and the same tendency to whipsaw when the price is drifting sideways."
+  },
+  {
+   "pattern": "rsi_overbought",
+   "label": "RSI entered overbought",
+   "date": "2025-11-11",
+   "values": {
+    "rsi": 73.9771
+   },
+   "explanation": "RSI(14) rose to 74.0, entering the conventional overbought zone.",
+   "caveat": "'Overbought' means recent gains dominated recent losses. Strong uptrends hold RSI above 70 for long stretches; this is not a sell signal."
+  },
+  {
+   "pattern": "macd_bull_cross",
+   "label": "MACD crossed above signal",
+   "date": "2025-11-11",
+   "values": {
+    "macd": 5.3676,
+    "signal": 5.2848
+   },
+   "explanation": "MACD (5.368) crossed above its signal line (5.285).",
+   "caveat": "Built entirely from moving averages, so it confirms moves already underway and produces frequent false crossings in sideways markets."
+  },
+  {
+   "pattern": "macd_bear_cross",
+   "label": "MACD crossed below signal",
+   "date": "2025-11-13",
+   "values": {
+    "macd": 5.2574,
+    "signal": 5.2919
+   },
+   "explanation": "MACD (5.257) crossed below its signal line (5.292).",
+   "caveat": "The mirror of the bullish cross, with the same lag and the same tendency to whipsaw when the price is drifting sideways."
+  },
+  {
+   "pattern": "bollinger_break_upper",
+   "label": "Closed above upper Bollinger band",
+   "date": "2025-11-24",
+   "values": {
+    "close": 275.171,
+    "upper_band": 274.6052
+   },
+   "explanation": "The close (275.17) finished above the upper band (274.61).",
+   "caveat": "Statistically unusual is not wrong: prices ride the upper band through strong rallies. Treating a band touch as a reversal is a common and expensive mistake."
+  },
+  {
+   "pattern": "macd_bull_cross",
+   "label": "MACD crossed above signal",
+   "date": "2025-11-26",
+   "values": {
+    "macd": 3.8764,
+    "signal": 3.867
+   },
+   "explanation": "MACD (3.876) crossed above its signal line (3.867).",
+   "caveat": "Built entirely from moving averages, so it confirms moves already underway and produces frequent false crossings in sideways markets."
+  },
+  {
+   "pattern": "bollinger_break_upper",
+   "label": "Closed above upper Bollinger band",
+   "date": "2025-11-28",
+   "values": {
+    "close": 278.093,
+    "upper_band": 278.0221
+   },
+   "explanation": "The close (278.09) finished above the upper band (278.02).",
+   "caveat": "Statistically unusual is not wrong: prices ride the upper band through strong rallies. Treating a band touch as a reversal is a common and expensive mistake."
+  },
+  {
+   "pattern": "rsi_overbought",
+   "label": "RSI entered overbought",
+   "date": "2025-12-01",
+   "values": {
+    "rsi": 73.5218
+   },
+   "explanation": "RSI(14) rose to 73.5, entering the conventional overbought zone.",
+   "caveat": "'Overbought' means recent gains dominated recent losses. Strong uptrends hold RSI above 70 for long stretches; this is not a sell signal."
+  },
+  {
+   "pattern": "macd_bear_cross",
+   "label": "MACD crossed below signal",
+   "date": "2025-12-08",
+   "values": {
+    "macd": 4.489,
+    "signal": 4.6474
+   },
+   "explanation": "MACD (4.489) crossed below its signal line (4.647).",
+   "caveat": "The mirror of the bullish cross, with the same lag and the same tendency to whipsaw when the price is drifting sideways."
+  },
+  {
+   "pattern": "bollinger_break_lower",
+   "label": "Closed below lower Bollinger band",
+   "date": "2026-01-05",
+   "values": {
+    "close": 266.5345,
+    "lower_band": 267.3225
+   },
+   "explanation": "The close (266.53) finished below the lower band (267.32).",
+   "caveat": "An unusually large decline relative to recent volatility. It describes the size of the fall, not whether it is finished."
+  },
+  {
+   "pattern": "death_cross",
+   "label": "Death cross (20/50)",
+   "date": "2026-01-07",
+   "values": {
+    "fast": 271.7049,
+    "slow": 272.2158,
+    "close": 259.6233
+   },
+   "explanation": "The 20-bar average (271.70) moved below the 50-bar average (272.22).",
+   "caveat": "The dramatic name is marketing, not mathematics. It is the same lagging average comparison as the golden cross, pointed the other way."
+  },
+  {
+   "pattern": "rsi_oversold",
+   "label": "RSI entered oversold",
+   "date": "2026-01-07",
+   "values": {
+    "rsi": 27.797
+   },
+   "explanation": "RSI(14) fell to 27.8, entering the conventional oversold zone.",
+   "caveat": "'Oversold' means recent losses dominated recent gains -- it does not mean 'due for a bounce'. In persistent declines RSI can stay below 30 for weeks."
+  },
+  {
+   "pattern": "rsi_oversold",
+   "label": "RSI entered oversold",
+   "date": "2026-01-15",
+   "values": {
+    "rsi": 28.5522
+   },
+   "explanation": "RSI(14) fell to 28.6, entering the conventional oversold zone.",
+   "caveat": "'Oversold' means recent losses dominated recent gains -- it does not mean 'due for a bounce'. In persistent declines RSI can stay below 30 for weeks."
+  },
+  {
+   "pattern": "bollinger_break_lower",
+   "label": "Closed below lower Bollinger band",
+   "date": "2026-01-20",
+   "values": {
+    "close": 246.0303,
+    "lower_band": 249.2046
+   },
+   "explanation": "The close (246.03) finished below the lower band (249.20).",
+   "caveat": "An unusually large decline relative to recent volatility. It describes the size of the fall, not whether it is finished."
+  },
+  {
+   "pattern": "macd_bull_cross",
+   "label": "MACD crossed above signal",
+   "date": "2026-01-28",
+   "values": {
+    "macd": -4.619,
+    "signal": -4.8887
+   },
+   "explanation": "MACD (-4.619) crossed above its signal line (-4.889).",
+   "caveat": "Built entirely from moving averages, so it confirms moves already underway and produces frequent false crossings in sideways markets."
+  },
+  {
+   "pattern": "bollinger_break_upper",
+   "label": "Closed above upper Bollinger band",
+   "date": "2026-02-02",
+   "values": {
+    "close": 269.2771,
+    "upper_band": 268.8439
+   },
+   "explanation": "The close (269.28) finished above the upper band (268.84).",
+   "caveat": "Statistically unusual is not wrong: prices ride the upper band through strong rallies. Treating a band touch as a reversal is a common and expensive mistake."
+  },
+  {
+   "pattern": "large_move",
+   "label": "Unusually large single-bar move",
+   "date": "2026-02-02",
+   "values": {
+    "return_pct": 4.0581,
+    "sigmas": 3.3145
+   },
+   "explanation": "A single-bar move of +4.1%, about 3.3 standard deviations of the trailing year's bars.",
+   "caveat": "Large moves cluster: one outsized bar often sits inside a volatile stretch rather than ending one. The threshold uses only history available before the bar, so early data has no baseline and is skipped."
+  },
+  {
+   "pattern": "bollinger_break_upper",
+   "label": "Closed above upper Bollinger band",
+   "date": "2026-02-04",
+   "values": {
+    "close": 275.7394,
+    "upper_band": 272.4118
+   },
+   "explanation": "The close (275.74) finished above the upper band (272.41).",
+   "caveat": "Statistically unusual is not wrong: prices ride the upper band through strong rallies. Treating a band touch as a reversal is a common and expensive mistake."
+  },
+  {
+   "pattern": "large_move",
+   "label": "Unusually large single-bar move",
+   "date": "2026-02-12",
+   "values": {
+    "return_pct": -4.9982,
+    "sigmas": -3.929
+   },
+   "explanation": "A single-bar move of -5.0%, about 3.9 standard deviations of the trailing year's bars.",
+   "caveat": "Large moves cluster: one outsized bar often sits inside a volatile stretch rather than ending one. The threshold uses only history available before the bar, so early data has no baseline and is skipped."
+  },
+  {
+   "pattern": "macd_bear_cross",
+   "label": "MACD crossed below signal",
+   "date": "2026-02-13",
+   "values": {
+    "macd": 1.181,
+    "signal": 1.1924
+   },
+   "explanation": "MACD (1.181) crossed below its signal line (1.192).",
+   "caveat": "The mirror of the bullish cross, with the same lag and the same tendency to whipsaw when the price is drifting sideways."
+  },
+  {
+   "pattern": "golden_cross",
+   "label": "Golden cross (20/50)",
+   "date": "2026-02-23",
+   "values": {
+    "fast": 265.3407,
+    "slow": 265.2205,
+    "close": 265.7058
+   },
+   "explanation": "The 20-bar average (265.34) moved above the 50-bar average (265.22).",
+   "caveat": "Moving averages lag by construction: by the time they cross, much of the move that caused the cross has already happened. A cross describes the recent past, not the future."
+  },
+  {
+   "pattern": "macd_bull_cross",
+   "label": "MACD crossed above signal",
+   "date": "2026-02-24",
+   "values": {
+    "macd": 0.7623,
+    "signal": 0.6512
+   },
+   "explanation": "MACD (0.762) crossed above its signal line (0.651).",
+   "caveat": "Built entirely from moving averages, so it confirms moves already underway and produces frequent false crossings in sideways markets."
+  },
+  {
+   "pattern": "macd_bear_cross",
+   "label": "MACD crossed below signal",
+   "date": "2026-03-02",
+   "values": {
+    "macd": 0.8969,
+    "signal": 0.994
+   },
+   "explanation": "MACD (0.897) crossed below its signal line (0.994).",
+   "caveat": "The mirror of the bullish cross, with the same lag and the same tendency to whipsaw when the price is drifting sideways."
+  },
+  {
+   "pattern": "bollinger_break_lower",
+   "label": "Closed below lower Bollinger band",
+   "date": "2026-03-13",
+   "values": {
+    "close": 249.6744,
+    "lower_band": 250.8013
+   },
+   "explanation": "The close (249.67) finished below the lower band (250.80).",
+   "caveat": "An unusually large decline relative to recent volatility. It describes the size of the fall, not whether it is finished."
+  },
+  {
+   "pattern": "death_cross",
+   "label": "Death cross (20/50)",
+   "date": "2026-03-18",
+   "values": {
+    "fast": 260.9328,
+    "slow": 261.067,
+    "close": 249.4948
+   },
+   "explanation": "The 20-bar average (260.93) moved below the 50-bar average (261.07).",
+   "caveat": "The dramatic name is marketing, not mathematics. It is the same lagging average comparison as the golden cross, pointed the other way."
+  },
+  {
+   "pattern": "macd_bull_cross",
+   "label": "MACD crossed above signal",
+   "date": "2026-03-31",
+   "values": {
+    "macd": -3.3983,
+    "signal": -3.4974
+   },
+   "explanation": "MACD (-3.398) crossed above its signal line (-3.497).",
+   "caveat": "Built entirely from moving averages, so it confirms moves already underway and produces frequent false crossings in sideways markets."
+  },
+  {
+   "pattern": "bollinger_break_upper",
+   "label": "Closed above upper Bollinger band",
+   "date": "2026-04-09",
+   "values": {
+    "close": 260.026,
+    "upper_band": 259.9643
+   },
+   "explanation": "The close (260.03) finished above the upper band (259.96).",
+   "caveat": "Statistically unusual is not wrong: prices ride the upper band through strong rallies. Treating a band touch as a reversal is a common and expensive mistake."
+  },
+  {
+   "pattern": "bollinger_break_upper",
+   "label": "Closed above upper Bollinger band",
+   "date": "2026-04-15",
+   "values": {
+    "close": 265.9554,
+    "upper_band": 264.2693
+   },
+   "explanation": "The close (265.96) finished above the upper band (264.27).",
+   "caveat": "Statistically unusual is not wrong: prices ride the upper band through strong rallies. Treating a band touch as a reversal is a common and expensive mistake."
+  },
+  {
+   "pattern": "bollinger_break_upper",
+   "label": "Closed above upper Bollinger band",
+   "date": "2026-04-17",
+   "values": {
+    "close": 269.7486,
+    "upper_band": 267.8549
+   },
+   "explanation": "The close (269.75) finished above the upper band (267.85).",
+   "caveat": "Statistically unusual is not wrong: prices ride the upper band through strong rallies. Treating a band touch as a reversal is a common and expensive mistake."
+  },
+  {
+   "pattern": "golden_cross",
+   "label": "Golden cross (20/50)",
+   "date": "2026-04-23",
+   "values": {
+    "fast": 260.026,
+    "slow": 259.7706,
+    "close": 272.9429
+   },
+   "explanation": "The 20-bar average (260.03) moved above the 50-bar average (259.77).",
+   "caveat": "Moving averages lag by construction: by the time they cross, much of the move that caused the cross has already happened. A cross describes the recent past, not the future."
+  },
+  {
+   "pattern": "bollinger_break_upper",
+   "label": "Closed above upper Bollinger band",
+   "date": "2026-05-01",
+   "values": {
+    "close": 279.641,
+    "upper_band": 279.2103
+   },
+   "explanation": "The close (279.64) finished above the upper band (279.21).",
+   "caveat": "Statistically unusual is not wrong: prices ride the upper band through strong rallies. Treating a band touch as a reversal is a common and expensive mistake."
+  },
+  {
+   "pattern": "bollinger_break_upper",
+   "label": "Closed above upper Bollinger band",
+   "date": "2026-05-05",
+   "values": {
+    "close": 283.6738,
+    "upper_band": 282.276
+   },
+   "explanation": "The close (283.67) finished above the upper band (282.28).",
+   "caveat": "Statistically unusual is not wrong: prices ride the upper band through strong rallies. Treating a band touch as a reversal is a common and expensive mistake."
+  },
+  {
+   "pattern": "drawdown_recovery",
+   "label": "Recovered a 10%+ drawdown",
+   "date": "2026-05-06",
+   "values": {
+    "close": 286.9979,
+    "regained_peak": 285.4131
+   },
+   "explanation": "The close (287.00) regained the prior peak (285.41) after a fall of at least 10%.",
+   "caveat": "Recovery marks the round trip back to a previous high -- the money lost in between was real, and nothing about recovering one drawdown prevents the next."
+  },
+  {
+   "pattern": "rsi_overbought",
+   "label": "RSI entered overbought",
+   "date": "2026-05-08",
+   "values": {
+    "rsi": 72.9413
+   },
+   "explanation": "RSI(14) rose to 72.9, entering the conventional overbought zone.",
+   "caveat": "'Overbought' means recent gains dominated recent losses. Strong uptrends hold RSI above 70 for long stretches; this is not a sell signal."
+  },
+  {
+   "pattern": "bollinger_break_upper",
+   "label": "Closed above upper Bollinger band",
+   "date": "2026-05-08",
+   "values": {
+    "close": 292.7975,
+    "upper_band": 290.8671
+   },
+   "explanation": "The close (292.80) finished above the upper band (290.87).",
+   "caveat": "Statistically unusual is not wrong: prices ride the upper band through strong rallies. Treating a band touch as a reversal is a common and expensive mistake."
+  },
+  {
+   "pattern": "rsi_overbought",
+   "label": "RSI entered overbought",
+   "date": "2026-06-02",
+   "values": {
+    "rsi": 73.7245
+   },
+   "explanation": "RSI(14) rose to 73.7, entering the conventional overbought zone.",
+   "caveat": "'Overbought' means recent gains dominated recent losses. Strong uptrends hold RSI above 70 for long stretches; this is not a sell signal."
+  },
+  {
+   "pattern": "macd_bear_cross",
+   "label": "MACD crossed below signal",
+   "date": "2026-06-03",
+   "values": {
+    "macd": 9.5506,
+    "signal": 9.796
+   },
+   "explanation": "MACD (9.551) crossed below its signal line (9.796).",
+   "caveat": "The mirror of the bullish cross, with the same lag and the same tendency to whipsaw when the price is drifting sideways."
+  },
+  {
+   "pattern": "bollinger_break_lower",
+   "label": "Closed below lower Bollinger band",
+   "date": "2026-06-09",
+   "values": {
+    "close": 290.2996,
+    "lower_band": 291.1434
+   },
+   "explanation": "The close (290.30) finished below the lower band (291.14).",
+   "caveat": "An unusually large decline relative to recent volatility. It describes the size of the fall, not whether it is finished."
+  },
+  {
+   "pattern": "bollinger_break_lower",
+   "label": "Closed below lower Bollinger band",
+   "date": "2026-06-25",
+   "values": {
+    "close": 274.9129,
+    "lower_band": 280.2091
+   },
+   "explanation": "The close (274.91) finished below the lower band (280.21).",
+   "caveat": "An unusually large decline relative to recent volatility. It describes the size of the fall, not whether it is finished."
+  },
+  {
+   "pattern": "large_move",
+   "label": "Unusually large single-bar move",
+   "date": "2026-06-25",
+   "values": {
+    "return_pct": -6.1178,
+    "sigmas": -4.3635
+   },
+   "explanation": "A single-bar move of -6.1%, about 4.4 standard deviations of the trailing year's bars.",
+   "caveat": "Large moves cluster: one outsized bar often sits inside a volatile stretch rather than ending one. The threshold uses only history available before the bar, so early data has no baseline and is skipped."
+  },
+  {
+   "pattern": "macd_bull_cross",
+   "label": "MACD crossed above signal",
+   "date": "2026-07-02",
+   "values": {
+    "macd": -0.6714,
+    "signal": -0.9266
+   },
+   "explanation": "MACD (-0.671) crossed above its signal line (-0.927).",
+   "caveat": "Built entirely from moving averages, so it confirms moves already underway and produces frequent false crossings in sideways markets."
+  },
+  {
+   "pattern": "large_move",
+   "label": "Unusually large single-bar move",
+   "date": "2026-07-02",
+   "values": {
+    "return_pct": 4.8407,
+    "sigmas": 3.2578
+   },
+   "explanation": "A single-bar move of +4.8%, about 3.3 standard deviations of the trailing year's bars.",
+   "caveat": "Large moves cluster: one outsized bar often sits inside a volatile stretch rather than ending one. The threshold uses only history available before the bar, so early data has no baseline and is skipped."
+  },
+  {
+   "pattern": "bollinger_break_upper",
+   "label": "Closed above upper Bollinger band",
+   "date": "2026-07-06",
+   "values": {
+    "close": 312.3906,
+    "upper_band": 311.9564
+   },
+   "explanation": "The close (312.39) finished above the upper band (311.96).",
+   "caveat": "Statistically unusual is not wrong: prices ride the upper band through strong rallies. Treating a band touch as a reversal is a common and expensive mistake."
+  },
+  {
+   "pattern": "death_cross",
+   "label": "Death cross (20/50)",
+   "date": "2026-07-08",
+   "values": {
+    "fast": 295.3777,
+    "slow": 295.5977,
+    "close": 313.12
+   },
+   "explanation": "The 20-bar average (295.38) moved below the 50-bar average (295.60).",
+   "caveat": "The dramatic name is marketing, not mathematics. It is the same lagging average comparison as the golden cross, pointed the other way."
+  },
+  {
+   "pattern": "golden_cross",
+   "label": "Golden cross (20/50)",
+   "date": "2026-07-09",
+   "values": {
+    "fast": 296.6601,
+    "slow": 296.574,
+    "close": 315.9475
+   },
+   "explanation": "The 20-bar average (296.66) moved above the 50-bar average (296.57).",
+   "caveat": "Moving averages lag by construction: by the time they cross, much of the move that caused the cross has already happened. A cross describes the recent past, not the future."
+  },
+  {
+   "pattern": "drawdown_recovery",
+   "label": "Recovered a 10%+ drawdown",
+   "date": "2026-07-09",
+   "values": {
+    "close": 315.9475,
+    "regained_peak": 314.9284
+   },
+   "explanation": "The close (315.95) regained the prior peak (314.93) after a fall of at least 10%.",
+   "caveat": "Recovery marks the round trip back to a previous high -- the money lost in between was real, and nothing about recovering one drawdown prevents the next."
+  },
+  {
+   "pattern": "rsi_overbought",
+   "label": "RSI entered overbought",
+   "date": "2026-07-16",
+   "values": {
+    "rsi": 71.4415
+   },
+   "explanation": "RSI(14) rose to 71.4, entering the conventional overbought zone.",
+   "caveat": "'Overbought' means recent gains dominated recent losses. Strong uptrends hold RSI above 70 for long stretches; this is not a sell signal."
+  },
+  {
+   "pattern": "macd_bear_cross",
+   "label": "MACD crossed below signal",
+   "date": "2026-07-31",
+   "values": {
+    "macd": 6.8882,
+    "signal": 8.2537
+   },
+   "explanation": "MACD (6.888) crossed below its signal line (8.254).",
+   "caveat": "The mirror of the bullish cross, with the same lag and the same tendency to whipsaw when the price is drifting sideways."
+  },
+  {
+   "pattern": "large_move",
+   "label": "Unusually large single-bar move",
+   "date": "2026-07-31",
+   "values": {
+    "return_pct": -7.3539,
+    "sigmas": -4.8327
+   },
+   "explanation": "A single-bar move of -7.4%, about 4.8 standard deviations of the trailing year's bars.",
+   "caveat": "Large moves cluster: one outsized bar often sits inside a volatile stretch rather than ending one. The threshold uses only history available before the bar, so early data has no baseline and is skipped."
+  },
+  {
+   "pattern": "death_cross",
+   "label": "Death cross (20/50)",
+   "date": "2026-08-26",
+   "values": {
+    "fast": 310.1696,
+    "slow": 311.0192,
+    "close": 313.45
+   },
+   "explanation": "The 20-bar average (310.17) moved below the 50-bar average (311.02).",
+   "caveat": "The dramatic name is marketing, not mathematics. It is the same lagging average comparison as the golden cross, pointed the other way."
+  },
+  {
+   "pattern": "macd_bull_cross",
+   "label": "MACD crossed above signal",
+   "date": "2026-08-26",
+   "values": {
+    "macd": -1.0307,
+    "signal": -1.1851
+   },
+   "explanation": "MACD (-1.031) crossed above its signal line (-1.185).",
+   "caveat": "Built entirely from moving averages, so it confirms moves already underway and produces frequent false crossings in sideways markets."
+  },
+  {
+   "pattern": "bollinger_break_upper",
+   "label": "Closed above upper Bollinger band",
+   "date": "2026-08-28",
+   "values": {
+    "close": 319.7,
+    "upper_band": 318.5642
+   },
+   "explanation": "The close (319.70) finished above the upper band (318.56).",
+   "caveat": "Statistically unusual is not wrong: prices ride the upper band through strong rallies. Treating a band touch as a reversal is a common and expensive mistake."
+  },
+  {
+   "pattern": "bollinger_break_upper",
+   "label": "Closed above upper Bollinger band",
+   "date": "2026-09-01",
+   "values": {
+    "close": 325.13,
+    "upper_band": 322.0584
+   },
+   "explanation": "The close (325.13) finished above the upper band (322.06).",
+   "caveat": "Statistically unusual is not wrong: prices ride the upper band through strong rallies. Treating a band touch as a reversal is a common and expensive mistake."
+  },
+  {
+   "pattern": "bollinger_break_upper",
+   "label": "Closed above upper Bollinger band",
+   "date": "2026-09-11",
+   "values": {
+    "close": 332.27,
+    "upper_band": 331.473
+   },
+   "explanation": "The close (332.27) finished above the upper band (331.47).",
+   "caveat": "Statistically unusual is not wrong: prices ride the upper band through strong rallies. Treating a band touch as a reversal is a common and expensive mistake."
+  }
+ ],
+ "summaries": [
+  {
+   "pattern": "golden_cross",
+   "label": "Golden cross (20/50)",
+   "definition": "The 20-bar average closed above the 50-bar average after being at or below it the bar before.",
+   "caveat": "Moving averages lag by construction: by the time they cross, much of the move that caused the cross has already happened. A cross describes the recent past, not the future.",
+   "occurrences": 3,
+   "outcomes": [
+    {
+     "window": 5,
+     "sample_size": 3,
+     "excluded": 0,
+     "mean": 0.013598,
+     "median": -0.005485,
+     "positive_share": 0.3333,
+     "worst": -0.007607,
+     "best": 0.053886,
+     "small_sample": true
+    },
+    {
+     "window": 20,
+     "sample_size": 3,
+     "excluded": 0,
+     "mean": 0.016405,
+     "median": -0.012049,
+     "positive_share": 0.3333,
+     "worst": -0.055188,
+     "best": 0.11645,
+     "small_sample": true
+    },
+    {
+     "window": 60,
+     "sample_size": 2,
+     "excluded": 1,
+     "mean": 0.161976,
+     "median": 0.161976,
+     "positive_share": 1.0,
+     "worst": 0.124222,
+     "best": 0.199729,
+     "small_sample": true
+    }
+   ]
+  },
+  {
+   "pattern": "death_cross",
+   "label": "Death cross (20/50)",
+   "definition": "The 20-bar average closed below the 50-bar average after being at or above it the bar before.",
+   "caveat": "The dramatic name is marketing, not mathematics. It is the same lagging average comparison as the golden cross, pointed the other way.",
+   "occurrences": 4,
+   "outcomes": [
+    {
+     "window": 5,
+     "sample_size": 4,
+     "excluded": 0,
+     "mean": 0.022761,
+     "median": 0.023721,
+     "positive_share": 0.75,
+     "worst": -0.001421,
+     "best": 0.045024,
+     "small_sample": true
+    },
+    {
+     "window": 20,
+     "sample_size": 3,
+     "excluded": 1,
+     "mean": 0.035358,
+     "median": 0.053853,
+     "positive_share": 0.6667,
+     "worst": -0.007626,
+     "best": 0.059847,
+     "small_sample": true
+    },
+    {
+     "window": 60,
+     "sample_size": 2,
+     "excluded": 2,
+     "mean": 0.080578,
+     "median": 0.080578,
+     "positive_share": 0.5,
+     "worst": -0.004716,
+     "best": 0.165873,
+     "small_sample": true
+    }
+   ]
+  },
+  {
+   "pattern": "rsi_oversold",
+   "label": "RSI entered oversold",
+   "definition": "RSI(14) closed below 30 after being at or above 30 the bar before.",
+   "caveat": "'Oversold' means recent losses dominated recent gains -- it does not mean 'due for a bounce'. In persistent declines RSI can stay below 30 for weeks.",
+   "occurrences": 2,
+   "outcomes": [
+    {
+     "window": 5,
+     "sample_size": 2,
+     "excluded": 0,
+     "mean": -0.020404,
+     "median": -0.020404,
+     "positive_share": 0.0,
+     "worst": -0.039387,
+     "best": -0.001421,
+     "small_sample": true
+    },
+    {
+     "window": 20,
+     "sample_size": 2,
+     "excluded": 0,
+     "mean": 0.025682,
+     "median": 0.025682,
+     "positive_share": 0.5,
+     "worst": -0.008484,
+     "best": 0.059847,
+     "small_sample": true
+    },
+    {
+     "window": 60,
+     "sample_size": 2,
+     "excluded": 0,
+     "mean": -0.000689,
+     "median": -0.000689,
+     "positive_share": 0.5,
+     "worst": -0.004716,
+     "best": 0.003339,
+     "small_sample": true
+    }
+   ]
+  },
+  {
+   "pattern": "rsi_overbought",
+   "label": "RSI entered overbought",
+   "definition": "RSI(14) closed above 70 after being at or below 70 the bar before.",
+   "caveat": "'Overbought' means recent gains dominated recent losses. Strong uptrends hold RSI above 70 for long stretches; this is not a sell signal.",
+   "occurrences": 8,
+   "outcomes": [
+    {
+     "window": 5,
+     "sample_size": 8,
+     "excluded": 0,
+     "mean": -0.011133,
+     "median": -0.008755,
+     "positive_share": 0.5,
+     "worst": -0.078204,
+     "best": 0.025054,
+     "small_sample": true
+    },
+    {
+     "window": 20,
+     "sample_size": 8,
+     "excluded": 0,
+     "mean": -0.005159,
+     "median": 0.01686,
+     "positive_share": 0.625,
+     "worst": -0.083228,
+     "best": 0.053272,
+     "small_sample": true
+    },
+    {
+     "window": 60,
+     "sample_size": 7,
+     "excluded": 1,
+     "mean": -0.013871,
+     "median": -0.001355,
+     "positive_share": 0.2857,
+     "worst": -0.076372,
+     "best": 0.061252,
+     "small_sample": true
+    }
+   ]
+  },
+  {
+   "pattern": "macd_bull_cross",
+   "label": "MACD crossed above signal",
+   "definition": "The MACD line closed above its signal line after being at or below it.",
+   "caveat": "Built entirely from moving averages, so it confirms moves already underway and produces frequent false crossings in sideways markets.",
+   "occurrences": 7,
+   "outcomes": [
+    {
+     "window": 5,
+     "sample_size": 7,
+     "excluded": 0,
+     "mean": 0.015552,
+     "median": 0.020135,
+     "positive_share": 0.7143,
+     "worst": -0.03083,
+     "best": 0.078186,
+     "small_sample": true
+    },
+    {
+     "window": 20,
+     "sample_size": 6,
+     "excluded": 1,
+     "mean": 0.008895,
+     "median": 0.006866,
+     "positive_share": 0.6667,
+     "worst": -0.075329,
+     "best": 0.065378,
+     "small_sample": true
+    },
+    {
+     "window": 60,
+     "sample_size": 5,
+     "excluded": 2,
+     "mean": 0.055294,
+     "median": 0.058,
+     "positive_share": 0.6,
+     "worst": -0.011037,
+     "best": 0.119199,
+     "small_sample": true
+    }
+   ]
+  },
+  {
+   "pattern": "macd_bear_cross",
+   "label": "MACD crossed below signal",
+   "definition": "The MACD line closed below its signal line after being at or above it.",
+   "caveat": "The mirror of the bullish cross, with the same lag and the same tendency to whipsaw when the price is drifting sideways.",
+   "occurrences": 7,
+   "outcomes": [
+    {
+     "window": 5,
+     "sample_size": 7,
+     "excluded": 0,
+     "mean": -0.009855,
+     "median": -0.013603,
+     "positive_share": 0.2857,
+     "worst": -0.060208,
+     "best": 0.04066,
+     "small_sample": true
+    },
+    {
+     "window": 20,
+     "sample_size": 7,
+     "excluded": 0,
+     "mean": -0.009177,
+     "median": -0.005254,
+     "positive_share": 0.4286,
+     "worst": -0.068336,
+     "best": 0.035822,
+     "small_sample": true
+    },
+    {
+     "window": 60,
+     "sample_size": 6,
+     "excluded": 1,
+     "mean": 0.055027,
+     "median": 0.031784,
+     "positive_share": 0.8333,
+     "worst": -0.072652,
+     "best": 0.175342,
+     "small_sample": true
+    }
+   ]
+  },
+  {
+   "pattern": "bollinger_break_upper",
+   "label": "Closed above upper Bollinger band",
+   "definition": "The close finished above the 20-bar average plus two standard deviations, having been inside the band the bar before.",
+   "caveat": "Statistically unusual is not wrong: prices ride the upper band through strong rallies. Treating a band touch as a reversal is a common and expensive mistake.",
+   "occurrences": 15,
+   "outcomes": [
+    {
+     "window": 5,
+     "sample_size": 14,
+     "excluded": 1,
+     "mean": 0.013447,
+     "median": 0.013022,
+     "positive_share": 0.7857,
+     "worst": -0.030111,
+     "best": 0.047048,
+     "small_sample": false
+    },
+    {
+     "window": 20,
+     "sample_size": 12,
+     "excluded": 3,
+     "mean": 0.036768,
+     "median": 0.028208,
+     "positive_share": 0.5833,
+     "worst": -0.057711,
+     "best": 0.122792,
+     "small_sample": false
+    },
+    {
+     "window": 60,
+     "sample_size": 11,
+     "excluded": 4,
+     "mean": 0.076462,
+     "median": 0.061252,
+     "positive_share": 0.7273,
+     "worst": -0.076372,
+     "best": 0.213047,
+     "small_sample": false
+    }
+   ]
+  },
+  {
+   "pattern": "bollinger_break_lower",
+   "label": "Closed below lower Bollinger band",
+   "definition": "The close finished below the 20-bar average minus two standard deviations, having been inside the band the bar before.",
+   "caveat": "An unusually large decline relative to recent volatility. It describes the size of the fall, not whether it is finished.",
+   "occurrences": 5,
+   "outcomes": [
+    {
+     "window": 5,
+     "sample_size": 5,
+     "excluded": 0,
+     "mean": 0.032748,
+     "median": 0.029909,
+     "positive_share": 0.6,
+     "worst": -0.026229,
+     "best": 0.121679,
+     "small_sample": true
+    },
+    {
+     "window": 20,
+     "sample_size": 5,
+     "excluded": 0,
+     "mean": 0.083166,
+     "median": 0.072547,
+     "positive_share": 1.0,
+     "worst": 0.008307,
+     "best": 0.210322,
+     "small_sample": true
+    },
+    {
+     "window": 60,
+     "sample_size": 4,
+     "excluded": 1,
+     "mean": 0.079844,
+     "median": 0.099642,
+     "positive_share": 0.75,
+     "worst": -0.042621,
+     "best": 0.162713,
+     "small_sample": true
+    }
+   ]
+  },
+  {
+   "pattern": "large_move",
+   "label": "Unusually large single-bar move",
+   "definition": "The bar's return exceeded 3 standard deviations of the trailing 252-bar return distribution (computed from prior bars only).",
+   "caveat": "Large moves cluster: one outsized bar often sits inside a volatile stretch rather than ending one. The threshold uses only history available before the bar, so early data has no baseline and is skipped.",
+   "occurrences": 5,
+   "outcomes": [
+    {
+     "window": 5,
+     "sample_size": 5,
+     "excluded": 0,
+     "mean": 0.037316,
+     "median": 0.018025,
+     "positive_share": 1.0,
+     "worst": 0.010889,
+     "best": 0.121679,
+     "small_sample": true
+    },
+    {
+     "window": 20,
+     "sample_size": 5,
+     "excluded": 0,
+     "mean": 0.036084,
+     "median": 0.000907,
+     "positive_share": 0.6,
+     "worst": -0.044359,
+     "best": 0.210322,
+     "small_sample": true
+    },
+    {
+     "window": 60,
+     "sample_size": 2,
+     "excluded": 3,
+     "mean": 0.060405,
+     "median": 0.060405,
+     "positive_share": 1.0,
+     "worst": 0.001529,
+     "best": 0.119282,
+     "small_sample": true
+    }
+   ]
+  },
+  {
+   "pattern": "drawdown_recovery",
+   "label": "Recovered a 10%+ drawdown",
+   "definition": "The close regained its prior running peak after having fallen at least 10% below it.",
+   "caveat": "Recovery marks the round trip back to a previous high -- the money lost in between was real, and nothing about recovering one drawdown prevents the next.",
+   "occurrences": 2,
+   "outcomes": [
+    {
+     "window": 5,
+     "sample_size": 2,
+     "excluded": 0,
+     "mean": 0.047178,
+     "median": 0.047178,
+     "positive_share": 1.0,
+     "worst": 0.040469,
+     "best": 0.053886,
+     "small_sample": true
+    },
+    {
+     "window": 20,
+     "sample_size": 2,
+     "excluded": 0,
+     "mean": 0.035725,
+     "median": 0.035725,
+     "positive_share": 0.5,
+     "worst": -0.012049,
+     "best": 0.083499,
+     "small_sample": true
+    },
+    {
+     "window": 60,
+     "sample_size": 1,
+     "excluded": 1,
+     "mean": 0.056309,
+     "median": 0.056309,
+     "positive_share": 1.0,
+     "worst": 0.056309,
+     "best": 0.056309,
+     "small_sample": true
+    }
+   ]
+  }
+ ],
+ "insufficient": false,
+ "note": "",
+ "method": "Every event is detected using only bars at or before its own date: rolling statistics trail, baselines end one bar earlier, and a guard test mutates all future bars to prove past detections cannot change. Outcome tables then report what actually followed each event over 5, 20, and 60 later bars -- future bars are used only to describe history, never to decide that an event occurred. Events too close to the end of the data are excluded from a window and counted.",
+ "disclaimer": "These are descriptions of past market behavior, not signals and not forecasts. A pattern that was followed by gains in this history carries no promise of repeating, and small samples -- which are flagged wherever they occur -- can look meaningful purely by chance."
+}

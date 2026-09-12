@@ -1,0 +1,71 @@
+{
+ "ticker": "AAPL",
+ "articles": [
+  {
+   "headline": "How The Rise Of Frontier Tech Baskets Could Impact Equities",
+   "summary": "The FAB 10 and MANGOS equity baskets have garnered attention as investors rotate into frontier tech favorites such as SpaceX, and eye Anthropic and OpenAI\u00e2\u0080\u0099s IPOs. Read more here.",
+   "source": "SeekingAlpha",
+   "url": "https://finnhub.io/api/news?id=5bb8a2eae53ced08753007af4c3eb01a575bcf307807411b040ceed083b2c599",
+   "published_at": "2026-09-12T03:20:00+00:00",
+   "image": "https://static.seekingalpha.com/cdn/s3/uploads/getty_images/2211454509/image_2211454509.jpg?io=getty-c-w1536"
+  },
+  {
+   "headline": "Apple\u2019s Foldable iPhone Could Trigger a Massive 'Upgrade Cycle,' Says Gary Black \u2014 But This One Problem Could Cap 'Incremental Earnings' for 6 Months",
+   "summary": "Investor Gary Black predicts Apple Inc.\u2018s newly launched foldable device will start a hardware purchasing cycle, but production limits may curb incremental earnings for possibly six months. Market Impact and Demographics Apple unveiled its first foldable smartphone, the iPhone Duo,...",
+   "source": "Yahoo",
+   "url": "https://finnhub.io/api/news?id=a39abf41c7f1134ba730c48db23f3bc79214f4332e9068d3fab6bb41ff81cf7c",
+   "published_at": "2026-09-12T01:30:31+00:00",
+   "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png"
+  },
+  {
+   "headline": "Cook Hands Ternus Apple (AAPL) that Still has to Prove itself on AI",
+   "summary": "Tim Cook stepped down as Apple Inc. (NASDAQ:AAPL)\u2019s CEO on September 1 after 15 years, becoming executive chairman and handing the role to hardware chief John Ternus, Reuters reported. Cook took Apple from a $350 billion company to a more than $4.5 trillion one during his tenure and will now focus on Apple\u2019s dealings with [\u2026]",
+   "source": "Yahoo",
+   "url": "https://finnhub.io/api/news?id=a0efa2444c6d294e76cda12fc09f93a4305bd3aeb5459effb755d49f12df55b4",
+   "published_at": "2026-09-12T01:14:45+00:00",
+   "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png"
+  },
+  {
+   "headline": "Apple, Microsoft, and Nvidia Top the List of Largest Companies by Market Cap. Here's the One I'm Buying Now.",
+   "summary": "Nvidia stands out as the best stock to buy of the three.",
+   "source": "Yahoo",
+   "url": "https://finnhub.io/api/news?id=5ea8b86b30d8520a3fd0d71a133eb31bc29f2f7b55ca5a26f30c0561604667e9",
+   "published_at": "2026-09-11T23:20:00+00:00",
+   "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png"
+  },
+  {
+   "headline": "Novartis: More Pain on the Way?",
+   "summary": "Can it get any worse for  Novartis\u2019  U.S. stock?  The Swiss company said Tuesday that del-desiran, part of a recent acquisition, reached the end of the line in a trial for a rare neuromuscular disease.  The drugmaker\u2019s U.S.-listed shares slumped 13% to $139.01 Tuesday.",
+   "source": "Yahoo",
+   "url": "https://finnhub.io/api/news?id=d764aa1b0aaf87b8e5589f9863c55b1dcf06d00397d77645bc81dcbdf9e8b874",
+   "published_at": "2026-09-11T22:42:00+00:00",
+   "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png"
+  },
+  {
+   "headline": "Benchmark Assigns Buy Rating to SiTime (SITM) Amid Timing Technology Market Expansion",
+   "summary": "On August 20, Gary Mobley from Benchmark initiated his coverage of SiTime Corp. (NASDAQ:SITM) with a target price of $850. The analyst assigned a Buy rating to the stock, backed by the expectations of increased relevance of precision timing for system manufacturers. Let\u2019s explore the underlying growth drivers and potential threats for a company that [\u2026]",
+   "source": "Yahoo",
+   "url": "https://finnhub.io/api/news?id=dbe5ebab4fad0da181690cac418733c80fe418ca0a10d78ee3d67f5252ddbf8a",
+   "published_at": "2026-09-11T22:26:30+00:00",
+   "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png"
+  },
+  {
+   "headline": "Xiaomi and Huawei Launch Foldable Smartphones Ahead of Apple\u2019s Latest Product Launch",
+   "summary": "China\u2019s premium-smartphone battle is becoming more ambitious, and more expensive. Huawei and Xiaomi Corporation (HKG:1810) have introduced new flagship foldable phones ahead of Apple Inc.\u2019s (NASDAQ:AAPL) latest product launch, giving consumers two very different approaches to turning a smartphone into a larger-screen device. Huawei\u2019s Mate XT2 folds out twice to produce a tablet-sized display, while [\u2026]",
+   "source": "Yahoo",
+   "url": "https://finnhub.io/api/news?id=4a7d3dd6ea97b376a851d790926cdff02c7adac4156df6fecf4ffd51f65ca140",
+   "published_at": "2026-09-11T22:24:34+00:00",
+   "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png"
+  },
+  {
+   "headline": "Morgan Stanley analyst offers new Apple stock forecast",
+   "summary": "Here\u2019s what could be next for Apple after it rolled out new products and changed its CEO.",
+   "source": "Yahoo",
+   "url": "https://finnhub.io/api/news?id=14198640e7942cae72845972d308643382b19bf585961f6d59d59b62b9629f15",
+   "published_at": "2026-09-11T22:17:00+00:00",
+   "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png"
+  }
+ ],
+ "source": "Finnhub",
+ "disclaimer": "Headlines are supplied by the news provider and are not verified, ranked, or summarized by this application. Their presence here is not a view on the story, and any rating, price target, or forecast inside a headline belongs to its source -- this application makes none."
+}

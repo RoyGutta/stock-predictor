@@ -1,0 +1,11 @@
+{
+ "movers": true,
+ "sectors": true,
+ "news": true,
+ "search": true,
+ "fundamentals": true,
+ "screener": false,
+ "notes": {
+  "screener": "Financial Modeling Prep serves its screener only on paid plans. This feature stays disabled rather than showing made-up results."
+ }
+}

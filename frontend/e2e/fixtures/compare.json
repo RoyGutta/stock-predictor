@@ -1,0 +1,55 @@
+{
+ "rows": [
+  {
+   "ticker": "VOO",
+   "company_name": "Vanguard S&P 500 ETF",
+   "price": 702.56,
+   "change_percent": 17.606,
+   "annualized_return": 0.177587,
+   "annualized_volatility": 0.128079,
+   "sharpe_ratio": 1.34052,
+   "sortino_ratio": 1.963062,
+   "max_drawdown": -0.089004,
+   "momentum_state": "mixed",
+   "momentum_score": 2,
+   "momentum_total": 4,
+   "bars": 251
+  },
+  {
+   "ticker": "QQQ",
+   "company_name": "Invesco QQQ Trust",
+   "price": 714.88,
+   "change_percent": 22.4428,
+   "annualized_return": 0.226413,
+   "annualized_volatility": 0.196952,
+   "sharpe_ratio": 1.13483,
+   "sortino_ratio": 1.662828,
+   "max_drawdown": -0.119644,
+   "momentum_state": "mixed",
+   "momentum_score": 2,
+   "momentum_total": 4,
+   "bars": 251
+  },
+  {
+   "ticker": "AAPL",
+   "company_name": "Apple Inc.",
+   "price": 332.27,
+   "change_percent": 42.4777,
+   "annualized_return": 0.428817,
+   "annualized_volatility": 0.250795,
+   "sharpe_ratio": 1.549199,
+   "sortino_ratio": 2.307601,
+   "max_drawdown": -0.137985,
+   "momentum_state": "mixed",
+   "momentum_score": 3,
+   "momentum_total": 4,
+   "bars": 251
+  }
+ ],
+ "range": "1Y",
+ "frequency": "daily",
+ "unavailable": {},
+ "source": "yfinance",
+ "note": "Each column is measured over the same window with the same method. Differences describe how these securities behaved historically -- not which one to pick.",
+ "disclaimer": "Historical characteristics over one window. They change with the window, and none of them predict future behavior."
+}

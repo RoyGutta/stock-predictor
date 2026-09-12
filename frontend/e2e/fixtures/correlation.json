@@ -1,0 +1,33 @@
+{
+ "tickers": [
+  "VOO",
+  "QQQ",
+  "AAPL"
+ ],
+ "range": "1Y",
+ "matrix": [
+  [
+   1.0,
+   0.929,
+   0.3591
+  ],
+  [
+   0.929,
+   1.0,
+   0.2379
+  ],
+  [
+   0.3591,
+   0.2379,
+   1.0
+  ]
+ ],
+ "observations": 250,
+ "resolved": {
+  "VOO": "Vanguard S&P 500 ETF",
+  "QQQ": "Invesco QQQ Trust",
+  "AAPL": "Apple Inc."
+ },
+ "unavailable": {},
+ "note": "Correlation is computed on returns, not on price levels. Two unrelated stocks that both drifted upward would look almost identical if levels were used. A value near 1 means the two moved together over this window; near 0 means they moved independently; negative means they tended to move opposite. This describes one past window and correlations shift \u2014 most notably, they tend toward 1 during a crash, which is exactly when diversification is being relied upon."
+}

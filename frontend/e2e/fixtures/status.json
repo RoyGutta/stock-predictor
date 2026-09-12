@@ -1,0 +1,9 @@
+{
+ "session": "closed",
+ "reason": "Weekend",
+ "exchange": "US equities (NYSE/NASDAQ)",
+ "local_time": "2026-09-12T03:55:15.589086-04:00",
+ "timezone": "America/New_York",
+ "next_open": "2026-09-14T09:30:00-04:00",
+ "holiday_data_through": 2027
+}

@@ -1,0 +1,680 @@
+{
+ "matches": [
+  {
+   "ticker": "XLV",
+   "name": "Health Care Select Sector SPDR",
+   "asset_class": "US equity",
+   "breadth": "sector",
+   "category": "Healthcare",
+   "tracks": "Healthcare companies in the S&P 500.",
+   "annualized_return": 0.061582,
+   "annualized_volatility": 0.154201,
+   "max_drawdown": -0.16077,
+   "momentum_state": "bullish",
+   "correlation_to_benchmark": 0.577,
+   "bars": 261,
+   "score": 3,
+   "total": 3,
+   "criteria": [
+    {
+     "name": "Volatility preference",
+     "met": true,
+     "detail": "Annualized volatility 15.4% -- middle third of this list; you selected 'moderate'."
+    },
+    {
+     "name": "Drawdown depth",
+     "met": true,
+     "detail": "Largest historical fall -16.1% -- lowest third of this list by depth."
+    },
+    {
+     "name": "Diversification",
+     "met": true,
+     "detail": "This is a sector fund: Healthcare companies in the S&P 500. You accepted any breadth."
+    }
+   ]
+  },
+  {
+   "ticker": "VOO",
+   "name": "Vanguard S&P 500 ETF",
+   "asset_class": "US equity",
+   "breadth": "broad",
+   "category": "Broad US market",
+   "tracks": "The S&P 500 index of large US companies.",
+   "annualized_return": 0.131242,
+   "annualized_volatility": 0.162412,
+   "max_drawdown": -0.239044,
+   "momentum_state": "bullish",
+   "correlation_to_benchmark": 1.0,
+   "bars": 261,
+   "score": 3,
+   "total": 3,
+   "criteria": [
+    {
+     "name": "Volatility preference",
+     "met": true,
+     "detail": "Annualized volatility 16.2% -- middle third of this list; you selected 'moderate'."
+    },
+    {
+     "name": "Drawdown depth",
+     "met": true,
+     "detail": "Largest historical fall -23.9% -- middle third of this list by depth."
+    },
+    {
+     "name": "Diversification",
+     "met": true,
+     "detail": "This is a broad fund: The S&P 500 index of large US companies. You accepted any breadth."
+    }
+   ]
+  },
+  {
+   "ticker": "VTI",
+   "name": "Vanguard Total Stock Market ETF",
+   "asset_class": "US equity",
+   "breadth": "broad",
+   "category": "Broad US market",
+   "tracks": "The entire US stock market, large through small.",
+   "annualized_return": 0.119997,
+   "annualized_volatility": 0.165952,
+   "max_drawdown": -0.248572,
+   "momentum_state": "bullish",
+   "correlation_to_benchmark": 0.996,
+   "bars": 261,
+   "score": 3,
+   "total": 3,
+   "criteria": [
+    {
+     "name": "Volatility preference",
+     "met": true,
+     "detail": "Annualized volatility 16.6% -- middle third of this list; you selected 'moderate'."
+    },
+    {
+     "name": "Drawdown depth",
+     "met": true,
+     "detail": "Largest historical fall -24.9% -- middle third of this list by depth."
+    },
+    {
+     "name": "Diversification",
+     "met": true,
+     "detail": "This is a broad fund: The entire US stock market, large through small. You accepted any breadth."
+    }
+   ]
+  },
+  {
+   "ticker": "SHY",
+   "name": "iShares 1-3 Year Treasury Bond ETF",
+   "asset_class": "Bonds",
+   "breadth": "broad",
+   "category": "Short-term treasuries",
+   "tracks": "US Treasury bonds maturing in one to three years.",
+   "annualized_return": 0.017614,
+   "annualized_volatility": 0.018789,
+   "max_drawdown": -0.05485,
+   "momentum_state": "mixed",
+   "correlation_to_benchmark": 0.143,
+   "bars": 261,
+   "score": 2,
+   "total": 3,
+   "criteria": [
+    {
+     "name": "Volatility preference",
+     "met": false,
+     "detail": "Annualized volatility 1.9% -- lowest third of this list; you selected 'moderate'."
+    },
+    {
+     "name": "Drawdown depth",
+     "met": true,
+     "detail": "Largest historical fall -5.5% -- lowest third of this list by depth."
+    },
+    {
+     "name": "Diversification",
+     "met": true,
+     "detail": "This is a broad fund: US Treasury bonds maturing in one to three years. You accepted any breadth."
+    }
+   ]
+  },
+  {
+   "ticker": "BND",
+   "name": "Vanguard Total Bond Market ETF",
+   "asset_class": "Bonds",
+   "breadth": "broad",
+   "category": "US bonds",
+   "tracks": "The broad US investment-grade bond market.",
+   "annualized_return": -0.005124,
+   "annualized_volatility": 0.057707,
+   "max_drawdown": -0.173387,
+   "momentum_state": "mixed",
+   "correlation_to_benchmark": 0.27,
+   "bars": 261,
+   "score": 2,
+   "total": 3,
+   "criteria": [
+    {
+     "name": "Volatility preference",
+     "met": false,
+     "detail": "Annualized volatility 5.8% -- lowest third of this list; you selected 'moderate'."
+    },
+    {
+     "name": "Drawdown depth",
+     "met": true,
+     "detail": "Largest historical fall -17.3% -- lowest third of this list by depth."
+    },
+    {
+     "name": "Diversification",
+     "met": true,
+     "detail": "This is a broad fund: The broad US investment-grade bond market. You accepted any breadth."
+    }
+   ]
+  },
+  {
+   "ticker": "AGG",
+   "name": "iShares Core US Aggregate Bond ETF",
+   "asset_class": "Bonds",
+   "breadth": "broad",
+   "category": "US bonds",
+   "tracks": "The broad US investment-grade bond market.",
+   "annualized_return": -0.005011,
+   "annualized_volatility": 0.058314,
+   "max_drawdown": -0.173137,
+   "momentum_state": "mixed",
+   "correlation_to_benchmark": 0.267,
+   "bars": 261,
+   "score": 2,
+   "total": 3,
+   "criteria": [
+    {
+     "name": "Volatility preference",
+     "met": false,
+     "detail": "Annualized volatility 5.8% -- lowest third of this list; you selected 'moderate'."
+    },
+    {
+     "name": "Drawdown depth",
+     "met": true,
+     "detail": "Largest historical fall -17.3% -- lowest third of this list by depth."
+    },
+    {
+     "name": "Diversification",
+     "met": true,
+     "detail": "This is a broad fund: The broad US investment-grade bond market. You accepted any breadth."
+    }
+   ]
+  },
+  {
+   "ticker": "XLP",
+   "name": "Consumer Staples Select Sector SPDR",
+   "asset_class": "US equity",
+   "breadth": "sector",
+   "category": "Consumer staples",
+   "tracks": "Consumer-staples companies in the S&P 500.",
+   "annualized_return": 0.059231,
+   "annualized_volatility": 0.131417,
+   "max_drawdown": -0.148975,
+   "momentum_state": "mixed",
+   "correlation_to_benchmark": 0.526,
+   "bars": 261,
+   "score": 2,
+   "total": 3,
+   "criteria": [
+    {
+     "name": "Volatility preference",
+     "met": false,
+     "detail": "Annualized volatility 13.1% -- lowest third of this list; you selected 'moderate'."
+    },
+    {
+     "name": "Drawdown depth",
+     "met": true,
+     "detail": "Largest historical fall -14.9% -- lowest third of this list by depth."
+    },
+    {
+     "name": "Diversification",
+     "met": true,
+     "detail": "This is a sector fund: Consumer-staples companies in the S&P 500. You accepted any breadth."
+    }
+   ]
+  },
+  {
+   "ticker": "VIG",
+   "name": "Vanguard Dividend Appreciation ETF",
+   "asset_class": "US equity",
+   "breadth": "broad",
+   "category": "Dividend",
+   "tracks": "US companies with a history of raising dividends.",
+   "annualized_return": 0.106385,
+   "annualized_volatility": 0.139129,
+   "max_drawdown": -0.201751,
+   "momentum_state": "bullish",
+   "correlation_to_benchmark": 0.937,
+   "bars": 261,
+   "score": 2,
+   "total": 3,
+   "criteria": [
+    {
+     "name": "Volatility preference",
+     "met": false,
+     "detail": "Annualized volatility 13.9% -- lowest third of this list; you selected 'moderate'."
+    },
+    {
+     "name": "Drawdown depth",
+     "met": true,
+     "detail": "Largest historical fall -20.2% -- middle third of this list by depth."
+    },
+    {
+     "name": "Diversification",
+     "met": true,
+     "detail": "This is a broad fund: US companies with a history of raising dividends. You accepted any breadth."
+    }
+   ]
+  },
+  {
+   "ticker": "SCHD",
+   "name": "Schwab US Dividend Equity ETF",
+   "asset_class": "US equity",
+   "breadth": "broad",
+   "category": "Dividend",
+   "tracks": "High-dividend US stocks screened for fundamentals.",
+   "annualized_return": 0.101231,
+   "annualized_volatility": 0.141973,
+   "max_drawdown": -0.166103,
+   "momentum_state": "bullish",
+   "correlation_to_benchmark": 0.75,
+   "bars": 261,
+   "score": 2,
+   "total": 3,
+   "criteria": [
+    {
+     "name": "Volatility preference",
+     "met": false,
+     "detail": "Annualized volatility 14.2% -- lowest third of this list; you selected 'moderate'."
+    },
+    {
+     "name": "Drawdown depth",
+     "met": true,
+     "detail": "Largest historical fall -16.6% -- lowest third of this list by depth."
+    },
+    {
+     "name": "Diversification",
+     "met": true,
+     "detail": "This is a broad fund: High-dividend US stocks screened for fundamentals. You accepted any breadth."
+    }
+   ]
+  },
+  {
+   "ticker": "TLT",
+   "name": "iShares 20+ Year Treasury Bond ETF",
+   "asset_class": "Bonds",
+   "breadth": "broad",
+   "category": "Long-term treasuries",
+   "tracks": "US Treasury bonds maturing in twenty-plus years.",
+   "annualized_return": -0.083483,
+   "annualized_volatility": 0.146874,
+   "max_drawdown": -0.433768,
+   "momentum_state": "mixed",
+   "correlation_to_benchmark": 0.124,
+   "bars": 261,
+   "score": 2,
+   "total": 3,
+   "criteria": [
+    {
+     "name": "Volatility preference",
+     "met": true,
+     "detail": "Annualized volatility 14.7% -- middle third of this list; you selected 'moderate'."
+    },
+    {
+     "name": "Drawdown depth",
+     "met": false,
+     "detail": "Largest historical fall -43.4% -- highest third of this list by depth."
+    },
+    {
+     "name": "Diversification",
+     "met": true,
+     "detail": "This is a broad fund: US Treasury bonds maturing in twenty-plus years. You accepted any breadth."
+    }
+   ]
+  },
+  {
+   "ticker": "VXUS",
+   "name": "Vanguard Total International Stock ETF",
+   "asset_class": "International equity",
+   "breadth": "broad",
+   "category": "International total",
+   "tracks": "The entire stock market outside the US.",
+   "annualized_return": 0.092981,
+   "annualized_volatility": 0.157204,
+   "max_drawdown": -0.288043,
+   "momentum_state": "bullish",
+   "correlation_to_benchmark": 0.792,
+   "bars": 261,
+   "score": 2,
+   "total": 3,
+   "criteria": [
+    {
+     "name": "Volatility preference",
+     "met": true,
+     "detail": "Annualized volatility 15.7% -- middle third of this list; you selected 'moderate'."
+    },
+    {
+     "name": "Drawdown depth",
+     "met": false,
+     "detail": "Largest historical fall -28.8% -- highest third of this list by depth."
+    },
+    {
+     "name": "Diversification",
+     "met": true,
+     "detail": "This is a broad fund: The entire stock market outside the US. You accepted any breadth."
+    }
+   ]
+  },
+  {
+   "ticker": "VWO",
+   "name": "Vanguard FTSE Emerging Markets ETF",
+   "asset_class": "International equity",
+   "breadth": "broad",
+   "category": "Emerging markets",
+   "tracks": "Stocks in emerging-market countries.",
+   "annualized_return": 0.065114,
+   "annualized_volatility": 0.162051,
+   "max_drawdown": -0.293523,
+   "momentum_state": "bullish",
+   "correlation_to_benchmark": 0.65,
+   "bars": 261,
+   "score": 2,
+   "total": 3,
+   "criteria": [
+    {
+     "name": "Volatility preference",
+     "met": true,
+     "detail": "Annualized volatility 16.2% -- middle third of this list; you selected 'moderate'."
+    },
+    {
+     "name": "Drawdown depth",
+     "met": false,
+     "detail": "Largest historical fall -29.4% -- highest third of this list by depth."
+    },
+    {
+     "name": "Diversification",
+     "met": true,
+     "detail": "This is a broad fund: Stocks in emerging-market countries. You accepted any breadth."
+    }
+   ]
+  },
+  {
+   "ticker": "VEA",
+   "name": "Vanguard FTSE Developed Markets ETF",
+   "asset_class": "International equity",
+   "breadth": "broad",
+   "category": "International developed",
+   "tracks": "Large and mid caps in developed markets outside the US.",
+   "annualized_return": 0.101861,
+   "annualized_volatility": 0.164884,
+   "max_drawdown": -0.290701,
+   "momentum_state": "bullish",
+   "correlation_to_benchmark": 0.798,
+   "bars": 261,
+   "score": 2,
+   "total": 3,
+   "criteria": [
+    {
+     "name": "Volatility preference",
+     "met": true,
+     "detail": "Annualized volatility 16.5% -- middle third of this list; you selected 'moderate'."
+    },
+    {
+     "name": "Drawdown depth",
+     "met": false,
+     "detail": "Largest historical fall -29.1% -- highest third of this list by depth."
+    },
+    {
+     "name": "Diversification",
+     "met": true,
+     "detail": "This is a broad fund: Large and mid caps in developed markets outside the US. You accepted any breadth."
+    }
+   ]
+  },
+  {
+   "ticker": "GLD",
+   "name": "SPDR Gold Shares",
+   "asset_class": "Commodity",
+   "breadth": "single-asset",
+   "category": "Gold",
+   "tracks": "The price of gold bullion.",
+   "annualized_return": 0.194807,
+   "annualized_volatility": 0.16727,
+   "max_drawdown": -0.238429,
+   "momentum_state": "mixed",
+   "correlation_to_benchmark": 0.164,
+   "bars": 261,
+   "score": 2,
+   "total": 3,
+   "criteria": [
+    {
+     "name": "Volatility preference",
+     "met": false,
+     "detail": "Annualized volatility 16.7% -- highest third of this list; you selected 'moderate'."
+    },
+    {
+     "name": "Drawdown depth",
+     "met": true,
+     "detail": "Largest historical fall -23.8% -- middle third of this list by depth."
+    },
+    {
+     "name": "Diversification",
+     "met": true,
+     "detail": "This is a single-asset fund: The price of gold bullion. You accepted any breadth."
+    }
+   ]
+  },
+  {
+   "ticker": "XLU",
+   "name": "Utilities Select Sector SPDR",
+   "asset_class": "US equity",
+   "breadth": "sector",
+   "category": "Utilities",
+   "tracks": "Utility companies in the S&P 500.",
+   "annualized_return": 0.082166,
+   "annualized_volatility": 0.172678,
+   "max_drawdown": -0.234407,
+   "momentum_state": "mixed",
+   "correlation_to_benchmark": 0.423,
+   "bars": 261,
+   "score": 2,
+   "total": 3,
+   "criteria": [
+    {
+     "name": "Volatility preference",
+     "met": false,
+     "detail": "Annualized volatility 17.3% -- highest third of this list; you selected 'moderate'."
+    },
+    {
+     "name": "Drawdown depth",
+     "met": true,
+     "detail": "Largest historical fall -23.4% -- middle third of this list by depth."
+    },
+    {
+     "name": "Diversification",
+     "met": true,
+     "detail": "This is a sector fund: Utility companies in the S&P 500. You accepted any breadth."
+    }
+   ]
+  },
+  {
+   "ticker": "XLF",
+   "name": "Financial Select Sector SPDR",
+   "asset_class": "US equity",
+   "breadth": "sector",
+   "category": "Financials",
+   "tracks": "Financial companies in the S&P 500.",
+   "annualized_return": 0.106859,
+   "annualized_volatility": 0.185804,
+   "max_drawdown": -0.251824,
+   "momentum_state": "bullish",
+   "correlation_to_benchmark": 0.795,
+   "bars": 261,
+   "score": 2,
+   "total": 3,
+   "criteria": [
+    {
+     "name": "Volatility preference",
+     "met": false,
+     "detail": "Annualized volatility 18.6% -- highest third of this list; you selected 'moderate'."
+    },
+    {
+     "name": "Drawdown depth",
+     "met": true,
+     "detail": "Largest historical fall -25.2% -- middle third of this list by depth."
+    },
+    {
+     "name": "Diversification",
+     "met": true,
+     "detail": "This is a sector fund: Financial companies in the S&P 500. You accepted any breadth."
+    }
+   ]
+  },
+  {
+   "ticker": "XLE",
+   "name": "Energy Select Sector SPDR",
+   "asset_class": "US equity",
+   "breadth": "sector",
+   "category": "Energy",
+   "tracks": "Energy companies in the S&P 500.",
+   "annualized_return": 0.259432,
+   "annualized_volatility": 0.273245,
+   "max_drawdown": -0.225124,
+   "momentum_state": "bullish",
+   "correlation_to_benchmark": 0.28,
+   "bars": 261,
+   "score": 2,
+   "total": 3,
+   "criteria": [
+    {
+     "name": "Volatility preference",
+     "met": false,
+     "detail": "Annualized volatility 27.3% -- highest third of this list; you selected 'moderate'."
+    },
+    {
+     "name": "Drawdown depth",
+     "met": true,
+     "detail": "Largest historical fall -22.5% -- middle third of this list by depth."
+    },
+    {
+     "name": "Diversification",
+     "met": true,
+     "detail": "This is a sector fund: Energy companies in the S&P 500. You accepted any breadth."
+    }
+   ]
+  },
+  {
+   "ticker": "VNQ",
+   "name": "Vanguard Real Estate ETF",
+   "asset_class": "Real estate",
+   "breadth": "sector",
+   "category": "Real estate",
+   "tracks": "US real-estate investment trusts.",
+   "annualized_return": 0.015463,
+   "annualized_volatility": 0.185932,
+   "max_drawdown": -0.342941,
+   "momentum_state": "mixed",
+   "correlation_to_benchmark": 0.683,
+   "bars": 261,
+   "score": 1,
+   "total": 3,
+   "criteria": [
+    {
+     "name": "Volatility preference",
+     "met": false,
+     "detail": "Annualized volatility 18.6% -- highest third of this list; you selected 'moderate'."
+    },
+    {
+     "name": "Drawdown depth",
+     "met": false,
+     "detail": "Largest historical fall -34.3% -- highest third of this list by depth."
+    },
+    {
+     "name": "Diversification",
+     "met": true,
+     "detail": "This is a sector fund: US real-estate investment trusts. You accepted any breadth."
+    }
+   ]
+  },
+  {
+   "ticker": "QQQ",
+   "name": "Invesco QQQ Trust",
+   "asset_class": "US equity",
+   "breadth": "broad",
+   "category": "US growth / Nasdaq-100",
+   "tracks": "The Nasdaq-100: 100 large non-financial companies.",
+   "annualized_return": 0.145285,
+   "annualized_volatility": 0.215652,
+   "max_drawdown": -0.350556,
+   "momentum_state": "bullish",
+   "correlation_to_benchmark": 0.946,
+   "bars": 261,
+   "score": 1,
+   "total": 3,
+   "criteria": [
+    {
+     "name": "Volatility preference",
+     "met": false,
+     "detail": "Annualized volatility 21.6% -- highest third of this list; you selected 'moderate'."
+    },
+    {
+     "name": "Drawdown depth",
+     "met": false,
+     "detail": "Largest historical fall -35.1% -- highest third of this list by depth."
+    },
+    {
+     "name": "Diversification",
+     "met": true,
+     "detail": "This is a broad fund: The Nasdaq-100: 100 large non-financial companies. You accepted any breadth."
+    }
+   ]
+  },
+  {
+   "ticker": "XLK",
+   "name": "Technology Select Sector SPDR",
+   "asset_class": "US equity",
+   "breadth": "sector",
+   "category": "Technology",
+   "tracks": "Technology companies in the S&P 500.",
+   "annualized_return": 0.20174,
+   "annualized_volatility": 0.244633,
+   "max_drawdown": -0.326212,
+   "momentum_state": "bullish",
+   "correlation_to_benchmark": 0.913,
+   "bars": 261,
+   "score": 1,
+   "total": 3,
+   "criteria": [
+    {
+     "name": "Volatility preference",
+     "met": false,
+     "detail": "Annualized volatility 24.5% -- highest third of this list; you selected 'moderate'."
+    },
+    {
+     "name": "Drawdown depth",
+     "met": false,
+     "detail": "Largest historical fall -32.6% -- highest third of this list by depth."
+    },
+    {
+     "name": "Diversification",
+     "met": true,
+     "detail": "This is a sector fund: Technology companies in the S&P 500. You accepted any breadth."
+    }
+   ]
+  }
+ ],
+ "unavailable": {},
+ "range": "5Y",
+ "frequency": "weekly",
+ "benchmark_ticker": "SPY",
+ "universe_note": "Searched a curated educational list of 20 large, liquid ETFs spanning the major asset classes -- not the whole market. The list is fixed and disclosed; a fund's absence means only that it is not on this list.",
+ "available_interests": [
+  "Consumer staples",
+  "Energy",
+  "Financials",
+  "Healthcare",
+  "Real estate",
+  "Technology",
+  "Utilities"
+ ],
+ "method": "Every fund in the disclosed universe is measured over the same window: annualized volatility, maximum drawdown, annualized return, moving-average momentum, and return correlation with SPY. Volatility and drawdown preferences are checked against thirds of this universe's own measured range (recomputed per request, so the boundaries are data, not opinion). Diversification is checked against how the fund is constructed. The score counts stated preferences matched; ties are ordered by lower measured volatility. Nothing here weighs expected performance.",
+ "disclaimer": "A preference match count, not a recommendation and not a prediction. It says how many of your stated preferences a fund's historical characteristics matched over one window. Historical characteristics change, and none of them indicate future results. This tool does not know your financial situation and is not financial advice."
+}
