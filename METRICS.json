@@ -271,7 +271,7 @@
     },
     {
       "date": "2026-09-12",
-      "commit": "7a35848",
+      "commit": "see git log; entry finalized at cycle end",
       "note": "Cycle 9. Recent-search persistence, first-run onboarding, page audit fixes (mobile nav, compare overflow, zero-neutral backtest cell), API hardening tests, Playwright smoke suite, provider documentation.",
       "reliability": {
         "backend_tests_passing": 424,
@@ -319,6 +319,34 @@
         "commits": 51,
         "pages": 6,
         "how": "git rev-list --count HEAD ; find backend/app -name '*.py' | xargs wc -l ; find frontend/src frontend/e2e -name '*.ts' -o -name '*.tsx' | grep -v fixtures | xargs wc -l"
+      },
+      "lighthouse": {
+        "target": "production build via vite preview, http://127.0.0.1:4173/ (dashboard route)",
+        "before_fixes": {
+          "accessibility": 97,
+          "best_practices": 100,
+          "seo": 91,
+          "failed": [
+            "color-contrast (--text-subtle 3.05:1)",
+            "label-content-name-mismatch (range buttons)",
+            "robots-txt (SPA fallback)"
+          ]
+        },
+        "after_fixes": {
+          "accessibility": 100,
+          "best_practices": 100,
+          "seo": 100
+        },
+        "devices": [
+          "desktop",
+          "mobile"
+        ],
+        "core_web_vitals_lab": {
+          "lcp_ms": 116,
+          "cls": 0.0,
+          "note": "localhost, no network or CPU throttling; a lab floor, not a field number"
+        },
+        "how": "chrome-devtools MCP lighthouse_audit (navigation mode) and performance_start_trace on the preview build"
       }
     }
   ]
