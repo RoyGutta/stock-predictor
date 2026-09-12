@@ -44,7 +44,16 @@ export function isAbort(error: unknown): boolean {
   return error instanceof DOMException && error.name === "AbortError";
 }
 
+/**
+ * Every message names what the user can do next. A 404 is almost always a
+ * typo or a company name typed where a symbol goes, so it gets a hint; rate
+ * limits and provider outages say how long to wait rather than why.
+ */
 function messageForStatus(status: number, detail?: string): string {
+  if (status === 404) {
+    const base = detail ?? "No market data found for that symbol.";
+    return `${base} Check the spelling, or search by company name to find the right ticker.`;
+  }
   if (detail) return detail;
   if (status === 429) return "Too many requests. Wait a moment and try again.";
   if (status >= 500) return "The market data service is unavailable. Try again shortly.";
