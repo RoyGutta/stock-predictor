@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 
 import { Button, Card } from "../components/ui";
+import { ToolGuide } from "../features/education/ToolGuide";
 import { CapabilityNotice, MoversPanel, SectorsPanel } from "../features/market/MarketPanels";
 import { SearchBox } from "../features/search/SearchBox";
 import { WatchlistPanel } from "../features/watchlist/WatchlistPanel";
@@ -81,6 +82,8 @@ export function DashboardPage() {
               </p>
             </div>
           </Card>
+
+          <ToolGuide />
 
           {canShowMovers ? (
             <MoversPanel
