@@ -37,7 +37,9 @@ MOVERS_DISCLAIMER = (
 
 NEWS_DISCLAIMER = (
     "Headlines are supplied by the news provider and are not verified, ranked, or "
-    "summarized by this application. Their presence here is not a view on the story."
+    "summarized by this application. Their presence here is not a view on the story, "
+    "and any rating, price target, or forecast inside a headline belongs to its "
+    "source -- this application makes none."
 )
 
 
