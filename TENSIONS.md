@@ -56,8 +56,17 @@ is fine for local and educational use but is **not licensed for commercial use o
 data redistribution**.
 
 This is a legal ceiling, not a technical one, and it blocks any genuinely public
-deployment. The provider layer is already abstracted so a licensed source can be
-swapped in without touching the routes.
+deployment.
+
+**Correction 2026-09-14:** the earlier claim that "the provider layer is already
+abstracted" was only true for Finnhub and FMP. Prices reach the app through two
+module-level functions in `market_data.py` that call yfinance directly; those two
+functions are the real seam. `PROVIDERS.md` records the full requirement inventory,
+the minimum contract a replacement must meet, and the evaluation of five licensed
+providers. Its conclusion: no self-serve plan at any evaluated provider permits
+public display; the only published plan that does is Twelve Data Venture
+($499/mo), and Twelve Data's non-profit programme may or may not include external
+display rights. Written confirmation is required before any public URL.
 
 ---
 
@@ -122,3 +131,21 @@ product philosophy explicitly: "THE APPLICATION DOES NOT CLAIM TO PREDICT
 FUTURE STOCK PRICES" and "The project deliberately refuses unsupported
 BUY/SELL predictions." No forecaster will be built; walk-forward backtesting
 (T-1, option C) remains the out-of-sample measurement.
+
+---
+
+## T-8 — Finnhub's terms also forbid display to third parties (OPEN, blocks public deploy)
+
+Found during the 2026-09-14 provider evaluation. Finnhub's Terms of Service
+(https://finnhub.io/terms-of-service, "Redistribution Rights and Personal Use"):
+"You hereby agree to not redistribute or share access to data or derived results
+from the data obtained from Finnhub with anyone or any 3rd party without written
+approval from Finnhub. All plan listed on Finnhub website is strictly for personal
+use unless explicitly stated otherwise."
+
+The news and search panels are therefore in the same position as the price
+history: fine locally, not publishable without written approval. T-3 was
+recorded as if it were the only licensing blocker; it is not. Both must be
+resolved (approval, a different provider, or removing the panels from a public
+build) before deployment. FMP's terms carry the same restriction (§2.2.2, "Data
+Display"), which affects movers, sectors, and profile in the same way.
