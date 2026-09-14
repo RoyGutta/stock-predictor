@@ -4,8 +4,8 @@ Default workflow for this repository. Applies to every task unless explicitly
 overridden in a later message.
 
 **Read first, every session:** `STATE.md`, `TENSIONS.md`, `METRICS.json`.
-The generic, project-agnostic version of this procedure lives at
-`~/Documents/RoyOS/08 AI/Workflows/Ultra Code — Self-Evolving Pipeline Operator.md`.
+This file is the project-specific form of a general operating procedure the
+maintainer keeps outside the repository.
 
 ---
 

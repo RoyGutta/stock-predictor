@@ -49,7 +49,7 @@ product's central design decision, and the codebase enforces it with tests.
 | Compare | Two to six securities over the identical window and method, with a return-correlation matrix; no ranking |
 | Explore | Preference matching over a disclosed universe of 20 ETFs; every criterion shows the measurement behind it and funds that miss are shown, not hidden |
 | Market context | Biggest movers (sub-$5 issues flagged, not filtered), sector snapshot, company profile, headlines, symbol search, session status |
-| Learn | A 17-entry glossary in plain English; each entry ends with what the concept cannot tell you |
+| Learn | A 17-entry learning path drawn from a 30-term plain-English glossary; each entry ends with what the concept cannot tell you |
 
 ## What it deliberately does not do
 
