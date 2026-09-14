@@ -1,6 +1,6 @@
 # State
 
-**Updated:** 2026-09-12 · **Commit:** `a411756` · **Cycle:** 9
+**Updated:** 2026-09-14 · **Commit:** `419592e` · **Cycle:** 9 (published)
 
 ## Objective
 
@@ -91,11 +91,22 @@ frontend/ React 19 + TS strict + Vite      backend/ FastAPI + Python 3.11+
 smoke, 0 failing; npm audit 0 across all groups; Lighthouse a11y/best-practices/SEO
 100/100/100 on the production build).
 
+## Published
+
+Public repository: https://github.com/RoyGutta/stock-predictor (branch `master`,
+created 2026-09-14). The remote is `origin`. Publication of the source is not a
+deployment: the application remains local-only until a licensed price provider
+is integrated (T-3, T-8, `PROVIDERS.md`).
+
 ## Blocked / needs your decision
 
 1. **T-2** — `backend/venv/` (a stale Windows virtualenv) should be deleted;
    awaiting your OK since it is your file.
-2. **T-4** — stock screener needs a paid FMP plan.
+2. **T-4** — stock screener needs a paid FMP plan (re-verified 402 on 2026-09-14).
+4. **T-3 / T-8 provider decision** — see `PROVIDERS.md` sections 5-7: choose a
+   provider path and send the listed questions to its licensing team. Twelve Data
+   Venture is the only published plan with external display rights; its non-profit
+   programme needs a qualifying entity and written confirmation of display scope.
 3. **Rotate the FMP key.** Not a repository problem — the repo is clean and
    always was — but that key was printed to a terminal by httpx before the
    log-level fix. Details in `personal.md`.
