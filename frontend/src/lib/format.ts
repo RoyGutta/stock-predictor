@@ -57,8 +57,24 @@ export function formatVolume(value: number | null | undefined): string {
  * Format an ISO timestamp for display.
  * Intraday bars keep their time; daily bars would otherwise all read midnight.
  */
+/**
+ * A date-only ISO string ("2025-12-31") is a calendar day, not an instant.
+ * `new Date("2025-12-31")` parses it as UTC midnight, which renders as the
+ * previous day anywhere west of Greenwich -- so daily bars were labeled one day
+ * early for US users. Build calendar days in local time instead; timestamps
+ * with a time component keep their instant semantics.
+ */
+export function parseIsoDate(iso: string): Date {
+  const dayOnly = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+  if (dayOnly) {
+    const [, year, month, day] = dayOnly;
+    return new Date(Number(year), Number(month) - 1, Number(day));
+  }
+  return new Date(iso);
+}
+
 export function formatTimestamp(iso: string, intraday: boolean): string {
-  const date = new Date(iso);
+  const date = parseIsoDate(iso);
   if (Number.isNaN(date.getTime())) return iso;
   return intraday
     ? date.toLocaleString(undefined, {
@@ -72,7 +88,7 @@ export function formatTimestamp(iso: string, intraday: boolean): string {
 
 /** Shorter form for chart axes, where space is tight. */
 export function formatAxisTick(iso: string, intraday: boolean): string {
-  const date = new Date(iso);
+  const date = parseIsoDate(iso);
   if (Number.isNaN(date.getTime())) return iso;
   return intraday
     ? date.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })

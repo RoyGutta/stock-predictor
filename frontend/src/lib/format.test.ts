@@ -135,3 +135,19 @@ describe("safeExternalUrl", () => {
     expect(safeExternalUrl("http://example.com/a?b=c")).toBe("http://example.com/a?b=c");
   });
 });
+
+describe("date-only ISO strings", () => {
+  it("renders the calendar day itself, not the previous day in western timezones", async () => {
+    const { formatTimestamp, formatAxisTick, parseIsoDate } = await import("./format");
+    // Whatever the host timezone, a calendar day must keep its day number.
+    expect(formatTimestamp("2025-12-31", false)).toContain("31");
+    expect(formatAxisTick("2025-12-31", false)).toContain("31");
+    const parsed = parseIsoDate("2025-12-31");
+    expect([parsed.getFullYear(), parsed.getMonth(), parsed.getDate()]).toEqual([2025, 11, 31]);
+  });
+
+  it("keeps instant semantics for timestamps with a time component", async () => {
+    const { parseIsoDate } = await import("./format");
+    expect(parseIsoDate("2025-12-31T15:55:00Z").toISOString()).toBe("2025-12-31T15:55:00.000Z");
+  });
+});
