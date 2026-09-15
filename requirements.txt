@@ -1,0 +1,9 @@
+# Dependencies for the Vercel Python function (api/index.py), which runs the
+# backend in DEMO_MODE. Mirrors backend/requirements.txt minus yfinance (never
+# imported in demo mode) and uvicorn (Vercel provides the ASGI server).
+fastapi~=0.121.0
+pydantic~=2.13.0
+pandas~=2.3.0
+numpy>=1.26,<3
+python-dotenv~=1.1.0
+httpx~=0.28.0
