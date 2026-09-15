@@ -21,6 +21,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import date, datetime, time, timedelta
+from functools import lru_cache
 from typing import Any
 
 import numpy as np
@@ -99,8 +100,14 @@ def is_demo_ticker(ticker: str) -> bool:
     return ticker.upper() in DEMO_UNIVERSE
 
 
+@lru_cache(maxsize=len(DEMO_UNIVERSE))
 def _daily_frame(ticker: str) -> pd.DataFrame:
-    """Deterministic daily OHLCV for one demo security, oldest first."""
+    """Deterministic daily OHLCV for one demo security, oldest first.
+
+    Cached for the process lifetime: the series is a pure function of the
+    ticker, and regenerating 12 years of bars on every request would dominate
+    latency. Callers only read from it.
+    """
     spec = DEMO_UNIVERSE[ticker]
     rng = np.random.default_rng(spec.seed * 7919 + 17)
     n = _TRADING_DAYS
