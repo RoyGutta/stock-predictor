@@ -274,9 +274,9 @@
       "commit": "a411756",
       "note": "Cycle 9. Recent-search persistence, first-run onboarding, page audit fixes (mobile nav, compare overflow, zero-neutral backtest cell), API hardening tests, Playwright smoke suite, provider documentation.",
       "reliability": {
-        "backend_tests_passing": 424,
+        "backend_tests_passing": 449,
         "backend_tests_failing": 0,
-        "frontend_unit_tests_passing": 244,
+        "frontend_unit_tests_passing": 248,
         "frontend_unit_tests_failing": 0,
         "browser_smoke_tests_passing": 22,
         "browser_smoke_tests_skipped": 2,
@@ -289,7 +289,7 @@
         "browser_console_warnings": 0,
         "npm_audit_vulnerabilities_all_groups": 0,
         "how": "cd backend && ruff check . && pytest ; cd frontend && npm run typecheck && npm run lint && node ./node_modules/vitest/vitest.mjs run --no-file-parallelism && npm run build && npm run test:e2e ; npm audit",
-        "how_note": "244 = 243 at first cycle-9 measurement + 1 backtest zero-excess regression test"
+        "how_note": "449 backend = 424 + 25 demo-mode tests; 248 frontend = 244 + 2 App demo-banner tests + 2 date-parsing tests"
       },
       "api_hardening": {
         "malformed_requests_probed_live": 29,
@@ -348,6 +348,28 @@
           "note": "localhost, no network or CPU throttling; a lab floor, not a field number"
         },
         "how": "chrome-devtools MCP lighthouse_audit (navigation mode) and performance_start_trace on the preview build"
+      },
+      "public_demo": {
+        "url": "https://stock-predictor-one-iota.vercel.app",
+        "deployed": "2026-09-15",
+        "host": "Vercel hobby, one project: static Vite build + Python function (api/index.py) behind /api rewrites, region iad1",
+        "data": "synthetic (DEMO_MODE); no market-data provider is called; live feeds return 503",
+        "verified_live": [
+          "dashboard with demo banner",
+          "analyze deep link + patterns",
+          "compare",
+          "portfolio replay",
+          "explore (20 funds)",
+          "learn (17 entries)",
+          "invalid ticker 404 guidance",
+          "390px layout",
+          "dark/light toggle",
+          "/docs disabled",
+          "8 malformed inputs -> 4xx without leaks",
+          "security headers + HSTS"
+        ],
+        "console_errors_on_verified_pages": 0,
+        "note": "Real market data remains local-only (T-3, T-8, PROVIDERS.md). Verified by hand with Playwright against the live URL, not by CI."
       }
     }
   ]
