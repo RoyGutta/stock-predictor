@@ -55,8 +55,9 @@ export function DashboardPage() {
               </h1>
               <p className="welcome__body">
                 This application helps you explore historical market data, risk,
-                diversification, and investing concepts using real prices and transparent
-                methods. It does not predict future prices and does not provide
+                diversification, and investing concepts using{" "}
+                {capabilities.data?.demo ? "a synthetic demonstration dataset" : "real prices"} and
+                transparent methods. It does not predict future prices and does not provide
                 individualized financial advice.
               </p>
               <div style={{ width: "100%", maxWidth: "34rem" }}>

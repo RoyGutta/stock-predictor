@@ -301,6 +301,10 @@ export interface Capabilities {
   screener: boolean;
   /** Why a capability is unavailable, keyed by capability name. */
   notes: Record<string, string>;
+  /** True when prices come from the synthetic demo dataset, not a provider. */
+  demo: boolean;
+  /** Standing disclosure to show whenever demo is true. */
+  demo_note: string | null;
 }
 
 // --- backtesting -----------------------------------------------------------

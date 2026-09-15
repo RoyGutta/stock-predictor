@@ -27,7 +27,10 @@ import type {
   SimulationResponse,
 } from "../types/market";
 
-const BASE_URL: string = import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:8001";
+// Same-origin by default: production serves the API under /api on the same
+// host, and vite dev/preview proxy /api to the local backend (vite.config.ts).
+// Set VITE_API_BASE_URL only to point at a backend on another origin.
+const BASE_URL: string = import.meta.env.VITE_API_BASE_URL ?? "";
 
 /** An error carrying a message that is safe to render to the user. */
 export class ApiError extends Error {

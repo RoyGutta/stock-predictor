@@ -16,7 +16,7 @@ const TOOLS: Array<{ page: Page; name: string; question: string; detail: string 
     name: "Analyze",
     question: "What has this security actually done?",
     detail:
-      "Price history, standard indicators, risk statistics, historical patterns, and a backtest of textbook rules -- all measured from real data, none of it a forecast.",
+      "Price history, standard indicators, risk statistics, historical patterns, and a backtest of textbook rules -- all measured from the price history, none of it a forecast.",
   },
   {
     page: "explore",
@@ -37,7 +37,7 @@ const TOOLS: Array<{ page: Page; name: string; question: string; detail: string 
     name: "Portfolio",
     question: "What would a mix of funds have done?",
     detail:
-      "Replay fixed weights with monthly contributions through real history, against the same cash flows into an S&P 500 fund. Deposits are never counted as returns.",
+      "Replay fixed weights with monthly contributions through the price history, against the same cash flows into an S&P 500 fund. Deposits are never counted as returns.",
   },
   {
     page: "learn",

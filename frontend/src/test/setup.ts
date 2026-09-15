@@ -10,3 +10,21 @@ import { afterEach } from "vitest";
  * queries start matching elements from earlier tests.
  */
 afterEach(cleanup);
+
+// jsdom has no matchMedia; the theme hook reads the OS color-scheme through it.
+// A stub that reports "no preference" lets the full App render in tests.
+if (typeof window !== "undefined" && typeof window.matchMedia !== "function") {
+  Object.defineProperty(window, "matchMedia", {
+    writable: true,
+    value: (query: string): MediaQueryList => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      addListener: () => {},
+      removeListener: () => {},
+      dispatchEvent: () => false,
+    }),
+  });
+}

@@ -150,7 +150,7 @@ export function BacktestPanel({
       <Card title="Would a trading rule have beaten just holding?">
         <div className="bt-intro">
           <p className="bt-intro__body">
-            Common rules like &ldquo;buy when RSI is low&rdquo; are tested on {ticker}&rsquo;s real
+            Common rules like &ldquo;buy when RSI is low&rdquo; are tested on {ticker}&rsquo;s price
             history. Each rule&rsquo;s settings are chosen using an early stretch of data, then
             scored once on a later stretch it never saw — the same way you would find out
             whether a rule works, rather than whether it can be made to look good in

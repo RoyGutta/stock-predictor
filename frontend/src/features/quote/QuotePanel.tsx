@@ -89,8 +89,10 @@ export function QuoteSummary({ quote, watched, onToggleWatch }: QuoteSummaryProp
         </div>
 
         <p className="quote__meta">
-          As of {formatTimestamp(quote.as_of, intraday)} · data from {quote.source} · delayed and
-          for education only
+          As of {formatTimestamp(quote.as_of, intraday)} · data from {quote.source} ·{" "}
+          {quote.source.toLowerCase().includes("demo")
+            ? "synthetic, not live market data"
+            : "delayed and for education only"}
         </p>
       </div>
     </Card>

@@ -8,7 +8,7 @@ import { DashboardPage } from "./pages/DashboardPage";
 import { ExplorePage } from "./pages/ExplorePage";
 import { LearnPage } from "./pages/LearnPage";
 import { PortfolioPage } from "./pages/PortfolioPage";
-import { useMarketStatus } from "./hooks/useMarketData";
+import { useCapabilities, useMarketStatus } from "./hooks/useMarketData";
 import { useTheme } from "./hooks/useTheme";
 import "./App.css";
 
@@ -47,6 +47,8 @@ function CurrentPage() {
 function App() {
   const { theme, toggleTheme } = useTheme();
   const marketStatus = useMarketStatus();
+  const capabilities = useCapabilities();
+  const demo = capabilities.data?.demo ?? false;
 
   return (
     <RouteProvider>
@@ -83,6 +85,13 @@ function App() {
           </div>
         </header>
 
+        {demo && (
+          <div className="app__demo" role="note">
+            <strong>Demo data.</strong> Synthetic dataset for demonstration, frozen at
+            2025-12-31. Not live market data and not any real security.
+          </div>
+        )}
+
         {/* tabIndex -1 lets route changes move focus here without adding the
             landmark to the tab order. */}
         <main id="main" className="app__main" tabIndex={-1}>
@@ -91,7 +100,10 @@ function App() {
 
         <footer className="app__footer">
           <p>
-            Educational tool. Not investment advice. Market data may be delayed or incomplete,
+            Educational tool. Not investment advice.{" "}
+            {demo
+              ? "Every figure on this site is computed from a synthetic demonstration dataset, not from market data,"
+              : "Market data may be delayed or incomplete,"}{" "}
             and every figure shown describes the past — none of it predicts what happens next.
             Investing involves risk, including loss of principal.
           </p>
