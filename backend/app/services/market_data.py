@@ -18,10 +18,9 @@ from dataclasses import dataclass
 from threading import Lock
 from typing import Any
 
-import yfinance as yf
-
 from app.config import get_settings
 from app.schemas import Candle, Quote, Range
+from app.services.providers import demo
 
 logger = logging.getLogger(__name__)
 
@@ -137,6 +136,8 @@ def _fetch_profile_sync(ticker: str) -> dict[str, str]:
     cached separately with a long TTL and never blocks a price response --
     failure here degrades to using the symbol as the display name.
     """
+    import yfinance as yf  # lazy: the demo deployment never imports it
+
     try:
         info = yf.Ticker(ticker).info
     except Exception:
@@ -150,6 +151,8 @@ def _fetch_profile_sync(ticker: str) -> dict[str, str]:
 
 
 def _fetch_history_sync(ticker: str, period: str, interval: str) -> list[dict[str, Any]]:
+    import yfinance as yf  # lazy: the demo deployment never imports it
+
     frame = yf.Ticker(ticker).history(period=period, interval=interval)
     if frame is None or frame.empty:
         return []
@@ -183,6 +186,14 @@ async def get_quote(raw_ticker: str, range_: Range) -> Quote:
     if cached is not None:
         return cached
 
+    if settings.demo_mode:
+        # Synthetic, frozen, labeled. See providers/demo.py for why.
+        candles = await _to_thread(demo.fetch_history, ticker, range_)
+        if not candles:
+            raise UnknownTickerError(ticker)
+        profile = demo.fetch_identity(ticker)
+        return _assemble_quote(ticker, range_, candles, profile, demo.SOURCE, cache_key)
+
     period, interval = _RANGE_PARAMS[range_]
 
     try:
@@ -202,6 +213,18 @@ async def get_quote(raw_ticker: str, range_: Range) -> Quote:
         profile = await _to_thread(_fetch_profile_sync, ticker)
         _profile_cache.set(ticker, profile, settings.profile_cache_ttl)
 
+    return _assemble_quote(ticker, range_, candles, profile, SOURCE, cache_key)
+
+
+def _assemble_quote(
+    ticker: str,
+    range_: Range,
+    candles: list[dict[str, Any]],
+    profile: dict[str, str],
+    source: str,
+    cache_key: str,
+) -> Quote:
+    settings = get_settings()
     latest = candles[-1]
     first_close = candles[0]["price"]
     change_points = round(latest["price"] - first_close, 4)
@@ -221,7 +244,7 @@ async def get_quote(raw_ticker: str, range_: Range) -> Quote:
         range=range_,
         history=[Candle(**candle) for candle in candles],
         as_of=latest["date"],
-        source=SOURCE,
+        source=source,
     )
 
     _quote_cache.set(cache_key, quote, settings.quote_cache_ttl)

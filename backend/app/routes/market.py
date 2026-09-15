@@ -35,6 +35,12 @@ MOVERS_DISCLAIMER = (
     "are marked. A large move most often reflects news that is already in the price."
 )
 
+DEMO_NOTE = (
+    "Demo data: every price on this site comes from a synthetic dataset generated "
+    "for demonstration and frozen at 2025-12-31. It is not live market data and "
+    "does not describe any real security."
+)
+
 NEWS_DISCLAIMER = (
     "Headlines are supplied by the news provider and are not verified, ranked, or "
     "summarized by this application. Their presence here is not a view on the story, "
@@ -70,6 +76,24 @@ async def read_capabilities() -> CapabilityStatus:
     """
     settings = get_settings()
     notes: dict[str, str] = {}
+
+    if settings.demo_mode:
+        # Live feeds are off in the public demo: their providers' terms do not
+        # permit display to third parties either (TENSIONS T-8), and mixing
+        # real headlines with synthetic prices would be its own kind of misleading.
+        off = "Switched off in the public demo, which uses a synthetic dataset."
+        return CapabilityStatus(
+            movers=False,
+            sectors=False,
+            fundamentals=False,
+            news=False,
+            search=True,
+            screener=False,
+            notes={"movers": off, "sectors": off, "fundamentals": off, "news": off,
+                   "screener": off},
+            demo=True,
+            demo_note=DEMO_NOTE,
+        )
 
     if not settings.has_fmp:
         notes["movers"] = "Add FMP_API_KEY to .env to enable."

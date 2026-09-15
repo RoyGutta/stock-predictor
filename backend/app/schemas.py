@@ -253,6 +253,13 @@ class CapabilityStatus(BaseModel):
     search: bool
     fundamentals: bool
     screener: bool
+    demo: bool = Field(
+        default=False,
+        description="True when prices come from the synthetic demo dataset, not a provider.",
+    )
+    demo_note: str | None = Field(
+        default=None, description="Standing disclosure to show whenever demo is true."
+    )
     notes: dict[str, str] = Field(
         description="Why a capability is unavailable, keyed by capability name."
     )

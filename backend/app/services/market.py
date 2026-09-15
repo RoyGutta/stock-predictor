@@ -16,12 +16,24 @@ from zoneinfo import ZoneInfo
 
 from app.config import get_settings
 from app.services.market_data import TTLCache
-from app.services.providers import finnhub, fmp
+from app.services.providers import demo, finnhub, fmp
 from app.services.providers.base import ProviderError
 
 logger = logging.getLogger(__name__)
 
 _cache = TTLCache(maxsize=256)
+
+
+DEMO_OFF = (
+    "Switched off in the public demo. Live market feeds are not shown alongside the "
+    "synthetic dataset, and their providers' terms do not permit public display."
+)
+
+
+def _refuse_in_demo() -> None:
+    """Live provider calls never happen in demo mode, key or no key."""
+    if get_settings().demo_mode:
+        raise ProviderError(DEMO_OFF, status_code=503)
 
 T = TypeVar("T")
 
@@ -126,6 +138,7 @@ async def _cached(key: str, ttl: int, loader: Callable[[], Awaitable[T]]) -> T:
 
 
 async def get_movers(limit: int = 10) -> dict[str, Any]:
+    _refuse_in_demo()
     """Gainers, losers, and most active, fetched together.
 
     Uses gather(return_exceptions=True) so one failing list does not blank the
@@ -157,6 +170,7 @@ async def get_movers(limit: int = 10) -> dict[str, Any]:
 
 
 async def get_sectors() -> list[dict[str, Any]]:
+    _refuse_in_demo()
     """Sector performance for the most recent session with data.
 
     FMP's snapshot is dated; on a weekend or before the current session settles
@@ -180,6 +194,7 @@ async def get_sectors() -> list[dict[str, Any]]:
 
 
 async def get_news(ticker: str, limit: int = 12) -> list[dict[str, Any]]:
+    _refuse_in_demo()
     settings = get_settings()
     key = f"news:{ticker.upper()}:{limit}"
     return await _cached(
@@ -190,6 +205,8 @@ async def get_news(ticker: str, limit: int = 12) -> list[dict[str, Any]]:
 async def search(query: str, limit: int = 10) -> list[dict[str, Any]]:
     settings = get_settings()
     normalized = query.strip().lower()
+    if settings.demo_mode:
+        return demo.search(normalized, limit)
     key = f"search:{normalized}:{limit}"
     return await _cached(
         key, settings.market_cache_ttl, lambda: finnhub.search_symbols(normalized, limit)
@@ -197,6 +214,7 @@ async def search(query: str, limit: int = 10) -> list[dict[str, Any]]:
 
 
 async def get_profile(ticker: str) -> dict[str, Any] | None:
+    _refuse_in_demo()
     settings = get_settings()
     key = f"profile:{ticker.upper()}"
     return await _cached(key, settings.profile_cache_ttl, lambda: fmp.fetch_profile(ticker))

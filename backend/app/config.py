@@ -66,6 +66,13 @@ class Settings:
         default_factory=lambda: float(os.getenv("PROVIDER_TIMEOUT_SECONDS", "10"))
     )
 
+    # Public demo: serve a clearly labeled synthetic dataset instead of real
+    # market data, because the default price provider is not licensed for
+    # public display (TENSIONS T-3, PROVIDERS.md). Never on by default.
+    demo_mode: bool = field(
+        default_factory=lambda: os.getenv("DEMO_MODE", "").strip().lower() in {"1", "true", "yes"}
+    )
+
     @property
     def is_production(self) -> bool:
         return self.app_env.lower() == "production"
