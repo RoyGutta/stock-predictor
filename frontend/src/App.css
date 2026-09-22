@@ -95,9 +95,19 @@
 .app__primary,
 .app__side {
   display: grid;
+  /* An implicit `auto` column would size these to their content's min-content
+     width. The chart renders an SVG at an explicit pixel width, so after the
+     viewport shrinks the column could never get narrower than the old chart,
+     and the chart's resize observer would never see the new size. */
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-5);
   min-width: 0;
   align-content: start;
+}
+
+.app__primary > *,
+.app__side > * {
+  min-width: 0;
 }
 
 /* The sidebar is supporting material; below this width it goes under the

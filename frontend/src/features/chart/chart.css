@@ -1,6 +1,10 @@
 .chart__frame {
   height: clamp(300px, 46vh, 460px);
   margin-top: var(--space-4);
+  /* The SVG inside carries the last measured width. Let the frame shrink first
+     and clip the stale frame for the one tick before the chart re-renders. */
+  min-width: 0;
+  overflow: hidden;
 }
 
 .chart__controls {

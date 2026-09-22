@@ -126,6 +126,20 @@ test("a deep link loads the security and describes its chart", async ({ page }) 
   await noHorizontalOverflow(page);
 });
 
+test("the chart follows the viewport when an open page is resized", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop", "starts wide, then shrinks");
+  await page.goto("/#/analyze/AAPL");
+  await expect(page.locator("[aria-label^='Price chart for AAPL']")).toBeVisible();
+  const wide = await page.locator("main svg").first().boundingBox();
+  expect(wide!.width).toBeGreaterThan(500);
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect
+    .poll(async () => (await page.locator("main svg").first().boundingBox())!.width)
+    .toBeLessThanOrEqual(390);
+  await noHorizontalOverflow(page);
+});
+
 test("recent searches persist across navigation, reload, and deep links", async ({ page }) => {
   await page.goto("/#/analyze/AAPL");
   await expect(page.getByText("Apple Inc.").first()).toBeVisible();
