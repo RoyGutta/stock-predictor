@@ -27,7 +27,7 @@ product's central design decision, and the codebase enforces it with tests.
 - [Configuration](#configuration)
 - [Testing](#testing)
 - [Data providers and licensing](#data-providers-and-licensing)
-- [Deployment status](#deployment-status)
+- [Public demo and deployment status](#public-demo-and-deployment-status)
 - [Known limitations](#known-limitations)
 - [Contributing](#contributing)
 - [License](#license)
