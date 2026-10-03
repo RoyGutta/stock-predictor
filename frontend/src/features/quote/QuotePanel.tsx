@@ -6,7 +6,14 @@ import {
   formatTimestamp,
   formatVolume,
 } from "../../lib/format";
-import { INTRADAY_RANGES, RANGES, RANGE_LABELS, type Quote, type Range } from "../../types/market";
+import {
+  ADJUSTMENT_LABELS,
+  INTRADAY_RANGES,
+  RANGES,
+  RANGE_LABELS,
+  type Quote,
+  type Range,
+} from "../../types/market";
 import type { RecentSearch } from "./useRecentSearches";
 import "./quote.css";
 
@@ -90,9 +97,8 @@ export function QuoteSummary({ quote, watched, onToggleWatch }: QuoteSummaryProp
 
         <p className="quote__meta">
           As of {formatTimestamp(quote.as_of, intraday)} · data from {quote.source} ·{" "}
-          {quote.source.toLowerCase().includes("demo")
-            ? "synthetic, not live market data"
-            : "delayed and for education only"}
+          {ADJUSTMENT_LABELS[quote.adjustment ?? "unspecified"]}
+          {quote.adjustment !== "synthetic" && " · delayed and for education only"}
         </p>
       </div>
     </Card>

@@ -2021,5 +2021,6 @@
   }
  ],
  "as_of": "2026-09-11",
- "source": "yfinance"
+ "source": "yfinance",
+ "adjustment": "split_and_dividend"
 }

@@ -7,5 +7,11 @@
  "screener": false,
  "notes": {
   "screener": "Financial Modeling Prep serves its screener only on paid plans. This feature stays disabled rather than showing made-up results."
- }
+ },
+ "prices": true,
+ "intraday": true,
+ "price_source": "yfinance",
+ "adjustment": "split_and_dividend",
+ "demo": false,
+ "demo_note": null
 }

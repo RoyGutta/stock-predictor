@@ -129,6 +129,7 @@ const quote: Quote = {
   history: [],
   as_of: "2026-08-17",
   source: "yfinance",
+  adjustment: "split_and_dividend",
 };
 
 const simulation: SimulationResponse = {

@@ -46,7 +46,24 @@ export interface Quote {
   history: Candle[];
   as_of: string;
   source: string;
+  /** What the prices already account for: split_and_dividend, split, unadjusted, synthetic. */
+  adjustment: AdjustmentBasis;
 }
+
+export type AdjustmentBasis =
+  | "split_and_dividend"
+  | "split"
+  | "unadjusted"
+  | "synthetic"
+  | "unspecified";
+
+export const ADJUSTMENT_LABELS: Record<AdjustmentBasis, string> = {
+  split_and_dividend: "split- and dividend-adjusted",
+  split: "split-adjusted",
+  unadjusted: "unadjusted prices",
+  synthetic: "synthetic, not live market data",
+  unspecified: "adjustment basis not stated",
+};
 
 // --- analysis --------------------------------------------------------------
 
@@ -301,6 +318,14 @@ export interface Capabilities {
   screener: boolean;
   /** Why a capability is unavailable, keyed by capability name. */
   notes: Record<string, string>;
+  /** A price provider is configured. */
+  prices: boolean;
+  /** The price provider serves the 1D and 5D intraday ranges. */
+  intraday: boolean;
+  /** Attribution label of the price provider. */
+  price_source: string;
+  /** Adjustment basis of every price series this deployment serves. */
+  adjustment: AdjustmentBasis;
   /** True when prices come from the synthetic demo dataset, not a provider. */
   demo: boolean;
   /** Standing disclosure to show whenever demo is true. */
