@@ -20,6 +20,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "backend"))
 
 os.environ["DEMO_MODE"] = "1"
+os.environ["MARKET_DATA_PROVIDER"] = "demo"
 os.environ.setdefault("APP_ENV", "production")
 
 # Same-origin deployment: the browser never makes a cross-origin call, but the

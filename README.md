@@ -140,6 +140,46 @@ All indicator and risk math lives on the backend so there is one implementation.
 The frontend plots date-aligned series it receives; it computes nothing that could
 drift from the server.
 
+### Market-data provider architecture
+
+Nothing in analytics, routes, or the frontend knows which vendor supplied a
+price. They consume a normalized contract defined in
+`backend/app/services/providers/prices.py`:
+
+| Concept | Where | Meaning |
+|---|---|---|
+| `PriceProvider` | `providers/prices.py` | Protocol: `name`, `adjustment`, `capabilities`, `fetch_history(ticker, range) -> list[Bar]`, `fetch_identity(ticker) -> SecurityIdentity` |
+| `Bar` | `providers/prices.py` | One OHLCV bar: ISO date (calendar day, or full timestamp for intraday), `open`/`high`/`low`/`close` as finite floats, integer `volume`. Oldest first, no duplicates, never zero-filled |
+| `AdjustmentBasis` | `providers/prices.py` | `split_and_dividend`, `split`, `unadjusted`, or `synthetic`. Carried on every quote (`adjustment`) and in `/api/v1/market/capabilities` so the basis is stated, never assumed |
+| `Frequency` | `providers/prices.py` | The application's own range-to-frequency rule: daily up to 1Y, weekly for 5Y, monthly for MAX, 5- and 30-minute bars for 1D and 5D |
+| `Capability` | `providers/base.py` | `prices`, `intraday`, `movers`, `sectors`, `news`, `search`, `fundamentals`, `screener`. A provider declares what it supports; routes report the rest as unavailable instead of guessing |
+| Normalized errors | `providers/base.py` | `ProviderNotConfigured` (503), `ProviderPlanRequired` and `ProviderUnsupported` (501), `ProviderRateLimited` (429), `ProviderTimeout` and `ProviderUnavailable` (502). Routes translate them into the API's `{"detail": ...}` shape; no key, header, path, or stack trace ever reaches a response |
+
+Two implementations exist:
+
+- **`DemoPriceProvider`** (`providers/demo.py`): the deterministic synthetic
+  dataset. Adjustment `synthetic`; capabilities `prices`, `intraday`, `search`.
+  This is what the public demo serves.
+- **`YFinancePriceProvider`** (`providers/yahoo.py`): the unofficial Yahoo
+  Finance client, for local use only. Adjustment `split_and_dividend` --
+  `Ticker.history()` defaults to `auto_adjust=True`, which the application has
+  always relied on, so returns, drawdowns, backtests, and replays are
+  total-return-style. The registry refuses this provider when
+  `APP_ENV=production`.
+
+Selection is one setting, `MARKET_DATA_PROVIDER`, validated at startup by
+`providers/registry.py`: `DEMO_MODE=true` always means `demo`, an unknown name
+lists the known ones, and a contradiction (`DEMO_MODE=true` with another
+provider) is refused rather than resolved silently. The price service caches by
+`{provider}:{ticker}:{range}`, so switching providers can never serve one
+source's series under another's label.
+
+Adding a licensed provider is one adapter module implementing `PriceProvider`
+plus one line in `PROVIDER_FACTORIES`; the contract tests in
+`backend/tests/test_price_provider_contract.py` run against it unchanged, and
+`backend/tests/test_architecture.py` fails if a vendor import appears anywhere
+but its adapter.
+
 ## API
 
 Seventeen JSON endpoints under `/api/v1`, documented interactively at
@@ -202,6 +242,7 @@ keys unlock the market-context panels:
 | `FINNHUB_API_KEY` | Company news, symbol search | 60 calls/min |
 | `FMP_API_KEY` | Movers, sector snapshot, company profile | 250 calls/day |
 | `DEMO_MODE` | Synthetic dataset instead of a provider; live feeds off (see below) | n/a |
+| `MARKET_DATA_PROVIDER` | `demo` or `yfinance`; validated at startup, see the architecture section | n/a |
 
 Without a key the corresponding panel explains that it is not configured rather
 than rendering an empty box. Cache windows (`*_CACHE_TTL_SECONDS`), the client rate

@@ -371,6 +371,32 @@
         "console_errors_on_verified_pages": 0,
         "note": "Real market data remains local-only (T-3, T-8, PROVIDERS.md). Verified by hand with Playwright against the live URL, not by CI."
       }
+    },
+    {
+      "date": "2026-10-03",
+      "commit": "see git log (cycle 10)",
+      "note": "Cycle 10. Provider-agnostic price layer: PriceProvider protocol, normalized Bar/AdjustmentBasis/Capability, validated registry, normalized errors; yfinance becomes one adapter.",
+      "reliability": {
+        "backend_tests_passing": 491,
+        "backend_tests_failing": 0,
+        "frontend_unit_tests_passing": 248,
+        "frontend_unit_tests_failing": 0,
+        "browser_smoke_tests_passing": 23,
+        "browser_smoke_tests_skipped": 3,
+        "backend_lint_clean": true,
+        "frontend_lint_clean": true,
+        "typecheck_clean": true,
+        "production_build_passing": true,
+        "how": "cd backend && ruff check . && pytest ; cd frontend && npm run typecheck && npm run lint && node ./node_modules/vitest/vitest.mjs run --no-file-parallelism && npm run build && npm run test:e2e"
+      },
+      "architecture_guards": {
+        "only_adapter_imports_yfinance": true,
+        "analytics_import_no_services": true,
+        "routes_and_service_import_no_vendor_adapter": true,
+        "contract_tests_per_provider": 2,
+        "production_refuses_yfinance": true,
+        "note": "Each pinned by tests in test_architecture.py, test_price_provider_contract.py, test_provider_registry.py."
+      }
     }
   ]
 }

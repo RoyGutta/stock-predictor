@@ -87,6 +87,14 @@ frontend/ React 19 + TS strict + Vite      backend/ FastAPI + Python 3.11+
 - **Provider documentation**: per-provider freshness, limits, cache windows, failure
   codes, licensing, and deployment status in the readme.
 
+- **Provider-agnostic price layer** (cycle 10): `PriceProvider` protocol with
+  normalized `Bar`/`SecurityIdentity`, explicit `AdjustmentBasis`, `Capability`
+  flags for prices and intraday, normalized provider errors, and a validated
+  registry (`MARKET_DATA_PROVIDER`). `DemoPriceProvider` and `YFinancePriceProvider`
+  implement it; analytics, routes, and `market_data.py` import no vendor (pinned
+  by `test_architecture.py`); yfinance is refused in production; contract tests
+  run against every implementation.
+
 **Baseline metrics:** `METRICS.json` (424 backend tests, 244 frontend unit, 22 browser
 smoke, 0 failing; npm audit 0 across all groups; Lighthouse a11y/best-practices/SEO
 100/100/100 on the production build).
@@ -122,9 +130,10 @@ standing manual step.
 
 ## Next highest-value actions (unblocked, in order)
 
-1. Replace the price-history provider with a licensed feed behind the existing
-   provider interface (T-3) -- the only path to a public deployment. Nothing
-   else on this list unblocks publishing.
+1. Provider decision (T-3, `PROVIDERS.md` sections 5-7), then the adapter for
+   the chosen provider: one module implementing `PriceProvider`, one registry
+   entry, fixtures for the contract tests. The seam is in place; nothing else
+   on this list unblocks real-data publishing.
 2. Remaining Phase 8 detectors (gap detection, support/resistance) under the
    same anti-lookahead test regime as the ten shipped patterns.
 3. An opt-in, scheduled live-provider run of the browser smoke suite

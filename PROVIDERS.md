@@ -106,7 +106,16 @@ must provide to keep all 424 tests meaningful.
 
 - Failure degrades to `{ticker, "USD"}`; never blocks a price response.
 
-### 2.3 Interface changes that would be needed (not made)
+### 2.3 Interface changes that were needed (implemented 2026-10-03)
+
+All four items below shipped in the provider-abstraction phase: `PriceProvider`
+in `providers/prices.py`, `Capability.PRICES`/`INTRADAY`, provider-driven
+`Quote.source`, and `Quote.adjustment` plus `adjustment` and `price_source` in
+`/api/v1/market/capabilities`. yfinance is now `providers/yahoo.py`, one adapter
+behind the same contract as the synthetic provider; the registry refuses it in
+production. Section 2.1 describes the seam as it was before this change.
+
+Original list, kept for the record:
 
 1. Add `Capability.PRICES` and `Capability.PRICES_INTRADAY` so `/market/capabilities`
    can report a price provider that lacks intraday, and the range selector can
@@ -426,7 +435,8 @@ Questions to send, verbatim:
   possible $0 route is Twelve Data's Non-Profit plan through a qualifying entity,
   with display rights still to be confirmed.
 - **Do not build the integration before the written answers arrive.** The
-  interface work in 2.3 (a `PriceProvider` protocol, `PRICES` /
+  interface work in 2.3 is done (2026-10-03); what remains is the adapter for
+  the chosen provider. The original note follows: the interface work in 2.3 (a `PriceProvider` protocol, `PRICES` /
   `PRICES_INTRADAY` capabilities, provider-driven `Quote.source`, adjustment basis
   in the payload) is provider-agnostic and can be done first; it is the exact
   next engineering step once the direction is chosen, and it also makes the
