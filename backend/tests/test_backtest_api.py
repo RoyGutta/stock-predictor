@@ -7,7 +7,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app
-from app.services import market_data
+from app.services.providers import yahoo
 
 
 @pytest.fixture
@@ -32,10 +32,8 @@ def _candles(n: int) -> list[dict]:
 
 
 def _stub(monkeypatch: pytest.MonkeyPatch, n: int) -> None:
-    monkeypatch.setattr(market_data, "_fetch_history_sync", lambda *a: _candles(n))
-    monkeypatch.setattr(
-        market_data,
-        "_fetch_profile_sync",
+    monkeypatch.setattr(yahoo, "_fetch_history_sync", lambda *a: _candles(n))
+    monkeypatch.setattr(yahoo, "_fetch_profile_sync",
         lambda t: {"company_name": "Test Corp", "currency": "USD"},
     )
 

@@ -12,7 +12,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app
-from app.services import market_data
+from app.services.providers import yahoo
 
 
 @pytest.fixture
@@ -37,10 +37,8 @@ def _candles(n: int, seed: int = 5, drift: float = 0.0004) -> list[dict]:
 
 
 def _stub(monkeypatch: pytest.MonkeyPatch, n: int) -> None:
-    monkeypatch.setattr(market_data, "_fetch_history_sync", lambda *a: _candles(n))
-    monkeypatch.setattr(
-        market_data,
-        "_fetch_profile_sync",
+    monkeypatch.setattr(yahoo, "_fetch_history_sync", lambda *a: _candles(n))
+    monkeypatch.setattr(yahoo, "_fetch_profile_sync",
         lambda t: {"company_name": "Test Corp", "currency": "USD"},
     )
 
@@ -171,10 +169,8 @@ def test_correlation_reports_unloadable_tickers_rather_than_dropping_them(
         calls["n"] += 1
         return [] if ticker == "ZZZZ" else _candles(200)
 
-    monkeypatch.setattr(market_data, "_fetch_history_sync", selective)
-    monkeypatch.setattr(
-        market_data,
-        "_fetch_profile_sync",
+    monkeypatch.setattr(yahoo, "_fetch_history_sync", selective)
+    monkeypatch.setattr(yahoo, "_fetch_profile_sync",
         lambda t: {"company_name": "Test Corp", "currency": "USD"},
     )
 
@@ -246,10 +242,8 @@ def test_momentum_sorts_unreadable_tickers_last(
     def selective(ticker: str, period: str, interval: str) -> list[dict]:
         return _candles(40) if ticker == "TINY" else _candles(300)
 
-    monkeypatch.setattr(market_data, "_fetch_history_sync", selective)
-    monkeypatch.setattr(
-        market_data,
-        "_fetch_profile_sync",
+    monkeypatch.setattr(yahoo, "_fetch_history_sync", selective)
+    monkeypatch.setattr(yahoo, "_fetch_profile_sync",
         lambda t: {"company_name": "Test Corp", "currency": "USD"},
     )
 
@@ -263,10 +257,8 @@ def test_momentum_names_tickers_it_could_not_load(
     def selective(ticker: str, period: str, interval: str) -> list[dict]:
         return [] if ticker == "ZZZZ" else _candles(300)
 
-    monkeypatch.setattr(market_data, "_fetch_history_sync", selective)
-    monkeypatch.setattr(
-        market_data,
-        "_fetch_profile_sync",
+    monkeypatch.setattr(yahoo, "_fetch_history_sync", selective)
+    monkeypatch.setattr(yahoo, "_fetch_profile_sync",
         lambda t: {"company_name": "Test Corp", "currency": "USD"},
     )
 

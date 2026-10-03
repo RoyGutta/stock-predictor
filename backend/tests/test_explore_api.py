@@ -13,8 +13,9 @@ import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app
-from app.services import market_data, universe
+from app.services import universe
 from app.services.market_data import clear_caches
+from app.services.providers import yahoo
 
 URL = "/api/v1/explore/match"
 
@@ -62,12 +63,9 @@ def client() -> TestClient:
 
 @pytest.fixture
 def stub_history(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(
-        market_data, "_fetch_history_sync", lambda ticker, *a: _candles(ticker)
+    monkeypatch.setattr(yahoo, "_fetch_history_sync", lambda ticker, *a: _candles(ticker)
     )
-    monkeypatch.setattr(
-        market_data,
-        "_fetch_profile_sync",
+    monkeypatch.setattr(yahoo, "_fetch_profile_sync",
         lambda t: {"company_name": f"{t} Fund", "currency": "USD"},
     )
 
@@ -154,12 +152,12 @@ def test_invalid_choices_are_rejected(
 def test_insufficient_history_is_reported_not_scored(
     client: TestClient, monkeypatch: pytest.MonkeyPatch, stub_history: None
 ) -> None:
-    original = market_data._fetch_history_sync
+    original = yahoo._fetch_history_sync
 
     def short_for_gld(ticker: str, *args: object) -> list[dict]:
         return _candles(ticker)[:10] if ticker == "GLD" else original(ticker, *args)
 
-    monkeypatch.setattr(market_data, "_fetch_history_sync", short_for_gld)
+    monkeypatch.setattr(yahoo, "_fetch_history_sync", short_for_gld)
     body = client.get(URL).json()
     assert "GLD" in body["unavailable"]
     assert all(match["ticker"] != "GLD" for match in body["matches"])

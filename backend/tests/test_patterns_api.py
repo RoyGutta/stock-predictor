@@ -8,8 +8,8 @@ import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app
-from app.services import market_data
 from app.services.market_data import clear_caches
+from app.services.providers import yahoo
 
 URL = "/api/v1/stocks/AAPL/patterns"
 
@@ -42,10 +42,8 @@ def _candles(n: int, seed: int = 7) -> list[dict]:
 
 
 def _stub(monkeypatch: pytest.MonkeyPatch, n: int) -> None:
-    monkeypatch.setattr(market_data, "_fetch_history_sync", lambda *a: _candles(n))
-    monkeypatch.setattr(
-        market_data,
-        "_fetch_profile_sync",
+    monkeypatch.setattr(yahoo, "_fetch_history_sync", lambda *a: _candles(n))
+    monkeypatch.setattr(yahoo, "_fetch_profile_sync",
         lambda t: {"company_name": "Apple Inc.", "currency": "USD"},
     )
 

@@ -17,7 +17,8 @@ from app.schemas import (
 )
 from app.services import market
 from app.services.market_data import MarketDataError, normalize_ticker
-from app.services.providers.base import ProviderError
+from app.services.providers.base import Capability, ProviderError
+from app.services.providers.registry import get_price_provider
 
 router = APIRouter(prefix="/market", tags=["market"])
 
@@ -76,6 +77,17 @@ async def read_capabilities() -> CapabilityStatus:
     """
     settings = get_settings()
     notes: dict[str, str] = {}
+    provider = get_price_provider()
+    price_fields = {
+        "prices": Capability.PRICES in provider.capabilities,
+        "intraday": Capability.INTRADAY in provider.capabilities,
+        "price_source": provider.name,
+        "adjustment": provider.adjustment.value,
+    }
+    if not price_fields["intraday"]:
+        notes["intraday"] = (
+            f"{provider.name} does not serve intraday bars; 1D and 5D are unavailable."
+        )
 
     if settings.demo_mode:
         # Live feeds are off in the public demo: their providers' terms do not
@@ -87,12 +99,19 @@ async def read_capabilities() -> CapabilityStatus:
             sectors=False,
             fundamentals=False,
             news=False,
-            search=True,
+            search=Capability.SEARCH in provider.capabilities,
             screener=False,
-            notes={"movers": off, "sectors": off, "fundamentals": off, "news": off,
-                   "screener": off},
+            notes={
+                **notes,
+                "movers": off,
+                "sectors": off,
+                "fundamentals": off,
+                "news": off,
+                "screener": off,
+            },
             demo=True,
             demo_note=DEMO_NOTE,
+            **price_fields,
         )
 
     if not settings.has_fmp:
@@ -113,9 +132,10 @@ async def read_capabilities() -> CapabilityStatus:
         sectors=settings.has_fmp,
         fundamentals=settings.has_fmp,
         news=settings.has_finnhub,
-        search=settings.has_finnhub,
+        search=settings.has_finnhub or Capability.SEARCH in provider.capabilities,
         screener=False,
         notes=notes,
+        **price_fields,
     )
 
 

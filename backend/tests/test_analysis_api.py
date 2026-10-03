@@ -7,7 +7,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app
-from app.services import market_data
+from app.services.providers import yahoo
 
 
 @pytest.fixture
@@ -32,20 +32,16 @@ def _candles(n: int, start: float = 100.0, drift: float = 0.4) -> list[dict]:
 
 @pytest.fixture
 def stub_long_history(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(market_data, "_fetch_history_sync", lambda *a: _candles(300))
-    monkeypatch.setattr(
-        market_data,
-        "_fetch_profile_sync",
+    monkeypatch.setattr(yahoo, "_fetch_history_sync", lambda *a: _candles(300))
+    monkeypatch.setattr(yahoo, "_fetch_profile_sync",
         lambda t: {"company_name": "Test Corp", "currency": "USD"},
     )
 
 
 @pytest.fixture
 def stub_short_history(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(market_data, "_fetch_history_sync", lambda *a: _candles(10))
-    monkeypatch.setattr(
-        market_data,
-        "_fetch_profile_sync",
+    monkeypatch.setattr(yahoo, "_fetch_history_sync", lambda *a: _candles(10))
+    monkeypatch.setattr(yahoo, "_fetch_profile_sync",
         lambda t: {"company_name": "Test Corp", "currency": "USD"},
     )
 
@@ -116,7 +112,7 @@ def test_invalid_ticker_returns_400(client: TestClient) -> None:
 
 
 def test_unknown_ticker_returns_404(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(market_data, "_fetch_history_sync", lambda *a: [])
+    monkeypatch.setattr(yahoo, "_fetch_history_sync", lambda *a: [])
     assert client.get("/api/v1/stocks/ZZZZZ/analysis").status_code == 404
 
 
@@ -197,10 +193,8 @@ def test_analysis_survives_an_unavailable_benchmark(
             raise RuntimeError("benchmark provider is down")
         return _candles(300)
 
-    monkeypatch.setattr(market_data, "_fetch_history_sync", selective)
-    monkeypatch.setattr(
-        market_data,
-        "_fetch_profile_sync",
+    monkeypatch.setattr(yahoo, "_fetch_history_sync", selective)
+    monkeypatch.setattr(yahoo, "_fetch_profile_sync",
         lambda t: {"company_name": "Test Corp", "currency": "USD"},
     )
 

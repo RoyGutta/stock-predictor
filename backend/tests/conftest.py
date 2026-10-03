@@ -21,6 +21,7 @@ import pytest
 from app.middleware.rate_limit import reset_rate_limits
 from app.services.market import clear_cache
 from app.services.market_data import clear_caches
+from app.services.providers.registry import reset_price_provider
 
 
 @pytest.fixture(autouse=True)
@@ -28,3 +29,6 @@ def _isolate_global_state() -> None:
     clear_caches()
     clear_cache()
     reset_rate_limits()
+    # The provider selection is cached from settings; a test that changes
+    # settings must get a fresh selection.
+    reset_price_provider()

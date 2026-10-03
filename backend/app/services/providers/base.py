@@ -36,6 +36,8 @@ class Capability(str, Enum):
     and why, instead of rendering an empty panel with no explanation.
     """
 
+    PRICES = "prices"
+    INTRADAY = "intraday"
     MOVERS = "movers"
     SECTORS = "sectors"
     NEWS = "news"
@@ -77,6 +79,39 @@ class ProviderPlanRequired(ProviderError):
         )
 
 
+class ProviderUnsupported(ProviderError):
+    """The configured provider does not offer this capability at all."""
+
+    def __init__(self, provider: str, capability: Capability) -> None:
+        super().__init__(
+            f"{provider} does not provide {capability.value}. This feature is unavailable "
+            f"with the configured market-data provider.",
+            status_code=501,
+        )
+
+
+class ProviderRateLimited(ProviderError):
+    def __init__(self, provider: str) -> None:
+        super().__init__(
+            f"{provider}'s rate limit was reached. Data will be available again shortly.",
+            status_code=429,
+        )
+
+
+class ProviderTimeout(ProviderError):
+    def __init__(self, provider: str) -> None:
+        super().__init__(f"{provider} did not respond in time. Try again shortly.", status_code=502)
+
+
+class ProviderUnavailable(ProviderError):
+    """Transport failure or an upstream 5xx: the vendor, not the request, is at fault."""
+
+    def __init__(self, provider: str, detail: str | None = None) -> None:
+        super().__init__(
+            detail or f"Could not reach {provider}. Try again shortly.", status_code=502
+        )
+
+
 async def get_json(
     client: httpx.AsyncClient,
     url: str,
@@ -94,12 +129,12 @@ async def get_json(
         response = await client.get(url, params=params)
     except httpx.TimeoutException as exc:
         logger.warning("%s timed out for %s", provider, capability.value)
-        raise ProviderError(f"{provider} did not respond in time. Try again shortly.") from exc
+        raise ProviderTimeout(provider) from exc
     except httpx.HTTPError as exc:
         logger.warning(
             "%s transport error for %s: %s", provider, capability.value, type(exc).__name__
         )
-        raise ProviderError(f"Could not reach {provider}. Try again shortly.") from exc
+        raise ProviderUnavailable(provider) from exc
 
     if response.status_code in (401, 403):
         # 403 is also what FMP returns for a retired endpoint, so inspect the body.
@@ -113,10 +148,7 @@ async def get_json(
     if response.status_code == 402:
         raise ProviderPlanRequired(provider, capability)
     if response.status_code == 429:
-        raise ProviderError(
-            f"{provider}'s rate limit was reached. Data will be available again shortly.",
-            status_code=429,
-        )
+        raise ProviderRateLimited(provider)
     if response.status_code >= 400:
         logger.warning(
             "%s returned HTTP %s for %s", provider, response.status_code, capability.value

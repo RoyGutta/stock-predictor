@@ -54,6 +54,13 @@ class Quote(BaseModel):
     history: list[Candle]
     as_of: str = Field(description="ISO-8601 timestamp of the most recent candle.")
     source: str = Field(description="Which data provider served this response.")
+    adjustment: str = Field(
+        default="unspecified",
+        description=(
+            "What the prices already account for: split_and_dividend, split, "
+            "unadjusted, or synthetic."
+        ),
+    )
 
 
 class ErrorResponse(BaseModel):
@@ -253,6 +260,15 @@ class CapabilityStatus(BaseModel):
     search: bool
     fundamentals: bool
     screener: bool
+    prices: bool = Field(default=True, description="A price provider is configured.")
+    intraday: bool = Field(
+        default=True, description="The price provider serves the 1D and 5D intraday ranges."
+    )
+    price_source: str = Field(default="", description="Attribution label of the price provider.")
+    adjustment: str = Field(
+        default="unspecified",
+        description="Adjustment basis of every price series this deployment serves.",
+    )
     demo: bool = Field(
         default=False,
         description="True when prices come from the synthetic demo dataset, not a provider.",

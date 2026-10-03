@@ -10,22 +10,24 @@ from fastapi.testclient import TestClient
 
 from app.config import get_settings
 from app.main import app
-from app.services import market_data
-from app.services.providers import demo
+from app.services.providers import demo, yahoo
+from app.services.providers.registry import reset_price_provider
 
 
 @pytest.fixture
 def client(monkeypatch: pytest.MonkeyPatch) -> Iterator[TestClient]:
     monkeypatch.setenv("DEMO_MODE", "1")
     get_settings.cache_clear()
+    reset_price_provider()
     # If anything reached the real provider the test must fail loudly.
     def refuse(*_: object) -> None:
         pytest.fail("the real provider must never be called in demo mode")
 
-    monkeypatch.setattr(market_data, "_fetch_history_sync", refuse)
-    monkeypatch.setattr(market_data, "_fetch_profile_sync", refuse)
+    monkeypatch.setattr(yahoo, "_fetch_history_sync", refuse)
+    monkeypatch.setattr(yahoo, "_fetch_profile_sync", refuse)
     yield TestClient(app)
     get_settings.cache_clear()
+    reset_price_provider()
 
 
 def test_quote_comes_from_the_demo_source(client: TestClient) -> None:

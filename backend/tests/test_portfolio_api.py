@@ -7,8 +7,8 @@ import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app
-from app.services import market_data
 from app.services.market_data import clear_caches
+from app.services.providers import yahoo
 
 
 @pytest.fixture(autouse=True)
@@ -43,10 +43,8 @@ def stub_history(monkeypatch: pytest.MonkeyPatch) -> None:
         # Deterministic per ticker, so AAPL and MSFT differ but repeat.
         return _candles(252, 0.0004, seed=sum(ord(c) for c in ticker))
 
-    monkeypatch.setattr(market_data, "_fetch_history_sync", fake_history)
-    monkeypatch.setattr(
-        market_data,
-        "_fetch_profile_sync",
+    monkeypatch.setattr(yahoo, "_fetch_history_sync", fake_history)
+    monkeypatch.setattr(yahoo, "_fetch_profile_sync",
         lambda t: {"company_name": f"{t} Corp", "currency": "USD"},
     )
 
@@ -108,9 +106,9 @@ def test_too_many_holdings_rejected(client: TestClient, stub_history: None) -> N
 
 
 def test_insufficient_history_is_422(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(market_data, "_fetch_history_sync", lambda *a: _candles(10, 0.0, seed=1))
+    monkeypatch.setattr(yahoo, "_fetch_history_sync", lambda *a: _candles(10, 0.0, seed=1))
     monkeypatch.setattr(
-        market_data, "_fetch_profile_sync", lambda t: {"company_name": t, "currency": "USD"}
+        yahoo, "_fetch_profile_sync", lambda t: {"company_name": t, "currency": "USD"}
     )
     response = client.get(f"{URL}?holdings=AAPL:1.0")
     assert response.status_code == 422

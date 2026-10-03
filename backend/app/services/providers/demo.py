@@ -28,6 +28,8 @@ import numpy as np
 import pandas as pd
 
 from app.schemas import Range
+from app.services.providers.base import Capability
+from app.services.providers.prices import AdjustmentBasis, Bar, SecurityIdentity
 
 SOURCE = "Synthetic demo data"
 DEMO_END_DATE = date(2025, 12, 31)
@@ -252,3 +254,26 @@ _ETFS = frozenset(
         "SHY", "TLT", "VNQ", "GLD", "XLK", "XLV", "XLF", "XLE", "XLP", "XLU",
     }
 )
+
+
+class DemoPriceProvider:
+    """The synthetic dataset as a `PriceProvider`.
+
+    No corporate actions exist in a synthetic series, so the adjustment basis is
+    `SYNTHETIC`; the UI renders that as "synthetic, not live market data".
+    """
+
+    name = SOURCE
+    adjustment = AdjustmentBasis.SYNTHETIC
+    capabilities = frozenset({Capability.PRICES, Capability.INTRADAY, Capability.SEARCH})
+
+    def fetch_history(self, ticker: str, range_: Range) -> list[Bar]:
+        return [Bar.from_candle_dict(row) for row in fetch_history(ticker, range_)]
+
+    def fetch_identity(self, ticker: str) -> SecurityIdentity:
+        identity = fetch_identity(ticker)
+        return SecurityIdentity(
+            ticker=ticker.upper(),
+            company_name=identity["company_name"],
+            currency=identity["currency"],
+        )

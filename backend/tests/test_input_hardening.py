@@ -14,6 +14,7 @@ from fastapi.testclient import TestClient
 
 from app.main import app
 from app.services import market_data
+from app.services.providers import yahoo
 
 LEAK_MARKERS = ("Traceback", 'File "', "Exception", "Internal Server Error")
 
@@ -54,8 +55,8 @@ def client(monkeypatch: pytest.MonkeyPatch) -> TestClient:
     def refuse(*_: object) -> None:
         raise AssertionError("malformed input must be rejected before any provider call")
 
-    monkeypatch.setattr(market_data, "_fetch_history_sync", refuse)
-    monkeypatch.setattr(market_data, "_fetch_profile_sync", refuse)
+    monkeypatch.setattr(yahoo, "_fetch_history_sync", refuse)
+    monkeypatch.setattr(yahoo, "_fetch_profile_sync", refuse)
     return TestClient(app)
 
 
@@ -77,7 +78,7 @@ def test_provider_failure_is_a_502_with_a_plain_message(monkeypatch: pytest.Monk
         raise RuntimeError("secret internal state: token=abc123")
 
     market_data.clear_caches()
-    monkeypatch.setattr(market_data, "_fetch_history_sync", explode)
+    monkeypatch.setattr(yahoo, "_fetch_history_sync", explode)
     response = TestClient(app).get("/api/v1/stocks/AAPL?range=1Y")
     assert response.status_code == 502
     assert "abc123" not in response.text

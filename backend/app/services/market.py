@@ -17,7 +17,8 @@ from zoneinfo import ZoneInfo
 from app.config import get_settings
 from app.services.market_data import TTLCache
 from app.services.providers import demo, finnhub, fmp
-from app.services.providers.base import ProviderError
+from app.services.providers.base import Capability, ProviderError
+from app.services.providers.registry import get_price_provider
 
 logger = logging.getLogger(__name__)
 
@@ -205,7 +206,8 @@ async def get_news(ticker: str, limit: int = 12) -> list[dict[str, Any]]:
 async def search(query: str, limit: int = 10) -> list[dict[str, Any]]:
     settings = get_settings()
     normalized = query.strip().lower()
-    if settings.demo_mode:
+    provider = get_price_provider()
+    if Capability.SEARCH in provider.capabilities and isinstance(provider, demo.DemoPriceProvider):
         return demo.search(normalized, limit)
     key = f"search:{normalized}:{limit}"
     return await _cached(

@@ -18,6 +18,7 @@ from app.services.market_data import (
     get_quote,
     normalize_ticker,
 )
+from app.services.providers import yahoo
 
 
 @pytest.fixture(autouse=True)
@@ -62,25 +63,25 @@ def test_normalize_ticker_rejects_bad_input(raw: str) -> None:
     assert exc.value.status_code == 400
 
 
-# --- range -> (period, interval) mapping ------------------------------------
+# --- range -> (period, interval) mapping (yfinance adapter) ------------------
 
 
 def test_every_range_has_params() -> None:
     for range_ in Range:
-        assert range_ in market_data._RANGE_PARAMS
+        assert range_ in yahoo._RANGE_PARAMS
 
 
 def test_one_day_uses_intraday_interval() -> None:
     """Regression: 1D previously mapped to interval='1d', yielding one point."""
-    period, interval = market_data._RANGE_PARAMS[Range.DAY_1]
+    period, interval = yahoo._RANGE_PARAMS[Range.DAY_1]
     assert period == "1d"
-    assert interval in market_data._INTRADAY_INTERVALS
+    assert interval in yahoo._INTRADAY_INTERVALS
 
 
 def test_long_ranges_use_coarse_intervals() -> None:
     # A 5-year daily series would be ~1250 points before downsampling.
-    assert market_data._RANGE_PARAMS[Range.YEAR_5][1] == "1wk"
-    assert market_data._RANGE_PARAMS[Range.MAX][1] == "1mo"
+    assert yahoo._RANGE_PARAMS[Range.YEAR_5][1] == "1wk"
+    assert yahoo._RANGE_PARAMS[Range.MAX][1] == "1mo"
 
 
 # --- TTL cache --------------------------------------------------------------
@@ -137,8 +138,8 @@ def _stub_provider(monkeypatch: pytest.MonkeyPatch) -> dict[str, int]:
         calls["profile"] += 1
         return {"company_name": "Test Corp", "currency": "USD"}
 
-    monkeypatch.setattr(market_data, "_fetch_history_sync", fake_history)
-    monkeypatch.setattr(market_data, "_fetch_profile_sync", fake_profile)
+    monkeypatch.setattr(yahoo, "_fetch_history_sync", fake_history)
+    monkeypatch.setattr(yahoo, "_fetch_profile_sync", fake_profile)
     return calls
 
 
@@ -170,7 +171,7 @@ async def test_cache_key_includes_range(_stub_provider: dict[str, int]) -> None:
 
 @pytest.mark.asyncio
 async def test_empty_history_raises_not_found(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(market_data, "_fetch_history_sync", lambda *a: [])
+    monkeypatch.setattr(yahoo, "_fetch_history_sync", lambda *a: [])
     with pytest.raises(UnknownTickerError) as exc:
         await get_quote("ZZZZ", Range.MONTH_1)
     assert exc.value.status_code == 404
@@ -181,7 +182,7 @@ async def test_provider_failure_does_not_leak_details(monkeypatch: pytest.Monkey
     def boom(*args: object) -> None:
         raise RuntimeError("/secret/path/creds.json not found")
 
-    monkeypatch.setattr(market_data, "_fetch_history_sync", boom)
+    monkeypatch.setattr(yahoo, "_fetch_history_sync", boom)
     with pytest.raises(MarketDataError) as exc:
         await get_quote("AAPL", Range.MONTH_1)
     assert "secret" not in str(exc.value)

@@ -21,6 +21,7 @@ from app.routes import (
     simulation,
     stocks,
 )
+from app.services.providers.registry import get_price_provider
 
 logging.basicConfig(
     level=logging.INFO,
@@ -33,6 +34,17 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 settings = get_settings()
+
+# Select and validate the price provider now, not on the first request: an
+# unknown name, a contradictory DEMO_MODE, or yfinance in production fails
+# here with a sentence that says what to change.
+price_provider = get_price_provider()
+logger.info(
+    "Price provider: %s (adjustment=%s, capabilities=%s)",
+    price_provider.name,
+    price_provider.adjustment.value,
+    sorted(c.value for c in price_provider.capabilities),
+)
 
 DESCRIPTION = """
 Educational market data and technical analysis API.

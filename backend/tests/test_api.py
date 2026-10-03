@@ -9,7 +9,7 @@ from fastapi.testclient import TestClient
 from app.main import app
 from app.middleware.rate_limit import RateLimitMiddleware
 from app.routes import stocks
-from app.services import market_data
+from app.services.providers import yahoo
 
 STUB_CANDLES = [
     {"date": "2026-01-02", "price": 100.0, "open": 99.0, "high": 101.0, "low": 98.0, "volume": 10},
@@ -26,10 +26,8 @@ def client() -> TestClient:
 
 @pytest.fixture
 def stub_quote(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(market_data, "_fetch_history_sync", lambda *a: list(STUB_CANDLES))
-    monkeypatch.setattr(
-        market_data,
-        "_fetch_profile_sync",
+    monkeypatch.setattr(yahoo, "_fetch_history_sync", lambda *a: list(STUB_CANDLES))
+    monkeypatch.setattr(yahoo, "_fetch_profile_sync",
         lambda t: {"company_name": "Test Corp", "currency": "USD"},
     )
 
@@ -79,7 +77,7 @@ def test_invalid_range_returns_422(client: TestClient) -> None:
 
 
 def test_unknown_ticker_returns_404(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(market_data, "_fetch_history_sync", lambda *a: [])
+    monkeypatch.setattr(yahoo, "_fetch_history_sync", lambda *a: [])
     response = client.get("/api/v1/stocks/ZZZZZ")
     assert response.status_code == 404
 
@@ -92,7 +90,7 @@ def test_upstream_failure_returns_502_without_internals(
     def boom(*args: object) -> None:
         raise RuntimeError("connection to internal-host:5432 refused")
 
-    monkeypatch.setattr(market_data, "_fetch_history_sync", boom)
+    monkeypatch.setattr(yahoo, "_fetch_history_sync", boom)
     response = client.get("/api/v1/stocks/AAPL")
     assert response.status_code == 502
     assert "internal-host" not in response.text

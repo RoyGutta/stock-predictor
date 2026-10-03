@@ -7,8 +7,8 @@ import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app
-from app.services import market_data
 from app.services.market_data import clear_caches
+from app.services.providers import yahoo
 
 URL = "/api/v1/market/compare"
 
@@ -46,10 +46,8 @@ def stub_history(monkeypatch: pytest.MonkeyPatch) -> None:
             return _candles(10, seed=3)  # too short for risk stats
         return _candles(252, seed=sum(ord(c) for c in ticker))
 
-    monkeypatch.setattr(market_data, "_fetch_history_sync", fake_history)
-    monkeypatch.setattr(
-        market_data,
-        "_fetch_profile_sync",
+    monkeypatch.setattr(yahoo, "_fetch_history_sync", fake_history)
+    monkeypatch.setattr(yahoo, "_fetch_profile_sync",
         lambda t: {"company_name": f"{t} Corp", "currency": "USD"},
     )
 
@@ -81,14 +79,14 @@ def test_insufficient_history_yields_nulls_not_zeros(
 def test_failed_tickers_are_reported_not_dropped(
     client: TestClient, monkeypatch: pytest.MonkeyPatch, stub_history: None
 ) -> None:
-    original = market_data._fetch_history_sync
+    original = yahoo._fetch_history_sync
 
     def flaky(ticker: str, period: str, interval: str) -> list[dict]:
         if ticker == "GONE":
             return []
         return original(ticker, period, interval)
 
-    monkeypatch.setattr(market_data, "_fetch_history_sync", flaky)
+    monkeypatch.setattr(yahoo, "_fetch_history_sync", flaky)
     body = client.get(f"{URL}?tickers=AAPL,MSFT,GONE").json()
     assert {row["ticker"] for row in body["rows"]} == {"AAPL", "MSFT"}
     assert "GONE" in body["unavailable"]
@@ -97,9 +95,9 @@ def test_failed_tickers_are_reported_not_dropped(
 def test_fewer_than_two_readable_tickers_is_a_400(
     client: TestClient, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    monkeypatch.setattr(market_data, "_fetch_history_sync", lambda *a: [])
+    monkeypatch.setattr(yahoo, "_fetch_history_sync", lambda *a: [])
     monkeypatch.setattr(
-        market_data, "_fetch_profile_sync", lambda t: {"company_name": t, "currency": "USD"}
+        yahoo, "_fetch_profile_sync", lambda t: {"company_name": t, "currency": "USD"}
     )
     response = client.get(f"{URL}?tickers=AAPL,MSFT")
     assert response.status_code == 400

@@ -72,6 +72,12 @@ class Settings:
     demo_mode: bool = field(
         default_factory=lambda: os.getenv("DEMO_MODE", "").strip().lower() in {"1", "true", "yes"}
     )
+    # Which PriceProvider serves price history. Empty means: the synthetic
+    # provider when DEMO_MODE is on, otherwise yfinance for local use. The
+    # registry validates the choice at startup (see providers/registry.py).
+    market_data_provider: str = field(
+        default_factory=lambda: os.getenv("MARKET_DATA_PROVIDER", "").strip().lower()
+    )
 
     @property
     def is_production(self) -> bool:
