@@ -20,6 +20,7 @@ from app.routes.analysis import _to_frame
 from app.schemas import ExploreCriterion, ExploreMatch, ExploreResponse, Range
 from app.services import universe
 from app.services.market_data import MarketDataError, get_quote
+from app.services.providers.prices import annualization_frequency
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +30,6 @@ BENCHMARK = "SPY"
 _MIN_BARS = 30
 
 _WINDOW_BY_HORIZON: dict[str, Range] = {"shorter": Range.YEAR_1, "longer": Range.YEAR_5}
-_FREQUENCY_BY_RANGE: dict[Range, str] = {Range.YEAR_5: "weekly", Range.MAX: "monthly"}
 
 VOLATILITY_CHOICES = ("lower", "moderate", "higher")
 DIVERSIFICATION_CHOICES = ("broad", "any")
@@ -113,7 +113,7 @@ async def read_explore_match(
             wanted_interests.append(cleaned)
 
     window = _WINDOW_BY_HORIZON[horizon]
-    frequency = _FREQUENCY_BY_RANGE.get(window, "daily")
+    frequency = annualization_frequency(window) or "daily"  # windows are 1Y/5Y, never intraday
 
     async def fetch(symbol: str) -> tuple[str, object | Exception]:
         try:

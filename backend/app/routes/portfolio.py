@@ -22,11 +22,11 @@ from app.schemas import (
     Range,
 )
 from app.services.market_data import MarketDataError, get_quote, normalize_ticker
+from app.services.providers.prices import annualization_frequency
 
 router = APIRouter(prefix="/portfolio", tags=["portfolio"])
 
 _MAX_LEGS = 8
-_FREQUENCY_BY_RANGE: dict[Range, str] = {Range.YEAR_5: "weekly", Range.MAX: "monthly"}
 
 METHOD = (
     "Hypothetical historical replay. The initial amount is invested at the first "
@@ -170,7 +170,15 @@ async def read_portfolio_simulation(
     prices = {ticker: _closes(quotes[i].history) for i, ticker in enumerate(tickers)}
     benchmark_prices = {benchmark_symbol: _closes(quotes[len(tickers)].history)}
 
-    frequency = _FREQUENCY_BY_RANGE.get(range, "daily")
+    frequency = annualization_frequency(range)
+    if frequency is None:
+        raise HTTPException(
+            status_code=422,
+            detail=(
+                "This range serves intraday bars, which cannot be annualized honestly. "
+                "Choose a range with daily or coarser bars (1M to MAX)."
+            ),
+        )
     keywords = {
         "initial": initial,
         "monthly": monthly,

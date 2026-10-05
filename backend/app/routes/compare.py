@@ -19,6 +19,7 @@ from app.routes.analysis import _to_frame
 from app.routes.simulation import _parse_tickers
 from app.schemas import CompareResponse, CompareRow, ErrorResponse, Range
 from app.services.market_data import MarketDataError, get_quote
+from app.services.providers.prices import annualization_frequency
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +31,6 @@ _MAX_TICKERS = 6
 # sufficiency rules and reports "insufficient" through its own state.
 _MIN_BARS_FOR_STATS = 30
 
-_FREQUENCY_BY_RANGE: dict[Range, str] = {Range.YEAR_5: "weekly", Range.MAX: "monthly"}
 
 NOTE = (
     "Each column is measured over the same window with the same method. Differences "
@@ -108,7 +108,15 @@ async def read_compare(
 
     results = await asyncio.gather(*(fetch(symbol) for symbol in requested))
 
-    frequency = _FREQUENCY_BY_RANGE.get(range, "daily")
+    frequency = annualization_frequency(range)
+    if frequency is None:
+        raise HTTPException(
+            status_code=422,
+            detail=(
+                "This range serves intraday bars, which cannot be annualized honestly. "
+                "Choose a range with daily or coarser bars (1M to MAX)."
+            ),
+        )
     rows: list[CompareRow] = []
     unavailable: dict[str, str] = dict(invalid)
     source = "unknown"

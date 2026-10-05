@@ -29,10 +29,20 @@ import pandas as pd
 
 from app.schemas import Range
 from app.services.providers.base import Capability
-from app.services.providers.prices import AdjustmentBasis, Bar, SecurityIdentity
+from app.services.providers.prices import (
+    AdjustmentBasis,
+    Bar,
+    Frequency,
+    SecurityIdentity,
+    resample_bars,
+)
 
 SOURCE = "Synthetic demo data"
 DEMO_END_DATE = date(2025, 12, 31)
+# Bump whenever the generator changes in a way that alters any bar. The golden
+# test in tests/test_demo_provider.py fails on an unbumped change, so historical
+# demo results can never drift silently.
+DATASET_VERSION = "2025.12.1"
 _YEARS = 12
 _TRADING_DAYS = 252 * _YEARS
 _SESSION_OPEN = time(9, 30)
@@ -145,22 +155,6 @@ def _daily_frame(ticker: str) -> pd.DataFrame:
     )
 
 
-def _resample(frame: pd.DataFrame, rule: str) -> pd.DataFrame:
-    grouped = frame.resample(rule)
-    out = pd.DataFrame(
-        {
-            "open": grouped["open"].first(),
-            "high": grouped["high"].max(),
-            "low": grouped["low"].min(),
-            "close": grouped["close"].last(),
-            "volume": grouped["volume"].sum(),
-        }
-    ).dropna()
-    # Label each bar with the last trading day it actually contains.
-    out.index = grouped["close"].apply(lambda s: s.index[-1] if len(s) else pd.NaT).dropna()
-    return out
-
-
 def _intraday(frame: pd.DataFrame, ticker: str, days: int, minutes: int) -> list[dict[str, Any]]:
     """Synthetic bars inside the last `days` sessions, consistent with each day's OHLC."""
     spec = DEMO_UNIVERSE[ticker]
@@ -205,24 +199,36 @@ def fetch_history(ticker: str, range_: Range) -> list[dict[str, Any]]:
         return _intraday(daily, ticker, days=1, minutes=5)
     if range_ is Range.DAY_5:
         return _intraday(daily, ticker, days=5, minutes=30)
-    if range_ is Range.YEAR_5:
-        frame = _resample(daily.tail(252 * 5), "W-FRI")
-    elif range_ is Range.MAX:
-        frame = _resample(daily, "MS")
-    else:
-        frame = daily.tail(_DAILY_BARS[range_])
+    if range_ in (Range.YEAR_5, Range.MAX):
+        source = daily.tail(252 * 5) if range_ is Range.YEAR_5 else daily
+        daily_bars = [_bar(index, row) for index, row in source.iterrows()]
+        target = Frequency.WEEKLY if range_ is Range.YEAR_5 else Frequency.MONTHLY
+        return [_round(bar) for bar in resample_bars(daily_bars, target)]
 
-    return [
-        {
-            "date": index.date().isoformat(),
-            "price": round(float(row["close"]), 4),
-            "open": round(float(row["open"]), 4),
-            "high": round(float(row["high"]), 4),
-            "low": round(float(row["low"]), 4),
-            "volume": int(row["volume"]),
-        }
-        for index, row in frame.iterrows()
-    ]
+    frame = daily.tail(_DAILY_BARS[range_])
+    return [_round(_bar(index, row)) for index, row in frame.iterrows()]
+
+
+def _bar(index: pd.Timestamp, row: pd.Series) -> Bar:
+    return Bar(
+        index.date().isoformat(),
+        float(row["open"]),
+        float(row["high"]),
+        float(row["low"]),
+        float(row["close"]),
+        int(row["volume"]),
+    )
+
+
+def _round(bar: Bar) -> dict[str, Any]:
+    return {
+        "date": bar.date,
+        "price": round(bar.close, 4),
+        "open": round(bar.open, 4),
+        "high": round(bar.high, 4),
+        "low": round(bar.low, 4),
+        "volume": bar.volume,
+    }
 
 
 def fetch_identity(ticker: str) -> dict[str, str]:

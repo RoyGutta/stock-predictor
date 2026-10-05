@@ -276,7 +276,7 @@ def detect_patterns(frame: pd.DataFrame) -> PatternReport:
     if "close" not in frame.columns:
         raise KeyError("frame must contain a 'close' column")
 
-    deduped = frame[~frame.index.duplicated(keep="first")]
+    deduped = frame[~frame.index.duplicated(keep="last")]
     dates = [str(label) for label in deduped.index]
 
     if len(deduped) < _MIN_BARS:

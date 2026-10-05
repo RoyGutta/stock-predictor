@@ -21,10 +21,10 @@ from app.schemas import (
     StrategyResult,
 )
 from app.services.market_data import MarketDataError, get_quote
+from app.services.providers.prices import annualization_frequency
 
 router = APIRouter(prefix="/stocks", tags=["backtest"])
 
-_FREQUENCY_BY_RANGE: dict[Range, str] = {Range.YEAR_5: "weekly", Range.MAX: "monthly"}
 
 # Two slices of at least 60 bars each, or the statistics are noise.
 _MIN_BARS = 120
@@ -105,6 +105,16 @@ async def read_backtest(
         raise HTTPException(status_code=exc.status_code, detail=str(exc)) from exc
 
     frame = _to_frame(quote.history)
+    frequency = annualization_frequency(range)
+    if frequency is None:
+        raise HTTPException(
+            status_code=422,
+            detail=(
+                "This range serves intraday bars, which cannot be annualized honestly. "
+                "Choose a range with daily or coarser bars (1M to MAX)."
+            ),
+        )
+
     if len(frame) < _MIN_BARS:
         raise HTTPException(
             status_code=422,
@@ -114,8 +124,6 @@ async def read_backtest(
                 "Try a longer range."
             ),
         )
-
-    frequency = _FREQUENCY_BY_RANGE.get(range, "daily")
 
     # CPU-bound over the whole series for every rule and parameter; keep it off
     # the event loop so one request cannot stall other clients.

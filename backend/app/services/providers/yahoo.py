@@ -18,7 +18,14 @@ from typing import Any
 
 from app.schemas import Range
 from app.services.providers.base import Capability, ProviderUnavailable
-from app.services.providers.prices import AdjustmentBasis, Bar, SecurityIdentity
+from app.services.providers.prices import (
+    FREQUENCY_BY_RANGE,
+    AdjustmentBasis,
+    Bar,
+    Frequency,
+    SecurityIdentity,
+    resample_bars,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -33,8 +40,12 @@ _RANGE_PARAMS: dict[Range, tuple[str, str]] = {
     Range.MONTH_3: ("3mo", "1d"),
     Range.MONTH_6: ("6mo", "1d"),
     Range.YEAR_1: ("1y", "1d"),
-    Range.YEAR_5: ("5y", "1wk"),
-    Range.MAX: ("max", "1mo"),
+    # Weekly and monthly bars are resampled server-side from daily bars (see
+    # prices.resample_bars) so their labels and OHLC semantics match every other
+    # provider. Yahoo's own 1wk/1mo bars are labeled by period START, which would
+    # make "as of" understate the data a bar contains.
+    Range.YEAR_5: ("5y", "1d"),
+    Range.MAX: ("max", "1d"),
 }
 
 # Ranges finer than a day need the time component preserved in the timestamp.
@@ -106,7 +117,11 @@ class YFinancePriceProvider:
             raise ProviderUnavailable(
                 NAME, "Market data is temporarily unavailable. Please try again shortly."
             ) from exc
-        return [Bar.from_candle_dict(row) for row in rows]
+        bars = [Bar.from_candle_dict(row) for row in rows]
+        target = FREQUENCY_BY_RANGE[range_]
+        if target in (Frequency.WEEKLY, Frequency.MONTHLY):
+            return resample_bars(bars, target)
+        return bars
 
     def fetch_identity(self, ticker: str) -> SecurityIdentity:
         profile = _fetch_profile_sync(ticker)

@@ -23,16 +23,11 @@ from app.schemas import (
     TrendInterpretation,
 )
 from app.services.market_data import MarketDataError, get_quote
+from app.services.providers.prices import annualization_frequency
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/stocks", tags=["analysis"])
-
-# Ranges whose bars are not daily, so annualization must not assume 252/year.
-_FREQUENCY_BY_RANGE: dict[Range, str] = {
-    Range.YEAR_5: "weekly",
-    Range.MAX: "monthly",
-}
 
 # Below this many bars, annualized statistics are too noisy to be worth showing.
 _MIN_BARS_FOR_RISK = 30
@@ -84,12 +79,14 @@ def _build_benchmark(
 
 def _build_risk(
     frame: pd.DataFrame,
-    frequency: str,
+    frequency: str | None,
     benchmark_close: pd.Series | None = None,
     benchmark_ticker: str = DEFAULT_BENCHMARK,
 ) -> RiskMetrics | None:
     close = frame["close"]
-    if len(close) < _MIN_BARS_FOR_RISK:
+    # Intraday bars (frequency None) are never annualized: scaling 5-minute
+    # returns by sqrt(252) would report a volatility off by roughly sqrt(78).
+    if frequency is None or len(close) < _MIN_BARS_FOR_RISK:
         return None
 
     returns = risk.simple_returns(close)
@@ -204,7 +201,7 @@ async def read_analysis(
         raise HTTPException(status_code=exc.status_code, detail=str(exc)) from exc
 
     frame = _to_frame(quote.history)
-    frequency = _FREQUENCY_BY_RANGE.get(range, "daily")
+    frequency = annualization_frequency(range)
     benchmark_close = await _load_benchmark(quote.ticker, range)
 
     # Indicator and risk math is CPU-bound over the whole series; keep it off

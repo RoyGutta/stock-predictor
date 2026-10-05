@@ -27,7 +27,7 @@ from typing import Any
 from app.config import get_settings
 from app.schemas import Quote, Range
 from app.services.providers.base import ProviderError
-from app.services.providers.prices import Bar, PriceProvider, SecurityIdentity
+from app.services.providers.prices import Bar, PriceProvider, SecurityIdentity, validate_bars
 from app.services.providers.registry import get_price_provider
 
 logger = logging.getLogger(__name__)
@@ -144,6 +144,11 @@ async def get_quote(raw_ticker: str, range_: Range) -> Quote:
 
     if not bars:
         raise UnknownTickerError(ticker)
+    try:
+        bars = validate_bars(bars, provider.name)
+    except ProviderError as exc:
+        logger.warning("Rejected %s bars for %s: %s", provider.name, ticker, exc)
+        raise MarketDataError(str(exc), status_code=exc.status_code) from exc
 
     identity_key = f"{provider.name}:{ticker}"
     identity: SecurityIdentity | None = _profile_cache.get(identity_key)
