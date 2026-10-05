@@ -1,3 +1,8 @@
+// The application is developed and demonstrated in US Eastern time, where a
+// date-only ISO string parsed as UTC midnight renders as the previous day.
+// Pinning the test timezone makes that failure mode reproducible everywhere.
+process.env.TZ = "America/New_York";
+
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 

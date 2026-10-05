@@ -78,7 +78,9 @@ export const GLOSSARY = {
       "measure of whether something is going up or down.",
     limits:
       "High volatility does not mean a bad investment, and low volatility does not mean a " +
-      "safe one. It only describes how bumpy the ride has been so far.",
+      "safe one. It only describes how bumpy the ride has been so far. The figure shown is " +
+      "annualized from daily, weekly, or monthly bars; intraday ranges are never annualized " +
+      "here, because a year of 5-minute bars is not a thing the number could honestly mean.",
   },
 
   risk: {
