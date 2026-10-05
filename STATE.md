@@ -95,6 +95,15 @@ frontend/ React 19 + TS strict + Vite      backend/ FastAPI + Python 3.11+
   by `test_architecture.py`); yfinance is refused in production; contract tests
   run against every implementation.
 
+- **Analytics audit** (cycle 11, `ANALYTICS.md`): one frequency table; intraday
+  ranges never annualized (risk null, annualizing routes 422); weekly/monthly bars
+  resampled from daily by one shared rule and labeled by their last session;
+  data-quality contract on every provider's bars (sort, keep-last duplicates, widen
+  high/low; reject non-finite, non-positive, inverted, negative-volume bars);
+  causality and scale invariants for every indicator; per-strategy and per-detector
+  truncation and future-mutation guards; portfolio flat and collapse adversaries;
+  versioned, golden-pinned demo dataset; frontend tests pinned to US Eastern.
+
 **Baseline metrics:** `METRICS.json` (424 backend tests, 244 frontend unit, 22 browser
 smoke, 0 failing; npm audit 0 across all groups; Lighthouse a11y/best-practices/SEO
 100/100/100 on the production build).

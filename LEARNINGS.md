@@ -218,3 +218,21 @@ treating its result as evidence about the current tree.
 
 **Applies from now on:** nothing that mutates state (commit, push, tag) goes
 after a pipe. Verify, look at the exit code, then act.
+
+## L-12 · A default that "falls back to daily" is a silent methodology change
+
+Five routes carried their own copy of a two-entry frequency table and fell back
+to `"daily"` for any range not listed. That made the 1D range -- 78 five-minute
+bars, comfortably above the 30-bar risk floor -- report annualized volatility
+scaled by sqrt(252), off by roughly sqrt(78). Nothing failed; the number was
+simply wrong, and the UI showed it as "annualized".
+
+The test fixtures hid a second problem the same way: candles dated with
+`(i % 28) + 1` gave 300 bars 28 distinct timestamps, which every consumer
+tolerated until a data-quality rule finally collapsed them.
+
+**Applies from now on:** a table that maps inputs to methodology lives in one
+place and is total -- it names every input, and the ones with no honest answer
+return `None` so the caller must decide, rather than defaulting. Fixtures use
+real calendars; a fixture that could not come from a provider proves nothing.
+

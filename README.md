@@ -111,6 +111,8 @@ receives the identical cash flows.
 labeled as dispersion under a stated assumption, never as a forecast, and cannot
 produce a shock larger than one already in the sample.
 
+**Reference.** `ANALYTICS.md` is the audited dependency map: every convention above, the data-quality contract applied to provider bars, timestamp handling, and which ranges are never annualized (1D and 5D serve intraday bars; annualizing them is refused rather than faked).
+
 **Adjustment basis.** Price history is currently split- and dividend-adjusted
 (the default of the underlying provider client). See `PROVIDERS.md` for why this
 matters when the provider changes.

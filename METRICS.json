@@ -397,6 +397,53 @@
         "production_refuses_yfinance": true,
         "note": "Each pinned by tests in test_architecture.py, test_price_provider_contract.py, test_provider_registry.py."
       }
+    },
+    {
+      "date": "2026-10-04",
+      "commit": "see git log (cycle 11)",
+      "note": "Cycle 11. Analytics correctness audit: one frequency source, intraday never annualized, shared weekly/monthly resampling labeled by last session, data-quality contract, indicator/backtest/pattern/portfolio invariants, versioned demo dataset, US Eastern test timezone.",
+      "reliability": {
+        "backend_tests_passing": 559,
+        "backend_tests_failing": 0,
+        "frontend_unit_tests_passing": 248,
+        "frontend_unit_tests_failing": 0,
+        "browser_smoke_tests_passing": 23,
+        "browser_smoke_tests_skipped": 3,
+        "backend_lint_clean": true,
+        "frontend_lint_clean": true,
+        "typecheck_clean": true,
+        "production_build_passing": true,
+        "how": "cd backend && ruff check . && pytest ; cd frontend && npm run typecheck && npm run lint && node ./node_modules/vitest/vitest.mjs run --no-file-parallelism && npm run build && npm run test:e2e"
+      },
+      "analytics_audit": {
+        "bugs_fixed": [
+          "intraday ranges annualized as daily (1D/5D)",
+          "weekly/monthly bar labels differed by provider (period start vs last session)",
+          "duplicate-timestamp rule differed between risk (last) and patterns (first)",
+          "five private frequency tables in routes"
+        ],
+        "invariants_added": [
+          "indicator causality under truncation and future mutation",
+          "indicator scale behavior",
+          "backtest causality per strategy and parameter",
+          "oracle earns only its lagged return",
+          "per-detector pattern causality and outcome recomputation",
+          "portfolio flat-price and collapse adversaries",
+          "data-quality normalize/reject rules",
+          "golden demo bars + DATASET_VERSION"
+        ]
+      },
+      "performance_ms_warm_demo": {
+        "analysis_1y": 13.2,
+        "analysis_max": 20.0,
+        "patterns_5y": 6.9,
+        "backtest_5y": 32.3,
+        "simulation_1y": 21.1,
+        "compare_3": 13.1,
+        "portfolio_5y": 16.6,
+        "explore_21": 38.1,
+        "note": "Indicators computed twice in analysis (~5 ms); left as is."
+      }
     }
   ]
 }
