@@ -11,6 +11,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
+from app.analytics import indicators as ind
 from app.analytics.indicators import (
     adx,
     atr,
@@ -322,3 +323,117 @@ def test_indicators_preserve_the_input_index(frame: pd.DataFrame) -> None:
     assert sma(indexed["close"], 5).index.equals(indexed.index)
     assert rsi(indexed["close"], 5).index.equals(indexed.index)
     assert atr(indexed, 5).index.equals(indexed.index)
+
+
+# --- invariants ----------------------------------------------------------------------
+#
+# Two properties every indicator must have, checked for all of them at once so a
+# new indicator inherits the obligation: (1) no lookahead -- the value at bar t
+# computed on bars [0, t] equals the value at t computed on the full series; and
+# (2) stated scale behavior -- price-level indicators scale with price, bounded
+# oscillators and ratios do not change at all.
+
+
+def _ohlcv(n: int = 160, seed: int = 11) -> pd.DataFrame:
+    rng = np.random.default_rng(seed)
+    close = 100 * np.exp(np.cumsum(rng.normal(0.0004, 0.012, n)))
+    spread = np.abs(rng.normal(0, 0.006, n))
+    return pd.DataFrame(
+        {
+            "open": close * (1 + rng.normal(0, 0.003, n)),
+            "high": close * (1 + spread),
+            "low": close * (1 - spread),
+            "close": close,
+            "volume": rng.integers(1_000, 10_000, n).astype(float),
+        }
+    )
+
+
+def _causal_outputs(frame: pd.DataFrame) -> dict[str, pd.Series]:
+    """Every output that must be causal. Ichimoku's forward spans use only past
+    data (shift(+n)); its lagging line is shift(-n) by definition and is
+    display-only, so it is excluded here and asserted non-causal below."""
+    macd_out = ind.macd(frame["close"])
+    stoch = ind.stochastic(frame)
+    bands = ind.bollinger_bands(frame["close"])
+    directional = ind.adx(frame)
+    cloud = ind.ichimoku(frame)
+    return {
+        "sma": ind.sma(frame["close"]),
+        "ema": ind.ema(frame["close"]),
+        "rsi": ind.rsi(frame["close"]),
+        "macd": macd_out.macd,
+        "macd_signal": macd_out.signal,
+        "macd_hist": macd_out.histogram,
+        "stoch_k": stoch.k,
+        "stoch_d": stoch.d,
+        "atr": ind.atr(frame),
+        "bb_upper": bands.upper,
+        "bb_lower": bands.lower,
+        "bb_width": bands.bandwidth,
+        "adx": directional.adx,
+        "plus_di": directional.plus_di,
+        "minus_di": directional.minus_di,
+        "obv": ind.obv(frame),
+        "vwap": ind.vwap(frame),
+        "ichimoku_conversion": cloud.conversion,
+        "ichimoku_base": cloud.base,
+        "ichimoku_span_a": cloud.span_a,
+        "ichimoku_span_b": cloud.span_b,
+    }
+
+
+def test_every_indicator_is_causal_removing_future_bars_changes_nothing_before_them() -> None:
+    frame = _ohlcv()
+    cutoff = 120
+    full = _causal_outputs(frame)
+    prefix = _causal_outputs(frame.iloc[:cutoff])
+    for name, series in full.items():
+        pd.testing.assert_series_equal(
+            series.iloc[:cutoff], prefix[name], check_names=False, obj=name
+        )
+
+
+def test_every_indicator_is_unchanged_by_a_fake_future_crash() -> None:
+    frame = _ohlcv()
+    cutoff = 120
+    mutated = frame.copy()
+    mutated.iloc[cutoff:, mutated.columns.get_indexer(["open", "high", "low", "close"])] *= 0.2
+    full = _causal_outputs(frame)
+    shocked = _causal_outputs(mutated)
+    for name, series in full.items():
+        pd.testing.assert_series_equal(
+            series.iloc[:cutoff], shocked[name].iloc[:cutoff], check_names=False, obj=name
+        )
+
+
+def test_ichimoku_lagging_line_is_the_one_deliberately_non_causal_output() -> None:
+    frame = _ohlcv()
+    lagging = ind.ichimoku(frame).lagging
+    assert lagging.iloc[0] == frame["close"].iloc[26], "lagging[t] is close[t+26] by definition"
+
+
+def test_bounded_oscillators_and_ratios_are_scale_invariant_and_levels_scale() -> None:
+    frame = _ohlcv()
+    scaled = frame.copy()
+    for column in ("open", "high", "low", "close"):
+        scaled[column] *= 1000.0
+    base, big = _causal_outputs(frame), _causal_outputs(scaled)
+    invariant = ("rsi", "stoch_k", "stoch_d", "bb_width", "adx", "plus_di", "minus_di", "obv")
+    for name in invariant:
+        pd.testing.assert_series_equal(base[name], big[name], check_names=False, obj=name)
+    linear = ("sma", "ema", "atr", "bb_upper", "bb_lower", "macd", "vwap", "ichimoku_base")
+    for name in linear:
+        pd.testing.assert_series_equal(
+            base[name] * 1000.0, big[name], check_names=False, obj=name, rtol=1e-9
+        )
+
+
+def test_monotonic_rise_pins_the_oscillators_to_their_ceilings() -> None:
+    close = pd.Series(np.linspace(100, 200, 80))
+    frame = pd.DataFrame(
+        {"open": close, "high": close + 0.5, "low": close - 0.5, "close": close, "volume": 1.0}
+    )
+    assert ind.rsi(close).dropna().eq(100).all()
+    assert ind.adx(frame).plus_di.dropna().gt(ind.adx(frame).minus_di.dropna()).all()
+    assert (ind.stochastic(frame).k.dropna() > 90).all()

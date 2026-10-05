@@ -277,3 +277,64 @@ def test_every_strategy_has_a_description_and_grid(key: str) -> None:
     strategy = STRATEGIES[key]
     assert strategy.name and strategy.description
     assert len(strategy.parameter_grid) >= 1
+
+
+# --- adversarial: the future cannot leak into a position -----------------------------
+
+
+def _every_strategy_parameter() -> list[tuple[str, int]]:
+    return [(key, p) for key, strategy in STRATEGIES.items() for p in strategy.parameter_grid]
+
+
+def _walk(n: int = 400, seed: int = 29) -> pd.DataFrame:
+    """A seeded random walk; a plain function because fixtures cannot be called directly."""
+    generator = np.random.default_rng(seed)
+    idx = pd.date_range("2024-01-01", periods=n, freq="B")
+    return ohlcv(pd.Series(100 * np.exp(np.cumsum(generator.normal(0.0003, 0.015, n))), index=idx))
+
+
+@pytest.mark.parametrize(("key", "parameter"), _every_strategy_parameter())
+def test_positions_are_causal_for_every_rule_and_parameter(key: str, parameter: int) -> None:
+    """Truncating the series must not change any position already taken."""
+    frame = _walk()
+    cutoff = 300
+    full = run_backtest(frame, STRATEGIES[key], parameter, include_curve=True)
+    prefix = run_backtest(frame.iloc[:cutoff], STRATEGIES[key], parameter, include_curve=True)
+    assert full.equity_curve[:cutoff] == pytest.approx(prefix.equity_curve, rel=1e-9)
+
+
+@pytest.mark.parametrize(("key", "parameter"), _every_strategy_parameter())
+def test_a_fabricated_future_boom_cannot_improve_the_past(key: str, parameter: int) -> None:
+    """Multiply every price after the cutoff by 5: the equity curve before the
+    cutoff must be identical. Any difference is a lookahead path."""
+    frame = _walk()
+    cutoff = 300
+    boom = frame.copy()
+    boom.iloc[cutoff:, boom.columns.get_indexer(["open", "high", "low", "close"])] *= 5.0
+    base = run_backtest(frame, STRATEGIES[key], parameter, include_curve=True)
+    shocked = run_backtest(boom, STRATEGIES[key], parameter, include_curve=True)
+    assert base.equity_curve[:cutoff] == pytest.approx(shocked.equity_curve[:cutoff], rel=1e-9)
+
+
+def test_perfect_foresight_signal_earns_nothing_through_the_lag() -> None:
+    """A signal that knows tomorrow's return should be unbeatable -- unless the
+    engine delays it one bar, in which case it is just a lagged rule. Its edge
+    over buy-and-hold must therefore not be the oracle's edge."""
+    frame = _walk()
+    future_up = (frame["close"].shift(-1) > frame["close"]).astype(float)
+    oracle = Strategy(
+        key="oracle",
+        name="oracle",
+        description="cheats",
+        signal=lambda f, p: future_up.reindex(f.index),
+        parameter_grid=(0,),
+        parameter_label="none",
+    )
+    bar_returns = frame["close"].pct_change().fillna(0)
+    cheating_without_lag = float(((future_up.shift(1).fillna(0) * bar_returns) + 1).prod())
+    oracle_result = run_backtest(frame, oracle, 0, cost_bps=0.0)
+    oracle_if_unlagged = float(((future_up * bar_returns.shift(-1).fillna(0)) + 1).prod())
+    # The engine's result equals the lagged (harmless) version, not the cheating one.
+    # BacktestResult rounds to 6 decimals; compare at that precision.
+    assert oracle_result.total_return + 1 == pytest.approx(cheating_without_lag, abs=1e-6)
+    assert oracle_result.total_return + 1 < oracle_if_unlagged

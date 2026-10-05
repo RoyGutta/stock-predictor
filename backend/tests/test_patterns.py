@@ -277,3 +277,48 @@ def test_no_prediction_language_in_definitions_or_events() -> None:
         "predicts the future",
     ):
         assert phrase not in corpus, phrase
+
+
+# --- every detector, individually: causal and present in the fixture ----------------------
+
+
+def _fixture_with_every_pattern() -> pd.DataFrame:
+    """A long noisy series with a deep drawdown and recovery spliced in, so all
+    ten detectors fire at least once and each is covered by the guards below."""
+    base = noisy_series(n=900, seed=21)
+    base[400:460] = base[400:460] * np.linspace(1.0, 0.8, 60)  # a 20% slide
+    base[460:] = base[460:] * (base[459] / base[460]) * np.linspace(1.0, 1.35, 440)  # and recovery
+    return frame_from(base)
+
+
+def test_the_guard_fixture_exercises_every_detector() -> None:
+    report = detect_patterns(_fixture_with_every_pattern())
+    present = {e.pattern for e in report.events}
+    missing = set(PATTERN_DEFINITIONS) - present
+    assert not missing, f"detectors never exercised by the fixture: {sorted(missing)}"
+
+
+@pytest.mark.parametrize("pattern", sorted(PATTERN_DEFINITIONS))
+def test_each_detector_is_causal_under_truncation(pattern: str) -> None:
+    frame = _fixture_with_every_pattern()
+    cutoff = 700
+    whole = detect_patterns(frame).events
+    full = [(e.date, e.values) for e in whole if e.pattern == pattern and e.index <= cutoff]
+    cut = detect_patterns(frame.iloc[: cutoff + 1]).events
+    truncated = [(e.date, e.values) for e in cut if e.pattern == pattern]
+    assert full == truncated, pattern
+
+
+def test_outcome_windows_never_start_before_the_event() -> None:
+    report = detect_patterns(_fixture_with_every_pattern())
+    close = _fixture_with_every_pattern()["close"].to_numpy()
+    for summary in report.summaries:
+        events = [e for e in report.events if e.pattern == summary.pattern]
+        for outcome in summary.outcomes:
+            eligible = [e for e in events if e.index + outcome.window < len(close)]
+            assert outcome.sample_size == len(eligible)
+            assert outcome.excluded == len(events) - len(eligible)
+            if eligible:
+                forward = [close[e.index + outcome.window] / close[e.index] - 1 for e in eligible]
+                expected_mean = float(np.mean(forward))
+                assert outcome.mean == pytest.approx(expected_mean, abs=1e-6)

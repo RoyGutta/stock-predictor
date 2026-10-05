@@ -78,10 +78,11 @@ def test_one_day_uses_intraday_interval() -> None:
     assert interval in yahoo._INTRADAY_INTERVALS
 
 
-def test_long_ranges_use_coarse_intervals() -> None:
-    # A 5-year daily series would be ~1250 points before downsampling.
-    assert yahoo._RANGE_PARAMS[Range.YEAR_5][1] == "1wk"
-    assert yahoo._RANGE_PARAMS[Range.MAX][1] == "1mo"
+def test_long_ranges_fetch_daily_bars_and_resample_server_side() -> None:
+    # Weekly and monthly bars are built from daily bars by prices.resample_bars so
+    # their labels (last trading day covered) and OHLC rules match every provider.
+    assert yahoo._RANGE_PARAMS[Range.YEAR_5] == ("5y", "1d")
+    assert yahoo._RANGE_PARAMS[Range.MAX] == ("max", "1d")
 
 
 # --- TTL cache --------------------------------------------------------------

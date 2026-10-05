@@ -192,3 +192,38 @@ def test_series_are_aligned_and_rounded() -> None:
     assert result.growth_index[0] == pytest.approx(1.0)
     assert result.start_date == result.dates[0]
     assert result.end_date == result.dates[-1]
+
+
+# --- adversarial: flows cannot manufacture or hide performance -----------------------------
+
+
+def test_flat_prices_with_deposits_yield_zero_return_zero_drawdown_and_only_costs() -> None:
+    dates = [str(d.date()) for d in pd.bdate_range("2024-01-02", periods=260)]
+    flat = {"AAA": pd.Series(50.0, index=dates), "BBB": pd.Series(20.0, index=dates)}
+    result = simulate_portfolio(
+        flat, {"AAA": 0.5, "BBB": 0.5}, initial=10_000, monthly=500, cost_bps=10.0
+    )
+    deposited = 10_000 + 500 * result.contribution_count
+    # Flat prices: the only thing that can move the value is the 10 bps charged
+    # on each purchase, so ending value is deposits minus costs to the cent...
+    assert result.cost_paid == pytest.approx(deposited * 0.001, rel=1e-9)
+    assert result.ending_value == pytest.approx(deposited - result.cost_paid, rel=1e-9)
+    # ...and the time-weighted return is a small negative number made only of
+    # those costs (each charged against the value held at the time), never a
+    # gain manufactured from the deposits themselves.
+    assert -0.01 < result.total_return < 0
+    assert result.max_drawdown == pytest.approx(result.total_return, rel=1e-6)
+    assert result.annualized_volatility is None or result.annualized_volatility < 1e-3
+
+
+def test_a_price_collapse_is_not_cushioned_by_deposits_in_the_return_series() -> None:
+    dates = [str(d.date()) for d in pd.bdate_range("2024-01-02", periods=260)]
+    crash = pd.Series(np.linspace(100.0, 10.0, 260), index=dates)
+    with_flows = simulate_portfolio(
+        {"AAA": crash}, {"AAA": 1.0}, initial=1_000, monthly=5_000, cost_bps=0.0
+    )
+    without = simulate_portfolio(
+        {"AAA": crash}, {"AAA": 1.0}, initial=1_000, monthly=0.0, cost_bps=0.0
+    )
+    assert with_flows.total_return == pytest.approx(without.total_return, rel=1e-6)
+    assert with_flows.max_drawdown == pytest.approx(-0.9, abs=1e-6)

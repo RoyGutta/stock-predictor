@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import numpy as np
+import pandas as pd
 import pytest
 from fastapi.testclient import TestClient
 
@@ -18,9 +19,10 @@ def client() -> TestClient:
 def _candles(n: int) -> list[dict]:
     generator = np.random.default_rng(5)
     prices = 100 * np.exp(np.cumsum(generator.normal(0.0004, 0.014, n)))
+    dates = [d.date() for d in pd.bdate_range("2021-01-04", periods=n)]
     return [
         {
-            "date": f"2024-{(i // 28) % 12 + 1:02d}-{i % 28 + 1:02d}T00:00:{i % 60:02d}",
+            "date": str(dates[i]),
             "price": round(float(p), 2),
             "open": round(float(p) * 0.998, 2),
             "high": round(float(p) * 1.01, 2),
@@ -40,7 +42,8 @@ def _stub(monkeypatch: pytest.MonkeyPatch, n: int) -> None:
 
 @pytest.fixture
 def long_history(monkeypatch: pytest.MonkeyPatch) -> None:
-    _stub(monkeypatch, 500)
+    # Five years of daily candles: the 5Y default range resamples them to ~260 weekly bars.
+    _stub(monkeypatch, 1300)
 
 
 def test_returns_every_strategy(client: TestClient, long_history: None) -> None:

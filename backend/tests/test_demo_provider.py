@@ -80,3 +80,48 @@ def test_search_matches_symbol_or_name_and_is_bounded() -> None:
 
 def test_source_label_says_what_it_is() -> None:
     assert "Synthetic" in demo.SOURCE and "demo" in demo.SOURCE.lower()
+
+
+# --- reproducibility: the dataset is versioned and pinned ----------------------------------
+
+
+def test_dataset_is_versioned() -> None:
+    assert demo.DATASET_VERSION == "2025.12.1"
+
+
+def test_golden_bars_pin_the_generator() -> None:
+    """If any of these change, the generator changed. That is allowed only with a
+    DATASET_VERSION bump, so historical demo results never drift silently."""
+    aapl = demo.fetch_history("AAPL", Range.YEAR_1)
+    assert aapl[0] == {
+        "date": "2025-01-14",
+        "price": 443.576,
+        "open": 443.558,
+        "high": 449.5511,
+        "low": 437.5832,
+        "volume": 87557874,
+    }
+    assert aapl[-1]["price"] == 415.6157
+    spy_weekly = demo.fetch_history("SPY", Range.YEAR_5)
+    assert (len(spy_weekly), spy_weekly[0]["date"], spy_weekly[-1]["price"]) == (
+        253, "2021-03-05", 385.9758,
+    )
+    qqq_monthly = demo.fetch_history("QQQ", Range.MAX)
+    assert (len(qqq_monthly), qqq_monthly[0]["date"], qqq_monthly[-1]["price"]) == (
+        140, "2014-05-30", 274.0952,
+    )
+    voo_intraday = demo.fetch_history("VOO", Range.DAY_1)
+    assert (len(voo_intraday), voo_intraday[-1]["date"], voo_intraday[-1]["price"]) == (
+        78, "2025-12-31T15:55:00", 161.024,
+    )
+
+
+def test_weekly_and_monthly_bars_are_labeled_by_their_last_session() -> None:
+    import pandas as pd
+
+    for range_ in (Range.YEAR_5, Range.MAX):
+        for bar in demo.fetch_history("VTI", range_):
+            assert pd.Timestamp(bar["date"]).dayofweek <= 4
+    # A monthly bar's date is the last business day of its month.
+    monthly = demo.fetch_history("VTI", Range.MAX)
+    assert monthly[-1]["date"] == demo.DEMO_END_DATE.isoformat()

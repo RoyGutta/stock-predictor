@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import numpy as np
+import pandas as pd
 import pytest
 from fastapi.testclient import TestClient
 
@@ -17,9 +18,10 @@ def client() -> TestClient:
 
 def _candles(n: int, start: float = 100.0, drift: float = 0.4) -> list[dict]:
     prices = start + np.arange(n) * drift
+    dates = [d.date() for d in pd.bdate_range("2024-01-02", periods=n)]
     return [
         {
-            "date": f"2026-01-{(i % 28) + 1:02d}",
+            "date": str(dates[i]),
             "price": round(float(p), 2),
             "open": round(float(p) - 0.2, 2),
             "high": round(float(p) + 1, 2),
@@ -99,12 +101,18 @@ def test_risk_payload_states_its_basis(client: TestClient, stub_long_history: No
     assert "this range" in client.get("/api/v1/stocks/AAPL/analysis").json()["risk"]["basis"]
 
 
-def test_long_ranges_do_not_annualize_as_daily(client: TestClient, stub_long_history: None) -> None:
+def test_long_ranges_do_not_annualize_as_daily(
+    client: TestClient, stub_long_history: None, monkeypatch: pytest.MonkeyPatch
+) -> None:
     """5Y data is weekly; annualizing it at 252 periods/year would be wrong."""
     body = client.get("/api/v1/stocks/AAPL/analysis?range=5Y").json()
     assert body["risk"]["frequency"] == "weekly"
+    # MAX is resampled to monthly bars from daily ones; 30 monthly bars need
+    # about 650 daily candles, so give the adapter a longer daily history.
+    monkeypatch.setattr(yahoo, "_fetch_history_sync", lambda *a: _candles(900))
     max_body = client.get("/api/v1/stocks/AAPL/analysis?range=MAX").json()
     assert max_body["risk"]["frequency"] == "monthly"
+    assert max_body["risk"]["observations"] >= 30
 
 
 def test_invalid_ticker_returns_400(client: TestClient) -> None:
