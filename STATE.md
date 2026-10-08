@@ -1,6 +1,6 @@
 # State
 
-**Updated:** 2026-09-14 · **Commit:** `419592e` · **Cycle:** 9 (published)
+**Updated:** 2026-10-08 · **Commit:** `b1a4ada` · **Cycle:** 11 (provider decision recorded; not integrated)
 
 ## Objective
 
@@ -126,10 +126,15 @@ domain public and preview URLs behind Vercel Authentication.
 1. **T-2** — `backend/venv/` (a stale Windows virtualenv) should be deleted;
    awaiting your OK since it is your file.
 2. **T-4** — stock screener needs a paid FMP plan (re-verified 402 on 2026-09-14).
-4. **T-3 / T-8 provider decision** — see `PROVIDERS.md` sections 5-7: choose a
-   provider path and send the listed questions to its licensing team. Twelve Data
-   Venture is the only published plan with external display rights; its non-profit
-   programme needs a qualifying entity and written confirmation of display scope.
+4. **T-3 / T-8 provider decision — research complete 2026-10-08, awaiting your
+   written answers.** Decision record: `PROVIDERS.md` section 8. Provider chosen
+   for the public real-data path: Twelve Data. Two routes: (a) Non-Profit
+   programme, $0, only if a registered non-profit is the account holder and Stock
+   Predictor is genuinely its initiative (your call: your notes describe CourtQuest
+   as a 501(c)(3), not verified here); (b) Venture 610 at $149/mo. Either route is
+   blocked until Twelve Data answers §8.3 questions 1-3 in writing (anonymous
+   display, JSON/CSV scope, cache period) and, for route (a), question 4. No
+   account, terms, plan, or key exists. Nothing is integrated.
 3. **Rotate the FMP key.** Not a repository problem — the repo is clean and
    always was — but that key was printed to a terminal by httpx before the
    log-level fix. Details in `personal.md`.
@@ -139,10 +144,12 @@ standing manual step.
 
 ## Next highest-value actions (unblocked, in order)
 
-1. Provider decision (T-3, `PROVIDERS.md` sections 5-7), then the adapter for
-   the chosen provider: one module implementing `PriceProvider`, one registry
-   entry, fixtures for the contract tests. The seam is in place; nothing else
-   on this list unblocks real-data publishing.
+1. **Your action:** choose the applying entity and send `PROVIDERS.md` §8.3
+   questions 1-3 (plus 4 for the non-profit route) to Twelve Data. When the
+   written answers arrive: one adapter implementing `PriceProvider`, one registry
+   entry, contract-test fixtures, a venue-partial label on intraday volume, an
+   attribution component, and the CSV-export and Finnhub/FMP display decisions.
+   The seam is in place; nothing else on this list unblocks real-data publishing.
 2. Remaining Phase 8 detectors (gap detection, support/resistance) under the
    same anti-lookahead test regime as the ten shipped patterns.
 3. An opt-in, scheduled live-provider run of the browser smoke suite

@@ -3,7 +3,9 @@
 Research record for replacing `yfinance`, the one dependency that blocks a public
 deployment (`TENSIONS.md` T-3). Written 2026-09-14 from the repository as it stands
 and from each provider's official pricing, terms, and documentation pages, fetched
-that day. Nothing here is a legal opinion. Every licensing statement carries one
+that day. Section 8 records the re-verification of 2026-10-08 and the decision
+status; where it disagrees with sections 3-7, section 8 is current. Nothing here
+is a legal opinion. Every licensing statement carries one
 of four labels:
 
 - **Confirmed** -- stated in the provider's published terms, pricing, or docs (URL given).
@@ -176,25 +178,38 @@ https://support.twelvedata.com/en/articles/12647398-attribution-guidelines-for-u
 - Public display to anonymous users: **Not permitted on Individual plans** (Basic
   $0 "internal non-display", Grow $29-79 "internal display", Pro, Ultra). Plans
   are "strictly for personal or internal use"; educational projects count as
-  internal use only. **Confirmed permitted on Venture ($499/mo, "external display
-  data access")**, subject to the terms' redistribution add-on / compliance review
-  language (§2.4). Enterprise $1,099 adds external distribution.
+  internal use only. **Venture is the tier whose published card states "external
+  display data access"**; it is sold in three sizes, $149 / $299 / $499 per month
+  for 610 / 1,597 / 2,584 API credits per minute (pricing page rendered in a
+  browser, 2026-10-08; the static card shows only the $499 size). Whether that
+  right covers anonymous, unauthenticated visitors is strongly indicated but not
+  stated (section 8.1). Enterprise $1,099 adds external distribution.
 - Derived analytics: terms permit derived data that cannot be reverse-engineered
   into the original series (§2.2(c)); display of it still follows the tier's
   display right (**Probable** on Venture).
 - Caching: prohibited "beyond permitted timeframes specified in the
-  Documentation" (§2.3(g)); the timeframe is not published (**needs provider
-  confirmation**).
+  Documentation" (§2.3(g)). The Documentation's only statement on caching, the
+  Quickstart best-practices list, recommends caching responses and names no
+  timeframe (verified 2026-10-08); §16.1 allows retention "for duration permitted
+  by subscription". A short server-side TTL is therefore strongly indicated but
+  the period itself **needs provider confirmation**.
 - Attribution (**Confirmed**): "Data provided by Twelve Data" with a dofollow link
   near each chart or table.
-- Non-profit route (**Confirmed to exist**): a free standard plan for registered
-  non-profit or academic institutions with non-commercial use, prominent
-  attribution, annual review. **Whether it includes external display rights is not
-  stated -- needs provider confirmation.** The account holder's legal entity
-  matters: the plan is granted to the institution, not the project. A personal
-  project does not qualify; a for-profit business does not qualify. A registered
-  non-profit that owns the deployment could apply, and would need the display
-  question answered in writing before relying on it.
+- Non-profit route (**Confirmed to exist**; article updated 2026-03-12): free
+  access to "one of our standard plans, tailored to their scale and technical
+  needs" for organisations "registered as a non-profit or academic institution"
+  whose use "does not generate revenue". The article's own plan table lists
+  **Venture ("External display data access", "for public platforms and
+  data-driven apps")** among the plans it assigns, so external display is within
+  the programme's published scope; which plan is assigned is Twelve Data's
+  decision. Not eligible: for-profit companies, paywalled or monetised projects,
+  resellers. Obligations: annual renewal update; a permanent, visible recognition
+  text naming the organisation, with a dofollow link on a prominent page "not in
+  the footer" (the article supplies the wording), in addition to the general
+  attribution rule. Application: organisation brief, planned use, confirmation of
+  non-commercial intent, "formal documentation of non-profit status". The grant
+  attaches to the registered organisation for the described use, not to a
+  project in the abstract (section 8.1, entity row).
 - Technical (**Confirmed**): `/time_series` daily back to first trade date;
   `adjust=all|splits|dividends|none` (default splits) -- dividend adjustment
   available, matching current behavior; splits and dividends endpoints (dividends
@@ -202,8 +217,8 @@ https://support.twelvedata.com/en/articles/12647398-attribution-guidelines-for-u
   itself unclear; SPY works regardless); intraday intervals on all plans;
   `/symbol_search`; `/profile` from Grow; **no news endpoint found**; credits per
   symbol with batching; documented JSON errors with 400/401/403/404/429.
-- Cost for this use case: **$499/mo** (Venture), or **$0 if the non-profit plan is
-  granted and confirmed to include external display**.
+- Cost for this use case: **$149/mo** (Venture, 610 credits/min), or **$0 if the
+  Non-Profit programme assigns Venture and the grant letter says so**.
 
 ### 3.3 Tiingo
 
@@ -348,7 +363,7 @@ either, but that is an assumption, not a finding.
 | Provider | Public anonymous display | Derived analytics | Raw price charts | Historical OHLCV | Adjustments | ETFs / indexes | News | Rate limits | Required plan | Monthly cost | Attribution | Caching | Migration | Confidence |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | Massive/Polygon | Not permitted (Individual); Probable (Business) | Same | Same | 2-20+ y by tier | split only; dividends separate | ETFs yes; indices from 2023 | yes | unlimited (paid) | Business | $2,499 | none | unclear | low-medium (adjust for dividends yourself) | high |
-| Twelve Data | Not permitted (Individual); **Confirmed (Venture)**; non-profit plan unclear | Probable on display tier | Same | full daily | `adjust=all` matches today | ETFs yes; indices yes | **none** | credits/min by tier | Venture, or Non-Profit if granted | $499, or $0 | required, dofollow link | timeframe unpublished | low | high on rights, medium on non-profit scope |
+| Twelve Data | Not permitted (Individual); **Venture: strongly indicated, anonymous visitors not stated**; Non-Profit may assign Venture | Probable on display tier | Same | full daily | `adjust=all` matches today (daily+); intraday unadjusted | ETFs yes; indices yes | **none** | 610-2,584 credits/min, no daily cap | Venture, or Non-Profit if granted | $149-499, or $0 | required, dofollow link | timeframe unpublished; docs recommend caching | low | high on rights, medium on anonymous scope |
 | Tiingo | Not permitted (standard); redistribution license by email | statistics only; series not permitted | Not permitted | 1962-, best quality | full adjusted + divCash/splitFactor | ETFs yes; no indices | Power+ | hourly/daily | Redistribution | $250-500 | required | free: memory only | low | high |
 | Alpha Vantage | Not permitted (self-serve); written agreement only | Probable not permitted | Same | 25+ y (premium) | adjusted (premium) | ETFs yes; index $99.99+ | yes | 25/day free; 75+/min paid | none exists as a product | $49.99-99.99 + agreement | none | unclear | medium (200-body errors) | high |
 | FMP | Not permitted (all self-serve); Data Display Agreement only | Not permitted without agreement | Same | 5 y free/Starter; 30+ y Premium | **unadjusted**; splits + dividends provided | ETFs yes; ^GSPC yes | 402 on free | 250/day free; 300-3,000/min paid | Enterprise + Display Agreement | custom | not addressed | allowed with obligations | medium (self-adjust) | high |
@@ -361,22 +376,24 @@ Migration difficulty assumes the seam in 2.1: one module, fixture rebuild,
 
 ## 5. Ranking
 
-1. **Best candidate for public deployment: Twelve Data Venture ($499/mo).** It is
+1. **Best candidate for public deployment: Twelve Data Venture (from $149/mo).** It is
    the only provider whose published, self-serve plan states external display
    rights, it supplies dividend-adjusted daily history (so the app's methodology
    is unchanged), covers ETFs and indices, and documents its errors. Gaps: no news
    endpoint (Finnhub would remain, and Finnhub also needs written approval), and
    the cache-retention timeframe must be confirmed.
-2. **Best low-cost candidate: none is legally suitable at low cost today.** Every
-   $0-$99 tier at every provider is personal or internal use only. The cheapest
-   compliant published price is Tiingo's $250/mo redistribution license, and its
-   derived-products clause would still forbid the price charts and indicator series
-   that are the core of the Analyze page.
+2. **Cheapest legitimate public-display option: Twelve Data Venture 610 at
+   $149/mo** (corrected 2026-10-08; the plan has three sizes). Every $0-$99 tier
+   at every provider remains personal or internal use only. Tiingo's $250/mo
+   redistribution license is not cheaper in practice: its revised §1.6(c)
+   (2026-10-06) still prohibits price paths, equity curves and resampled series
+   without separate written approval.
 3. **Best candidate if a non-profit or educational exception is granted: Twelve
    Data's Non-Profit plan.** It exists as a published programme, unlike Alpha
-   Vantage's FAQ line or anything at FMP. It requires the account to belong to a
-   registered non-profit or academic institution, and its external-display scope
-   must be confirmed in writing. A personal project does not qualify.
+   Vantage's FAQ line or anything at FMP, and its plan table names Venture with
+   external display. It requires the account to belong to a registered non-profit
+   or academic institution; the assigned plan and its display scope must appear in
+   the grant letter. A personal project does not qualify.
 4. **Best technical migration candidate: Twelve Data**, for the `adjust=all`
    parity, followed by Tiingo for data quality. Massive is technically excellent
    but would require computing dividend adjustment from its factor endpoint.
@@ -390,6 +407,9 @@ Migration difficulty assumes the seam in 2.1: one module, fixture rebuild,
 ---
 
 ## 6. What must be confirmed in writing before any public deployment
+
+> Superseded 2026-10-08 by the smaller list in section 8.3, which reflects what
+> the published terms now answer. Kept for the record.
 
 For the chosen provider (Twelve Data unless the decision changes):
 
@@ -431,9 +451,9 @@ Questions to send, verbatim:
 - **Keep `yfinance` local-only.** Nothing changes for local, personal use; the
   readme already says so. It must not back a public URL.
 - **No provider is both affordable and clearly licensed for this use right now.**
-  The lowest confirmed compliant price is Twelve Data Venture at $499/mo; the only
-  possible $0 route is Twelve Data's Non-Profit plan through a qualifying entity,
-  with display rights still to be confirmed.
+  The lowest published display-capable price is Twelve Data Venture 610 at
+  $149/mo; the only possible $0 route is Twelve Data's Non-Profit plan through a
+  qualifying entity, with the assigned plan still to be confirmed in writing.
 - **Do not build the integration before the written answers arrive.** The
   interface work in 2.3 is done (2026-10-03); what remains is the adapter for
   the chosen provider. The original note follows: the interface work in 2.3 (a `PriceProvider` protocol, `PRICES` /
@@ -441,3 +461,106 @@ Questions to send, verbatim:
   in the payload) is provider-agnostic and can be done first; it is the exact
   next engineering step once the direction is chosen, and it also makes the
   yfinance implementation a proper provider rather than a special case.
+
+---
+
+## 8. Decision record (2026-10-08)
+
+Re-verified on 2026-10-08 against the live pages: Twelve Data terms, both pricing
+pages (the business page rendered in a browser so every Venture size could be
+read), support articles 5332349 (commercial vs personal), 11116616 (non-profit),
+12647398 (attribution), 9935903 (US equities), 5203307 (delays), 5214728
+(historical data), 5179064 (adjustment), 5615854 (credits), the API docs for
+`/time_series`; Tiingo's terms (revised 2026-10-06); Massive's business page and
+market-data terms; Alpha Vantage's support FAQ. Labels in this section:
+
+- **C** confirmed by published terms, pricing or docs
+- **S** strongly indicated by published material, not stated outright
+- **W** requires written confirmation; silence is W, never permission
+- **N** not permitted by published terms
+
+### 8.1 Decision matrix
+
+| Question | Twelve Data Venture | Twelve Data Non-Profit | Tiingo + redistribution license | Massive Business |
+|---|---|---|---|---|
+| Public / external display of historical prices | **S.** Card: "External display data access"; article 5332349: business plans allow "commercial display"; terms §2.2(b) allow display to third parties "as expressly permitted by your Subscription Tier"; §2.4: tiers "may permit limited redistribution or external display ... subject to additional terms" | **S.** Programme table lists Venture, "External display data access", "for public platforms and data-driven apps"; plan assignment is Twelve Data's decision | **W.** §7.3: data "for internal consumption only"; redistribution "only available upon special request and permission, and comes with additional fees" | **S** on the $2,499 plan ("commercial and display rights"); **N** on Individual (§5(c)) |
+| Charts and derived analytics displayed | **S.** §2.2(c) permits Derived Data that cannot be reverse-engineered; display of it follows the tier's display right | same | **W.** §1.6(c) (2026-10-06) prohibits "a single-security performance series, equity curve, or price path", resampled series, and "simple transformations of open, high, low, close" unless Tiingo "expressly approves it in writing for a Start-up, Enterprise, or Institutional account" | **S** on Business; **N** on Individual, which names "charts, analytics" |
+| Anonymous visitors without their own key | **S.** "client-facing apps or websites"; "anonymous" and "unauthenticated" appear nowhere. Article 9935903 separates "display" (covered by standard plans) from "external distribution to users" (needs a US Equities Add-On) and defines neither; its distribution examples are brokerage, reselling, providing access to clients | same | **W** | **W** |
+| Cached responses server-side | **S** for a short TTL. §2.3(g) defers to the Documentation; the Documentation recommends caching and names no timeframe; §16.1 allows retention "for duration permitted by subscription". The period itself is **W** | same | **C** on paid plans, "solely to the extent permitted by that Paid Plan" (§1.6(b)); **N** on Starter and trial plans (§1.6(a), volatile memory only) | **W** (not addressed) |
+| Derived indicators publicly displayed | **S** (row 2) | same | **W** (indicator series track price; §1.6(c) allows "trading signals ... that do not expose or reproduce" the data) | **S** on Business |
+| Required attribution | **C.** "Data provided by Twelve Data", dofollow link to twelvedata.com, visible near each chart or table; "Source: Twelve Data" acceptable in compact UIs (article 12647398) | **C.** The above plus the programme's recognition text naming the organisation, with a dofollow link on a prominent page, "not in the footer" (article 11116616). The supplied wording contains provider marketing language; it would be shown as Twelve Data's statement, not the project's | **C.** "Data sourced by Tiingo" with link (§7.3) | **C.** none |
+| Practical rate limits | **C.** 610 / 1,597 / 2,584 API credits per minute by size; no daily limit; `/time_series` costs 1 credit per symbol; 5,000 points per request; 429 when exceeded, quota resets each minute. The explore fan-out (21 symbols) costs 21 credits | **C.** same, per assigned plan | recorded 2026-09-14; pricing page is script-rendered, not re-verified | **C.** unlimited calls |
+| Actual current price | **C.** $149 / $299 / $499 per month billed monthly; $1,490 / $2,990 / $4,990 per year | **C.** $0, with an annual renewal update | $250 / $500 per month recorded 2026-09-14, not re-verified | **C.** $2,499 per month; qualifying startups 25% or more off |
+| Non-profit / academic eligibility | n/a, paid | **C.** "registered as a non-profit or academic institution"; use that "does not generate revenue"; excluded: for-profit companies, paywalled or monetised projects, resellers | **W.** nothing published | **N.** nothing published; organisations are Professional Subscribers |
+| CourtQuest / the organisation vs Stock Predictor | the account holder is whoever subscribes | **C.** The grant is to the registered organisation for the use described in the application ("description of your planned use"; "formal documentation of non-profit status"; recognition text reads "[Your Organisation Name] uses Twelve Data"). It would cover Stock Predictor only if Stock Predictor is described as, and genuinely is, that organisation's non-commercial initiative. Whether that is true of CourtQuest is the maintainer's call, not a research finding | account holder | account holder |
+| OHLC with split and dividend adjustment | **C.** `/time_series` `adjust=all` (also `splits`, `dividends`, `none`; default `splits`) for 1day, 1week, 1month. Intraday bars are unadjusted (article 5179064) | same | **C.** adjusted OHLCV plus `divCash` and `splitFactor` | **C.** split-adjusted only; dividend factors from a separate endpoint |
+| Daily and intraday ranges the app exposes | **C.** Intervals 1min to 1month on all plans, including the app's 5min and 30min. End-of-day covers "100% of total US trading volume"; the real-time intraday feed covers about 5% of US volume (article 9935903), so intraday volume is venue-partial and must be labeled as such, never shown as market volume | same | daily from 1962; intraday IEX only | **C.** minute bars on paid plans |
+
+### 8.2 What changed since 2026-09-14
+
+- Venture costs from **$149/mo**, not $499; the plan has three credit sizes.
+- The Non-Profit programme's own plan table includes Venture with external display.
+- The Documentation names no cache timeframe and recommends caching.
+- Tiingo revised its terms on 2026-10-06; §1.6(c) now lists price paths and
+  equity curves as prohibited derived products absent written approval.
+- Twelve Data's real-time US feed is about 5% of US volume; end-of-day is 100%.
+- Two shipped features sit closer to redistribution than to display and were not
+  previously flagged: **CSV export of price bars** and the **open JSON API** that
+  returns raw OHLCV to the browser. Both are questions below; CSV export of raw
+  provider bars should be assumed **N** for a public build until answered.
+- Unchanged: no free or individual tier at any provider permits public display;
+  Finnhub news and FMP movers/sectors/profile still need written approval or
+  replacement (Twelve Data has `/symbol_search`, `/profile`, `/market_movers`,
+  and no news endpoint).
+
+### 8.3 Smallest set of questions still needed in writing
+
+To Twelve Data (support@twelvedata.com or sales@twelvedata.com), naming the plan
+under consideration:
+
+1. Does Venture's "External display data access" cover a free, open educational
+   website whose visitors are anonymous and unauthenticated, displaying
+   end-of-day and intraday price charts plus server-computed indicator series and
+   statistics? Or is that "external distribution to users" requiring a
+   Redistribution Rights or US Equities Add-On?
+2. Is a browser-facing JSON API that returns the displayed bars to the page, and
+   a CSV download of the displayed bars, within that display right? (The CSV
+   export will be removed from the public build if not.)
+3. What retention period applies to end-of-day bars and reference data cached
+   server-side under §2.3(g), given the Documentation specifies none? Is 24 hours
+   acceptable?
+4. Non-Profit path only: is the applying organisation eligible for Venture for
+   this use; which legal entity and documents are required; and does the grant
+   cover the organisation's use generally or this project specifically?
+5. Confirm the attribution wording and placement ("Data provided by Twelve Data"
+   with dofollow link under each chart and table), and for the Non-Profit path
+   whether the recognition text may be shortened.
+
+Questions 1 to 3 are needed on either path; 4 only if applying as a non-profit;
+5 can be settled from the published articles if they prefer.
+
+Separately, if the market-context panels stay in a public build: Finnhub written
+approval for displaying news, or removal; FMP's Data Display and Licensing
+Agreement for movers, sectors and profile, or replacement.
+
+### 8.4 Decision status
+
+- **Provider for the public real-data path: Twelve Data.** Only provider with a
+  published self-serve display tier, `adjust=all` parity with the current
+  methodology, ETF coverage, documented errors, and a published non-profit
+  programme that names the display tier.
+- **Cheapest legitimate public-display option: Venture 610 at $149/mo.** $0 only
+  if the Non-Profit programme assigns Venture and the grant letter says so.
+- **Non-Profit viability:** viable on paper. It requires a registered non-profit
+  as account holder, a non-commercial use, and that Stock Predictor be that
+  organisation's initiative. The maintainer's notes describe CourtQuest as a
+  student-led 501(c)(3); that status was not independently verified here and
+  Twelve Data will ask for formal documentation. Plan assignment is at their
+  discretion.
+- **Status: not ready to integrate.** Blocked on written answers to 8.3 questions
+  1 to 3 (either path) and 4 (non-profit path). No account created, no terms
+  accepted, no plan purchased, no key issued.
+- **When answers arrive:** one adapter `providers/twelvedata.py` under the
+  existing `PriceProvider` contract; a venue-partial label on intraday volume; an
+  attribution component near every chart and table; the CSV export decision;
+  the Finnhub and FMP display decisions. None of this starts before the answers.
