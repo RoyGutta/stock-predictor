@@ -214,6 +214,69 @@ def max_drawdown(prices: pd.Series) -> Drawdown:
     )
 
 
+@dataclass(frozen=True)
+class Underwater:
+    """How long, not just how deep.
+
+    A spell is a run of consecutive bars closing below the running peak. Its
+    length counts those bars. `longest_recovered` is False when the longest
+    spell was still open at the end of the window -- the true length is then
+    at least `longest_bars`, and saying "lasted N bars" would understate it.
+    """
+
+    current_drawdown: float
+    current_peak_date: str | None
+    longest_bars: int
+    longest_start: str | None  # the peak bar the spell fell from
+    longest_end: str | None  # the first bar back at or above that peak
+    longest_recovered: bool | None
+    time_underwater: float  # fraction of bars below the running peak
+
+
+def underwater(prices: pd.Series) -> Underwater:
+    """Duration statistics of drawdowns within the window.
+
+    The running peak only sees the window: a security that peaked before the
+    window began is measured from the window's own high. Callers state that.
+    """
+    if prices.empty:
+        return Underwater(float("nan"), None, 0, None, None, None, float("nan"))
+    values = prices.to_numpy(dtype=float)
+    peaks = np.maximum.accumulate(values)
+    below = values < peaks
+
+    longest, longest_start, longest_end, recovered = 0, None, None, None
+    position = 0
+    n = len(values)
+    while position < n:
+        if not below[position]:
+            position += 1
+            continue
+        start = position
+        while position < n and below[position]:
+            position += 1
+        length = position - start
+        if length > longest:
+            longest = length
+            longest_start = start - 1  # the bar that set the peak; below[0] is always False
+            longest_end = position if position < n else None
+            recovered = position < n
+
+    def label(index: int | None) -> str | None:
+        return None if index is None else str(prices.index[index])
+
+    current_peak = int(np.flatnonzero(values == peaks[-1])[-1])
+    return Underwater(
+        current_drawdown=float(values[-1] / peaks[-1] - 1),
+        current_peak_date=label(current_peak),
+        longest_bars=longest,
+        longest_start=label(longest_start),
+        longest_end=label(longest_end),
+        longest_recovered=recovered,
+        time_underwater=float(below.mean()),
+    )
+
+
 # --- tail risk --------------------------------------------------------------
 
 

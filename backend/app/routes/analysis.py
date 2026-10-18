@@ -91,6 +91,7 @@ def _build_risk(
 
     returns = risk.simple_returns(close)
     drawdown = risk.max_drawdown(close)
+    spells = risk.underwater(close)
 
     def clean(value: float) -> float | None:
         """JSON has no NaN. An absent statistic must be null, not 0."""
@@ -105,6 +106,13 @@ def _build_risk(
         drawdown_peak_date=drawdown.peak_date,
         drawdown_trough_date=drawdown.trough_date,
         drawdown_recovery_date=drawdown.recovery_date,
+        current_drawdown=clean(spells.current_drawdown),
+        current_drawdown_peak_date=spells.current_peak_date,
+        longest_underwater_bars=spells.longest_bars,
+        longest_underwater_start=spells.longest_start,
+        longest_underwater_end=spells.longest_end,
+        longest_underwater_recovered=spells.longest_recovered,
+        time_underwater=clean(spells.time_underwater),
         value_at_risk_95=clean(risk.value_at_risk(returns, 0.95)),
         conditional_value_at_risk_95=clean(risk.conditional_value_at_risk(returns, 0.95)),
         observations=len(returns),

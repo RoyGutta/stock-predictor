@@ -363,3 +363,60 @@ def test_monte_carlo_carries_its_disclaimer(prices: pd.Series) -> None:
     result = monte_carlo(prices, 30, 200, seed=6)
     assert "Not a forecast" in result.disclaimer
     assert "bootstrap" in result.method
+
+
+# --- drawdown duration (cycle 13) -----------------------------------------------
+
+from app.analytics.risk import underwater  # noqa: E402
+
+
+def _dated(values: list[float]) -> pd.Series:
+    return pd.Series(values, index=[f"2025-01-{day:02d}" for day in range(1, len(values) + 1)])
+
+
+def test_underwater_counts_the_longest_spell_and_its_recovery() -> None:
+    # Peak 10 on day 2; below it for days 3-5; back at 10 on day 6. Then a
+    # shorter one-day dip.
+    out = underwater(_dated([9, 10, 8, 7, 9, 10, 11, 10.5, 12]))
+    assert out.longest_bars == 3
+    assert out.longest_start == "2025-01-02"
+    assert out.longest_end == "2025-01-06"
+    assert out.longest_recovered is True
+
+
+def test_underwater_spell_still_open_at_the_end_is_marked_unrecovered() -> None:
+    out = underwater(_dated([10, 12, 11, 10, 9]))
+    assert out.longest_bars == 3 and out.longest_end is None
+    assert out.longest_recovered is False
+    assert out.current_drawdown == pytest.approx(9 / 12 - 1)
+    assert out.current_peak_date == "2025-01-02"
+
+
+def test_current_peak_is_the_latest_bar_at_the_high() -> None:
+    out = underwater(_dated([12, 10, 12, 11]))
+    assert out.current_peak_date == "2025-01-03"
+
+
+def test_underwater_is_zero_for_a_monotonic_rise() -> None:
+    out = underwater(_dated([1, 2, 3, 4]))
+    assert out.longest_bars == 0 and out.longest_recovered is None
+    assert out.current_drawdown == 0.0 and out.time_underwater == 0.0
+
+
+def test_time_underwater_is_the_share_of_bars_below_the_running_peak() -> None:
+    out = underwater(_dated([10, 9, 10, 9, 8]))  # bars 2, 4, 5 are below the peak
+    assert out.time_underwater == pytest.approx(3 / 5)
+
+
+def test_underwater_depends_only_on_shape_not_scale() -> None:
+    base = [10, 12, 9, 11, 13, 12]
+    a, b = underwater(_dated(base)), underwater(_dated([v * 37.5 for v in base]))
+    assert (a.longest_bars, a.longest_start, a.longest_end) == (
+        b.longest_bars, b.longest_start, b.longest_end
+    )
+    assert a.current_drawdown == pytest.approx(b.current_drawdown)
+
+
+def test_underwater_handles_an_empty_series() -> None:
+    out = underwater(pd.Series([], dtype=float))
+    assert out.longest_bars == 0 and np.isnan(out.current_drawdown)
