@@ -146,6 +146,29 @@ class RiskMetrics(BaseModel):
     drawdown_recovery_date: str | None = Field(
         description="Null if the price never regained its previous peak within this range."
     )
+    current_drawdown: float | None = Field(
+        default=None,
+        description="Last close relative to the highest close in this range (0 at a new high).",
+    )
+    current_drawdown_peak_date: str | None = None
+    longest_underwater_bars: int | None = Field(
+        default=None,
+        description="Most consecutive bars that closed below an earlier peak in this range.",
+    )
+    longest_underwater_start: str | None = Field(
+        default=None, description="Date of the peak the longest spell fell from."
+    )
+    longest_underwater_end: str | None = Field(
+        default=None, description="First bar back at that peak; null if still below it."
+    )
+    longest_underwater_recovered: bool | None = Field(
+        default=None,
+        description="False when the longest spell was still open at the window's end, so "
+        "its true length is at least longest_underwater_bars.",
+    )
+    time_underwater: float | None = Field(
+        default=None, description="Fraction of bars that closed below the running peak."
+    )
     value_at_risk_95: float | None
     conditional_value_at_risk_95: float | None
     observations: int
@@ -275,6 +298,14 @@ class CapabilityStatus(BaseModel):
     )
     demo_note: str | None = Field(
         default=None, description="Standing disclosure to show whenever demo is true."
+    )
+    price_freshness: str = Field(
+        default="",
+        description="What the price provider does and does not guarantee about freshness.",
+    )
+    sec_filings: bool = Field(
+        default=False,
+        description="SEC filings and reported financials are enabled (needs SEC_USER_AGENT).",
     )
     notes: dict[str, str] = Field(
         description="Why a capability is unavailable, keyed by capability name."

@@ -7,6 +7,7 @@ unsafe to default (notably CORS in production) fails loudly instead.
 from __future__ import annotations
 
 import os
+import re
 from dataclasses import dataclass, field
 from functools import lru_cache
 from pathlib import Path
@@ -31,6 +32,36 @@ def _int(name: str, default: int) -> int:
         return int(os.getenv(name, str(default)))
     except ValueError:
         return default
+
+
+def _float(name: str, default: float) -> float:
+    try:
+        return float(os.getenv(name, str(default)))
+    except ValueError:
+        return default
+
+
+_EMAIL = re.compile(r"[^\s@<>]+@[^\s@<>]+\.[A-Za-z]{2,}")
+
+
+def sec_user_agent_problem(value: str) -> str | None:
+    """Why a SEC_USER_AGENT value does not satisfy SEC's declared-agent rule.
+
+    SEC asks for an organisation or person name followed by a contact email.
+    This checks the shape only; it cannot know whether the contact is real,
+    which is why the value must come from the operator and never a default.
+    """
+    if not value:
+        return "SEC_USER_AGENT is not set."
+    match = _EMAIL.search(value)
+    if match is None:
+        return "SEC_USER_AGENT must include a contact email address."
+    name = (value[: match.start()] + value[match.end() :]).strip(" <>()-,")
+    if len(name) < 2:
+        return "SEC_USER_AGENT must include a name before the contact email."
+    if "example." in match.group(0).lower():
+        return "SEC_USER_AGENT must use a real contact address, not a placeholder."
+    return None
 
 
 @dataclass(frozen=True)
@@ -79,6 +110,35 @@ class Settings:
         default_factory=lambda: os.getenv("MARKET_DATA_PROVIDER", "").strip().lower()
     )
 
+    # SEC EDGAR (filings and XBRL company facts). Free and keyless, but the
+    # SEC's fair-access policy requires every automated request to declare who
+    # is making it: "Sample Company Name AdminContact@<sample company domain>.com".
+    # There is deliberately no default -- a made-up contact would be worse than
+    # none. Unset means the SEC panels explain how to enable themselves.
+    sec_user_agent: str = field(default_factory=lambda: os.getenv("SEC_USER_AGENT", "").strip())
+    # SEC allows at most 10 requests/second across all of a user's machines.
+    # The default stays well under that; validate() refuses anything above 9.
+    sec_max_requests_per_second: float = field(
+        default_factory=lambda: _float("SEC_MAX_REQUESTS_PER_SECOND", 4.0)
+    )
+    sec_timeout: float = field(default_factory=lambda: _float("SEC_TIMEOUT_SECONDS", 15.0))
+    # data.sec.gov sends no ETag or Last-Modified, so freshness is time-based.
+    # Submissions change within a second of a filing; facts within a minute.
+    sec_submissions_ttl: int = field(
+        default_factory=lambda: _int("SEC_SUBMISSIONS_TTL_SECONDS", 600)
+    )
+    sec_facts_ttl: int = field(default_factory=lambda: _int("SEC_FACTS_TTL_SECONDS", 3_600))
+    sec_tickers_ttl: int = field(default_factory=lambda: _int("SEC_TICKERS_TTL_SECONDS", 86_400))
+    # When SEC is unreachable, a cached copy up to this old is served with an
+    # explicit "stale" flag instead of an error.
+    sec_stale_max_age: int = field(
+        default_factory=lambda: _int("SEC_STALE_MAX_AGE_SECONDS", 7 * 86_400)
+    )
+
+    @property
+    def has_sec_user_agent(self) -> bool:
+        return sec_user_agent_problem(self.sec_user_agent) is None
+
     @property
     def is_production(self) -> bool:
         return self.app_env.lower() == "production"
@@ -93,6 +153,11 @@ class Settings:
 
     def validate(self) -> None:
         """Reject configurations that are unsafe to run publicly."""
+        if not 0 < self.sec_max_requests_per_second <= 9:
+            raise RuntimeError(
+                "SEC_MAX_REQUESTS_PER_SECOND must be above 0 and at most 9: SEC's fair-access "
+                "policy allows no more than 10 requests per second."
+            )
         if not self.is_production:
             return
         if "*" in self.cors_allowed_origins:

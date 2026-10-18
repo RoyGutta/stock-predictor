@@ -83,7 +83,14 @@ async def read_capabilities() -> CapabilityStatus:
         "intraday": Capability.INTRADAY in provider.capabilities,
         "price_source": provider.name,
         "adjustment": provider.adjustment.value,
+        "price_freshness": getattr(provider, "freshness", ""),
+        "sec_filings": settings.has_sec_user_agent,
     }
+    if not settings.has_sec_user_agent:
+        notes["sec_filings"] = (
+            "SEC filings need SEC_USER_AGENT: a name and contact email that SEC requires on "
+            "automated requests. It is free; see the README."
+        )
     if not price_fields["intraday"]:
         notes["intraday"] = (
             f"{provider.name} does not serve intraday bars; 1D and 5D are unavailable."

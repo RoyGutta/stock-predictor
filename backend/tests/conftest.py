@@ -22,6 +22,7 @@ from app.middleware.rate_limit import reset_rate_limits
 from app.services.market import clear_cache
 from app.services.market_data import clear_caches
 from app.services.providers.registry import reset_price_provider
+from app.services.sec.client import reset_sec_client
 
 
 @pytest.fixture(autouse=True)
@@ -32,3 +33,5 @@ def _isolate_global_state() -> None:
     # The provider selection is cached from settings; a test that changes
     # settings must get a fresh selection.
     reset_price_provider()
+    # The SEC client holds a response cache and rate-limit state.
+    reset_sec_client()

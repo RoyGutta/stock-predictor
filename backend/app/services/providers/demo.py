@@ -271,6 +271,10 @@ class DemoPriceProvider:
 
     name = SOURCE
     adjustment = AdjustmentBasis.SYNTHETIC
+    freshness = (
+        f"Synthetic dataset {DATASET_VERSION}, frozen at {DEMO_END_DATE.isoformat()}. "
+        "Never updated and not market data."
+    )
     capabilities = frozenset({Capability.PRICES, Capability.INTRADAY, Capability.SEARCH})
 
     def fetch_history(self, ticker: str, range_: Range) -> list[Bar]:

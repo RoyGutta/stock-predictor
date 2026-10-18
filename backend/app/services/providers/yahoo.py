@@ -105,6 +105,12 @@ class YFinancePriceProvider:
 
     name = NAME
     adjustment = AdjustmentBasis.SPLIT_AND_DIVIDEND
+    # Yahoo publishes no freshness guarantee for this unofficial access path.
+    freshness = (
+        "Unofficial Yahoo Finance data, fetched through yfinance when requested. The source "
+        "states no delay or freshness guarantee, so treat it as delayed, not exchange "
+        "real-time; the as-of time is the timestamp of the latest bar returned."
+    )
     capabilities = frozenset({Capability.PRICES, Capability.INTRADAY})
 
     def fetch_history(self, ticker: str, range_: Range) -> list[Bar]:
