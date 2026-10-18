@@ -236,3 +236,18 @@ place and is total -- it names every input, and the ones with no honest answer
 return `None` so the caller must decide, rather than defaulting. Fixtures use
 real calendars; a fixture that could not come from a provider proves nothing.
 
+## L-13 · Look at real data at real widths before calling a table done
+
+The SEC panels passed 33 unit tests, 15 component tests and the axe suite, and
+were still wrong in three ways that appeared within a minute in a browser over
+recorded data: a company that reports only annually was told its quarterly
+figures were "year-to-date totals" (annual facts were counted as year-to-date
+exclusions); margin rows said "no comparable period a year earlier" when one
+existed (ratios never got a comparison); and at 390px the table overflowed
+because XBRL tag names such as
+`CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalents` are single
+60-character words.
+
+**Applies from now on:** for any new panel, render it once over realistic data
+at desktop and phone width before writing the final tests, and pin each defect
+found that way with a test.

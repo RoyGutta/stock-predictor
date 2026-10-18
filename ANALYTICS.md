@@ -85,6 +85,14 @@ price-level outputs scale linearly.
 - Beta reports R-squared beside it and inner-joins calendars; fewer than three
   overlapping points is NaN.
 - Every NaN serializes as `null`. A missing statistic is never 0.
+- Drawdown duration (`risk.underwater`, cycle 13): a spell is a run of consecutive
+  closes below the running peak; its length counts those bars. A spell still open
+  at the window's end is reported with `longest_underwater_recovered = false` and
+  shown as "N+ bars", because its true length is at least N. Current drawdown is
+  the last close against the window's highest close; time underwater is the share
+  of bars below the running peak. Highs are measured inside the window only.
+  Pinned: recovery, open spell, latest-peak date, monotonic rise, share, scale
+  invariance, empty input.
 
 ## 5. Backtest guarantees
 
@@ -161,3 +169,26 @@ analysis 20 ms, patterns 7 ms, backtest 32 ms, simulation 21 ms, compare 13 ms,
 portfolio 17 ms, explore 38 ms for 21 securities. Indicators are computed twice
 in the analysis route (once for interpretation, once for the plotted series);
 that duplication costs about 5 ms and is left alone deliberately.
+
+## 11. Reported fundamentals (`analytics/fundamentals.py`, cycle 13)
+
+Source: SEC XBRL company facts. Pure functions; every rule below is a test in
+`backend/tests/test_sec_fundamentals.py`.
+
+| Rule | Why |
+|---|---|
+| Period type comes from the fact's own start and end: annual 350-380 days, quarterly 80-100 days | `fy`/`fp` describe the filing, not the fact; a 10-K carries quarterly facts |
+| Year-to-date durations (about 180 and 270 days) are excluded, never converted | Converting needs facts from different filings |
+| No fourth quarter is derived (annual minus nine months) | Same reason; the quarterly view has a gap instead |
+| One value per period: latest filing wins; `revised` and the first-reported value are kept when filings disagree | Amendments and restatements take effect, visibly |
+| Only periodic reports (10-K, 10-Q, 20-F, 40-F, transition and amended forms) | Registration statements also carry facts |
+| Units must match exactly (USD, USD/shares); others are named in `ignored_units` | No currency conversion |
+| Revenue merges successive tags of one concept, by priority; every other metric uses one tag per series | Revenue's tag changed in 2018; cash with and without restricted cash is not one concept |
+| Year over year compares with the period ending 350-380 days earlier; percent withheld when the earlier value is zero or negative; a note when period lengths differ by more than 3 days | 53-week years and losses |
+| Missing measure: `points: []` plus a reason in words; never 0 | Hard constraint 13 |
+
+Derived (`analytics/fundamentals_derived.py`): gross, operating and net margin;
+free cash flow (operating cash flow minus capex); liabilities / assets. Computed
+only when both components cover the identical period and come from the same
+filing; both components are returned with each value. Ratio changes are given in
+percentage points, never as a percent of a percent.

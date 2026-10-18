@@ -4,7 +4,8 @@ Research record for replacing `yfinance`, the one dependency that blocks a publi
 deployment (`TENSIONS.md` T-3). Written 2026-09-14 from the repository as it stands
 and from each provider's official pricing, terms, and documentation pages, fetched
 that day. Section 8 records the re-verification of 2026-10-08 and the decision
-status; where it disagrees with sections 3-7, section 8 is current. Nothing here
+status; where it disagrees with sections 3-7, section 8 is current. Section 9
+records SEC EDGAR, the free official source added in cycle 13. Nothing here
 is a legal opinion. Every licensing statement carries one
 of four labels:
 
@@ -564,3 +565,36 @@ Agreement for movers, sectors and profile, or replacement.
   existing `PriceProvider` contract; a venue-partial label on intraday volume; an
   attribution component near every chart and table; the CSV export decision;
   the Finnhub and FMP display decisions. None of this starts before the answers.
+
+---
+
+## 9. SEC EDGAR: official filings and reported financials (2026-10-18)
+
+Integrated in cycle 13 at zero cost. Not a price source; it does not change the
+price-provider decision in section 8.
+
+Sources, read 2026-10-18 in a browser (SEC returns 403 to undeclared clients):
+https://www.sec.gov/search-filings/edgar-application-programming-interfaces ·
+https://www.sec.gov/search-filings/edgar-search-assistance/accessing-edgar-data ·
+https://www.sec.gov/about/privacy-information (Website Dissemination; Security).
+
+| Question | Finding | Label |
+|---|---|---|
+| Cost and keys | "These APIs do not require any authentication or API keys" | C |
+| Public display and redistribution | "Information presented on sec.gov is considered public information and may be copied or further distributed by users of the web site without the SEC's permission. Please consider appropriate citation to the SEC as the source." Do not use the SEC seal or logos; "EDGAR" may be referred to in text | C |
+| Declared identity | Automated requests must declare a User-Agent such as "Sample Company Name AdminContact@<sample company domain>.com" | C |
+| Rate | "no more than 10 requests per second, regardless of the number of machines"; excess is limited for about 10 minutes | C |
+| Browser access | "data.sec.gov does not support Cross Origin Resource Scripting (CORS)" | C |
+| Freshness | Submissions updated with a typical delay under a second, XBRL APIs under a minute; slower at peak filing times | C |
+| Validators | www.sec.gov/files/company_tickers.json sends Last-Modified; data.sec.gov sends neither ETag nor Last-Modified (observed 2026-10-18) | C (observed) |
+| Ticker map | company_tickers.json, 10,443 rows on 2026-10-18; one CIK can carry several tickers (GOOGL/GOOG, BRK-A/BRK-B) | C (observed) |
+
+Implementation: `backend/app/services/sec/` (client, lookup, filings, service) and
+`backend/app/analytics/fundamentals*.py`. Requests carry `SEC_USER_AGENT`, are
+spaced at `SEC_MAX_REQUESTS_PER_SECOND` (default 4, refused above 9), share one
+upstream call per URL, are cached after reduction to the fields used, are never
+retried, and fall back to a flagged stale copy for up to 7 days when SEC fails.
+No contact value is shipped; the operator supplies their own.
+
+Remaining limits: US GAAP tags only; recent-filings index only; spacing is
+per-process (see README, Known limitations).

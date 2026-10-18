@@ -38,10 +38,12 @@ product's central design decision, and the codebase enforces it with tests.
 
 | Area | Summary |
 |---|---|
-| Price history | Real OHLCV history for any listed US ticker over eight ranges, from one day of 5-minute bars to full monthly history, with CSV export |
+| Price history | OHLCV history over eight ranges, from one day of 5-minute bars to full monthly history, with CSV export. Locally from yfinance; synthetic in the public demo |
+| SEC filings | A company's recent 10-K, 10-Q, 8-K and foreign-issuer equivalents from SEC EDGAR, with filing date, period, amendment flag, 8-K items, and a link to the original on sec.gov |
+| Reported financials | Revenue, gross profit, operating income, net income, basic and diluted EPS, cash, total assets and liabilities, operating cash flow and capex from SEC XBRL company facts, annual or quarterly, with year-over-year change and the filing behind every value; margins, free cash flow and liabilities/assets computed only from same-period, same-filing lines |
 | Technical indicators | SMA, EMA, VWAP, RSI, MACD, Stochastic, ATR, Bollinger Bands, ADX (+DI/-DI), OBV, Ichimoku; all computed server-side and unit-tested against hand-computed values |
 | Evidence ledger | Observations grouped as bullish, bearish, and neutral, with each indicator's known failure mode attached; contradictions are reported, not averaged |
-| Risk statistics | Annualized volatility, maximum drawdown with recovery dates, Sharpe, Sortino, historical VaR and expected shortfall, beta and alpha against SPY with R-squared |
+| Risk statistics | Annualized volatility, maximum drawdown with recovery dates, current drawdown and the longest time spent below a prior high, Sharpe, Sortino, historical VaR and expected shortfall, beta and alpha against SPY with R-squared |
 | Historical patterns | Ten technical events (moving-average crossovers, RSI extremes, MACD crossings, Bollinger breaks, outsized single-bar moves, drawdown recoveries) with what followed each over 5, 20, and 60 bars |
 | Walk-forward backtests | Four indicator rules tested on a held-out slice after parameter selection on an earlier slice, with transaction costs, a one-bar execution lag, and buy-and-hold beside every rule |
 | Dispersion simulation | Bootstrapped resampling of a security's own past returns, drawn as a box plot so it reads as a range, not a path |
@@ -236,11 +238,12 @@ npm run dev
 
 ## Configuration
 
-Copy `.env.example` to `.env`. Everything has a working default. The two optional
-keys unlock the market-context panels:
+Copy `.env.example` to `.env`. Everything has a working default. The optional
+settings below unlock panels; none costs money:
 
 | Variable | Unlocks | Free tier |
 |---|---|---|
+| `SEC_USER_AGENT` | SEC filings and reported financials | Free, keyless. SEC requires a declared name and contact email, e.g. `Your Name you@yourdomain.org`; it is never defaulted |
 | `FINNHUB_API_KEY` | Company news, symbol search | 60 calls/min |
 | `FMP_API_KEY` | Movers, sector snapshot, company profile | 250 calls/day |
 | `DEMO_MODE` | Synthetic dataset instead of a provider; live feeds off (see below) | n/a |
@@ -259,14 +262,14 @@ unavailable.
 # Backend
 cd backend
 ruff check .
-pytest                      # 424 tests; providers are stubbed, no network
+pytest                      # 666 tests; providers and SEC are stubbed, no network
 
 # Frontend
 cd frontend
 npm run typecheck
 npm run lint
-npm test                    # 244 unit and component tests, 22 axe checks
-npm run test:e2e            # 22 browser smoke tests over the production build,
+npm test                    # 266 unit and component tests, 21 axe test cases
+npm run test:e2e            # 25 browser smoke runs (desktop and 390px) over the production build,
                             # API answered from recorded fixtures
 npm run build
 ```
@@ -298,6 +301,27 @@ Venture tier.
 Nothing in the app is real-time and nothing claims to be. Every quote carries its
 own timestamp and every chart states its bar frequency.
 
+### Three kinds of data, labelled separately
+
+| Data | Where | Freshness | Public demo |
+|---|---|---|---|
+| Synthetic prices | `providers/demo.py`, dataset 2025.12.1 | Frozen at 2025-12-31 | Yes; every price on the public site |
+| Locally retrieved prices | `providers/yahoo.py` (yfinance) | Unofficial; the source states no delay or freshness guarantee, so the app says "may be delayed" and shows the time of the latest bar | Never; refused when `APP_ENV=production` |
+| SEC filings and reported financials | `services/sec/`, data.sec.gov and sec.gov | SEC publishes filings within about a second and XBRL facts within about a minute of filing; the figures describe the reported periods, not today | Yes; SEC content may be redistributed |
+
+SEC EDGAR is the one real data source in the public build. SEC's website policy
+states that information on sec.gov "is considered public information and may be
+copied or further distributed by users of the web site without the SEC's
+permission" and asks for citation; every SEC panel names the SEC as its source,
+links the original filing, and shows when the data was retrieved. The backend
+follows SEC's fair-access rules: a declared User-Agent, request spacing well under
+SEC's 10 requests per second, no retries, cached responses, and a clearly labelled
+stale copy when SEC is unreachable. The browser never calls SEC (data.sec.gov does
+not allow cross-origin requests). Details: `PROVIDERS.md` section 9.
+
+The whole stack costs nothing to run: no paid API, no key purchase, and the SEC
+contact is the operator's own name and email.
+
 ## Public demo and deployment status
 
 A public demo runs at <https://stock-predictor-one-iota.vercel.app> in **demo mode**: every price on
@@ -314,7 +338,11 @@ data" is shown on every page, and `/api/v1/market/capabilities` reports
 The demo is deployed on Vercel as one project: the Vite build is served as
 static files and the FastAPI app runs as a Python function behind `/api`
 (`vercel.json`, `api/index.py`, root `requirements.txt`). No secrets are
-required or configured.
+required or configured. The SEC panels are real data and need one Vercel
+environment variable, `SEC_USER_AGENT`, set to the operator's name and contact
+email; until it is set they explain how to enable themselves and make no request
+to SEC. `api/index.py` forces `DEMO_MODE` and the synthetic price provider
+regardless of project variables, so enabling SEC cannot switch prices to yfinance.
 
 **Real market data remains local-only.** Running the backend without
 `DEMO_MODE` uses `yfinance` and should stay on a developer machine until a
@@ -331,6 +359,14 @@ provider whose terms permit public display is integrated and the conditions in
   chart is on screen.
 - Indices such as `^GSPC` are accepted as tickers but no feature depends on them;
   the benchmark is the SPY ETF.
+- Reported financials read US GAAP tags only. IFRS filers, funds, and trusts show
+  their filings but no figures, with the reason. Fourth quarters and quarterly
+  cash flows are not derived by subtraction, so the quarterly view has gaps.
+- The filings list comes from SEC's recent-filings index (at least the last year);
+  older filings are linked through the company's EDGAR page.
+- SEC request spacing is per process. On serverless hosting each warm instance
+  spaces its own requests; the default of 4 per second leaves room under SEC's
+  10 per second for a few concurrent instances, not for many.
 
 Open engineering questions are tracked in `TENSIONS.md`, current state in
 `STATE.md`, measured numbers in `METRICS.json`, and durable lessons in

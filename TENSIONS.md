@@ -149,3 +149,15 @@ recorded as if it were the only licensing blocker; it is not. Both must be
 resolved (approval, a different provider, or removing the panels from a public
 build) before deployment. FMP's terms carry the same restriction (§2.2.2, "Data
 Display"), which affects movers, sectors, and profile in the same way.
+
+## T-9 — SEC requires a declared contact the code must not invent (OPEN, needs operator)
+
+SEC's fair-access policy requires automated requests to carry a User-Agent naming
+the requester and a contact email. The public deployment can serve SEC filings
+legally and for free, but only once the operator sets `SEC_USER_AGENT` on Vercel.
+A placeholder or made-up contact would violate the policy's purpose, so there is
+no default; until it is set the SEC panels report themselves unavailable and make
+no request. Secondary: request spacing is per process, so many concurrent
+serverless instances could together exceed 10 requests/second. Acceptable at
+demo traffic with the default of 4/second; a shared limiter would be needed for
+more.

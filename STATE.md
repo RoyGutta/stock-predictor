@@ -1,6 +1,6 @@
 # State
 
-**Updated:** 2026-10-08 · **Commit:** `b1a4ada` · **Cycle:** 11 (provider decision recorded; not integrated)
+**Updated:** 2026-10-18 · **Commit:** see `git log` · **Cycle:** 13 (SEC filings and fundamentals; zero cost)
 
 ## Objective
 
@@ -104,6 +104,20 @@ frontend/ React 19 + TS strict + Vite      backend/ FastAPI + Python 3.11+
   truncation and future-mutation guards; portfolio flat and collapse adversaries;
   versioned, golden-pinned demo dataset; frontend tests pinned to US Eastern.
 
+- **SEC filings and reported financials** (cycle 13): official, free SEC EDGAR data
+  on the Analyze page. Ticker/CIK/name resolution against SEC's ticker map with
+  explicit ambiguity; recent 10-K/10-Q/8-K (and foreign equivalents) linked to
+  sec.gov; eleven reported measures plus five same-filing derived measures,
+  annual or quarterly, with year-over-year change, revision and amendment flags,
+  the filing behind every value, and reasons for every gap. Fair access enforced
+  in one client (declared agent, spacing, no retries, cache, stale flag). Works in
+  the public demo, labelled as real beside synthetic prices, once `SEC_USER_AGENT`
+  is set. `ANALYTICS.md` section 11, `PROVIDERS.md` section 9.
+- **Drawdown duration** (cycle 13): current drawdown, longest spell below a prior
+  high (open spells shown as "N+"), and time underwater in the risk panel.
+- **Price freshness disclosure** (cycle 13): each provider states what it does and
+  does not guarantee; the quote says "may be delayed" rather than asserting a delay.
+
 **Baseline metrics:** `METRICS.json` (424 backend tests, 244 frontend unit, 22 browser
 smoke, 0 failing; npm audit 0 across all groups; Lighthouse a11y/best-practices/SEO
 100/100/100 on the production build).
@@ -122,6 +136,12 @@ the yfinance path remains local-only until a licensed provider is integrated
 domain public and preview URLs behind Vercel Authentication.
 
 ## Blocked / needs your decision
+
+0. **Set `SEC_USER_AGENT` on Vercel** (cycle 13). The public SEC panels stay off,
+   and say so, until the project has this variable: your name and a contact email
+   you control, e.g. `Your Name you@yourdomain.org`. It is free and is not a
+   secret, but it must be yours; the code never supplies one. Add it under
+   Project Settings > Environment Variables (Production) and redeploy.
 
 1. **T-2** — `backend/venv/` (a stale Windows virtualenv) should be deleted;
    awaiting your OK since it is your file.
@@ -144,7 +164,7 @@ standing manual step.
 
 ## Next highest-value actions (unblocked, in order)
 
-1. **Your action:** choose the applying entity and send `PROVIDERS.md` §8.3
+1. **Your action (price data, unchanged from cycle 12):** choose the applying entity and send `PROVIDERS.md` §8.3
    questions 1-3 (plus 4 for the non-profit route) to Twelve Data. When the
    written answers arrive: one adapter implementing `PriceProvider`, one registry
    entry, contract-test fixtures, a venue-partial label on intraday volume, an
@@ -159,9 +179,9 @@ standing manual step.
 ## Cold-start checklist for the next session
 
 ```bash
-cd backend && source .venv/bin/activate && ruff check . && pytest   # expect 424 passed
-cd frontend && npm run typecheck && npm run lint && npm test        # expect 244 passed
-cd frontend && npm run test:e2e                                      # expect 22 passed, 2 skipped
+cd backend && source .venv/bin/activate && ruff check . && pytest   # expect 666 passed
+cd frontend && npm run typecheck && npm run lint && npm test        # expect 266 passed
+cd frontend && npm run test:e2e                                      # expect 25 passed, 3 skipped
 ```
 Stop dev servers before running tests (T-5 — now also guarded by a 20s
 `testTimeout`, so a missed step produces a slow run rather than a false red).

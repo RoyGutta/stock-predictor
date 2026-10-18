@@ -1,449 +1,477 @@
 {
-  "_readme": "Measured values only. Every entry is reproducible by the command in `how`. Never hand-edit a number that was not actually observed.",
-  "success_metric": {
-    "name": "validated_out_of_sample_performance_and_reliability",
-    "status": "ESTABLISHED (2026-08-11)",
-    "resolution": "TENSIONS T-1 resolved as option C. Out-of-sample performance is measured by walk-forward backtesting of indicator rules, not by a price forecaster.",
-    "important_caveat": "The backtest RETURN figures are facts about the market and the ticker, not about this system. Treating them as a number to improve would mean tuning rules until they look good, which is the data mining the engine exists to expose. What is tracked as OUR metric is the VALIDITY of the measurement and the reliability of the system -- not how well any rule happens to score.",
-    "validity_criteria": {
-      "no_lookahead": "positions shifted one bar after signal; guard test uses a perfect-foresight oracle",
-      "costs_charged": "10 bps default on every position change",
-      "benchmark_compared": "buy-and-hold over the identical window",
-      "held_out_slice": "parameter chosen on train only; leakage test tampers with test data and asserts the choice is unchanged",
-      "all_results_reported": "every rule returned with parameters_tried, never just the winner",
-      "all_five_enforced_by_tests": true
-    }
+ "_readme": "Measured values only. Every entry is reproducible by the command in `how`. Never hand-edit a number that was not actually observed.",
+ "success_metric": {
+  "name": "validated_out_of_sample_performance_and_reliability",
+  "status": "ESTABLISHED (2026-08-11)",
+  "resolution": "TENSIONS T-1 resolved as option C. Out-of-sample performance is measured by walk-forward backtesting of indicator rules, not by a price forecaster.",
+  "important_caveat": "The backtest RETURN figures are facts about the market and the ticker, not about this system. Treating them as a number to improve would mean tuning rules until they look good, which is the data mining the engine exists to expose. What is tracked as OUR metric is the VALIDITY of the measurement and the reliability of the system -- not how well any rule happens to score.",
+  "validity_criteria": {
+   "no_lookahead": "positions shifted one bar after signal; guard test uses a perfect-foresight oracle",
+   "costs_charged": "10 bps default on every position change",
+   "benchmark_compared": "buy-and-hold over the identical window",
+   "held_out_slice": "parameter chosen on train only; leakage test tampers with test data and asserts the choice is unchanged",
+   "all_results_reported": "every rule returned with parameters_tried, never just the winner",
+   "all_five_enforced_by_tests": true
+  }
+ },
+ "measurements": [
+  {
+   "date": "2026-08-10",
+   "commit": "2c0b46d",
+   "note": "First baseline. Values observed, not estimated.",
+   "reliability": {
+    "backend_tests_passing": 199,
+    "backend_tests_failing": 0,
+    "frontend_tests_passing": 76,
+    "frontend_tests_failing": 0,
+    "backend_lint_clean": true,
+    "frontend_lint_clean": true,
+    "typecheck_clean": true,
+    "production_build_passing": true,
+    "production_console_errors": 0,
+    "production_console_warnings": 0,
+    "how": "cd backend && ruff check . && pytest ; cd frontend && npm run typecheck && npm run lint && npm test && npm run build"
+   },
+   "performance": {
+    "initial_js_bundle_bytes": 224020,
+    "initial_js_gzip_bytes": 71590,
+    "lazy_chart_chunk_bytes": 327890,
+    "lazy_chart_gzip_bytes": 97970,
+    "css_bytes": 24820,
+    "css_gzip_bytes": 4950,
+    "how": "cd frontend && npm run build",
+    "note": "Initial bundle was 728000 bytes before the chart was split out; that is the only historical point available."
+   },
+   "size": {
+    "backend_python_loc": 2916,
+    "frontend_ts_loc": 3220,
+    "api_endpoints": 9,
+    "commits": 13,
+    "how": "find backend/app -name '*.py' | xargs wc -l ; find frontend/src -name '*.ts' -o -name '*.tsx' | xargs wc -l"
+   },
+   "data_integrity": {
+    "fabricated_data_points": 0,
+    "features_gated_rather_than_faked": 1,
+    "note": "Stock screener (Phase 11) is reported unavailable because FMP returns HTTP 402 on the free tier."
+   }
   },
-  "measurements": [
-    {
-      "date": "2026-08-10",
-      "commit": "2c0b46d",
-      "note": "First baseline. Values observed, not estimated.",
-      "reliability": {
-        "backend_tests_passing": 199,
-        "backend_tests_failing": 0,
-        "frontend_tests_passing": 76,
-        "frontend_tests_failing": 0,
-        "backend_lint_clean": true,
-        "frontend_lint_clean": true,
-        "typecheck_clean": true,
-        "production_build_passing": true,
-        "production_console_errors": 0,
-        "production_console_warnings": 0,
-        "how": "cd backend && ruff check . && pytest ; cd frontend && npm run typecheck && npm run lint && npm test && npm run build"
-      },
-      "performance": {
-        "initial_js_bundle_bytes": 224020,
-        "initial_js_gzip_bytes": 71590,
-        "lazy_chart_chunk_bytes": 327890,
-        "lazy_chart_gzip_bytes": 97970,
-        "css_bytes": 24820,
-        "css_gzip_bytes": 4950,
-        "how": "cd frontend && npm run build",
-        "note": "Initial bundle was 728000 bytes before the chart was split out; that is the only historical point available."
-      },
-      "size": {
-        "backend_python_loc": 2916,
-        "frontend_ts_loc": 3220,
-        "api_endpoints": 9,
-        "commits": 13,
-        "how": "find backend/app -name '*.py' | xargs wc -l ; find frontend/src -name '*.ts' -o -name '*.tsx' | xargs wc -l"
-      },
-      "data_integrity": {
-        "fabricated_data_points": 0,
-        "features_gated_rather_than_faked": 1,
-        "note": "Stock screener (Phase 11) is reported unavailable because FMP returns HTTP 402 on the free tier."
-      }
+  {
+   "date": "2026-08-11",
+   "commit": "408fb0e",
+   "note": "Cycle 2. Backtest engine added; success metric now measurable.",
+   "reliability": {
+    "backend_tests_passing": 247,
+    "backend_tests_failing": 0,
+    "frontend_tests_passing": 76,
+    "frontend_tests_failing": 0,
+    "backend_lint_clean": true,
+    "frontend_lint_clean": true,
+    "typecheck_clean": true,
+    "production_build_passing": true,
+    "how": "cd backend && ruff check . && pytest ; cd frontend && npm run typecheck && npm run lint && npm test && npm run build"
+   },
+   "backtest_validity": {
+    "lookahead_guard_test_passing": true,
+    "leakage_guard_test_passing": true,
+    "costs_on_by_default_bps": 10.0,
+    "strategies_implemented": 4,
+    "note": "Validity properties, not performance. See success_metric.important_caveat."
+   },
+   "observed_example": {
+    "ticker": "AAPL",
+    "range": "5Y",
+    "bars": 262,
+    "note": "One live observation, recorded as evidence the engine works and produces honest results. NOT a target to improve.",
+    "buy_and_hold_out_of_sample_return": 0.374,
+    "rsi_in_sample_return": 0.48,
+    "rsi_out_of_sample_return": 0.268,
+    "rsi_excess_vs_benchmark": -0.106,
+    "rules_beating_benchmark": 1,
+    "rules_tested": 3
+   },
+   "size": {
+    "api_endpoints": 10,
+    "commits": 15
+   }
+  },
+  {
+   "date": "2026-08-11",
+   "commit": "pending",
+   "note": "Cycle 3. Backtest UI. Two display defects found by eye and fixed.",
+   "reliability": {
+    "backend_tests_passing": 247,
+    "backend_tests_failing": 0,
+    "frontend_tests_passing": 76,
+    "frontend_tests_failing": 0,
+    "backend_lint_clean": true,
+    "frontend_lint_clean": true,
+    "typecheck_clean": true,
+    "production_build_passing": true,
+    "browser_console_errors": 0
+   },
+   "performance": {
+    "initial_js_bundle_bytes": 229340,
+    "initial_js_gzip_bytes": 72970,
+    "note": "+5.3 kB vs cycle 2 for the backtest panel. Chart chunk unchanged."
+   },
+   "observed_example": {
+    "ticker": "AAPL",
+    "range": "1Y",
+    "bars": 251,
+    "rules_beating_benchmark": 0,
+    "rules_tested": 3,
+    "note": "Live observation, evidence the engine reports honestly. NOT a target."
+   }
+  },
+  {
+   "date": "2026-08-17",
+   "commit": "pending",
+   "note": "Cycle 4. T-6 analytics surfaced, watchlist, a11y suite, chart measurement fix.",
+   "reliability": {
+    "backend_tests_passing": 278,
+    "backend_tests_failing": 0,
+    "frontend_tests_passing": 151,
+    "frontend_tests_failing": 0,
+    "backend_lint_clean": true,
+    "frontend_lint_clean": true,
+    "typecheck_clean": true,
+    "production_build_passing": true,
+    "browser_console_errors": 0,
+    "browser_console_warnings": 0,
+    "how": "cd backend && ruff check . && pytest ; cd frontend && npm run typecheck && npm run lint && npm test && npm run build",
+    "note": "Console warnings were 4 per chart mount before the ResponsiveContainer fix; now 0. Suite verified stable across three consecutive runs with dev servers stopped."
+   },
+   "performance": {
+    "initial_js_bundle_bytes": 241700,
+    "initial_js_gzip_bytes": 76830,
+    "lazy_chart_chunk_bytes": 322710,
+    "lazy_chart_gzip_bytes": 96460,
+    "css_bytes": 32360,
+    "css_gzip_bytes": 5970,
+    "how": "cd frontend && npm run build",
+    "note": "Chart chunk fell 5.2 kB (327890 -> 322710) by dropping ResponsiveContainer in favour of an explicit measurement. Initial bundle grew 12.4 kB for the simulation, correlation and watchlist features."
+   },
+   "security": {
+    "secrets_tracked": 0,
+    "secrets_in_git_history": 0,
+    "history_objects_scanned": 402,
+    "dependency_advisories_high": 0,
+    "env_example_documents_unread_variables": 0,
+    "how": "git log --all --diff-filter=A -- .env personal.md ; git grep over git rev-list --all ; npm audit",
+    "note": "One high advisory (nanoid GHSA-2v37-7h3g-55p8) found and fixed. Three variables documented in .env.example were read by no code path and were removed."
+   },
+   "accessibility": {
+    "axe_checks_passing": 14,
+    "color_contrast_machine_checked": false,
+    "note": "axe rasterises to a canvas to measure contrast and jsdom has none, so that rule is explicitly disabled rather than silently no-opping. Contrast remains a browser check."
+   },
+   "size": {
+    "backend_python_loc": 3967,
+    "frontend_ts_loc": 5806,
+    "api_endpoints": 12,
+    "commits": 24
+   }
+  },
+  {
+   "date": "2026-08-31",
+   "commit": "f5bd110",
+   "note": "Cycle 5. Portfolio simulator (FA7) and security comparison (FA6).",
+   "reliability": {
+    "backend_tests_passing": 354,
+    "backend_tests_failing": 0,
+    "frontend_tests_passing": 187,
+    "frontend_tests_failing": 0,
+    "backend_lint_clean": true,
+    "frontend_lint_clean": true,
+    "typecheck_clean": true,
+    "production_build_passing": true,
+    "browser_console_errors": 0,
+    "a11y_checks": 18,
+    "how": "cd backend && ruff check . && pytest ; cd frontend && npm run typecheck && npm run lint && npm test && npm run build"
+   },
+   "portfolio_validity": {
+    "contributions_never_counted_as_returns": true,
+    "deposits_cannot_hide_drawdowns": true,
+    "costs_on_by_default_bps": 10.0,
+    "note": "Validity properties pinned by adversarial tests; portfolio RETURNS remain facts about the market, not targets."
+   },
+   "size": {
+    "api_endpoints": 17,
+    "commits": 20
+   }
+  },
+  {
+   "date": "2026-08-31",
+   "commit": "a7e5ca5",
+   "note": "Cycles 6-7. Multi-page shell + Explore preference matching (FA10).",
+   "reliability": {
+    "backend_tests_passing": 369,
+    "backend_tests_failing": 0,
+    "frontend_tests_passing": 206,
+    "frontend_tests_failing": 0,
+    "backend_lint_clean": true,
+    "frontend_lint_clean": true,
+    "typecheck_clean": true,
+    "production_build_passing": true,
+    "browser_console_errors": 0,
+    "browser_console_warnings": 0,
+    "npm_audit_prod_vulnerabilities": 0,
+    "how": "cd backend && ruff check . && pytest ; cd frontend && npm run typecheck && npm run lint && npm test && npm run build ; npm audit --omit=dev"
+   },
+   "security_audit": {
+    "git_history_env_or_personal_commits": 0,
+    "key_shaped_strings_in_history": 0,
+    "sensitive_tracked_paths": 0,
+    "misleading_language_hits_outside_negations": 0
+   },
+   "size": {
+    "api_endpoints": 16,
+    "commits": 33,
+    "pages": 6
+   }
+  },
+  {
+   "date": "2026-09-04",
+   "commit": "323cd32",
+   "note": "Cycle 8. Historical pattern detection (Phase 8) with anti-lookahead guarantees, plus the pattern UI.",
+   "reliability": {
+    "backend_tests_passing": 395,
+    "backend_tests_failing": 0,
+    "frontend_tests_passing": 217,
+    "frontend_tests_failing": 0,
+    "backend_lint_clean": true,
+    "frontend_lint_clean": true,
+    "typecheck_clean": true,
+    "production_build_passing": true,
+    "browser_console_errors": 0,
+    "browser_console_warnings": 0,
+    "how": "cd backend && ruff check . && pytest ; cd frontend && npm run typecheck && npm run lint && node ./node_modules/vitest/vitest.mjs run --no-file-parallelism && npm run build"
+   },
+   "pattern_validity": {
+    "future_mutation_invariance_tests_passing": 2,
+    "note": "Mutating every bar after a cutoff (x5 melt-up and x0.2 crash) leaves all detections at or before the cutoff byte-identical. Baselines shift one bar so no statistic includes the bar it judges. Outcome windows use future bars only to DESCRIBE history, never to decide detection; boundary events are excluded and counted; zero-sample stats are null; samples under 10 are flagged."
+   },
+   "performance": {
+    "initial_js_bundle_bytes": 279990,
+    "initial_js_gzip_bytes": 86870,
+    "lazy_chart_chunk_bytes": 323150,
+    "lazy_chart_gzip_bytes": 96560,
+    "css_bytes": 49620,
+    "css_gzip_bytes": 8090,
+    "how": "cd frontend && npm run build"
+   },
+   "size": {
+    "backend_python_loc": 6245,
+    "frontend_ts_loc": 9357,
+    "api_endpoints": 17,
+    "commits": 36,
+    "pages": 6,
+    "how": "git rev-list --count HEAD ; find backend/app -name '*.py' | xargs wc -l ; find frontend/src -name '*.ts' -o -name '*.tsx' | xargs wc -l"
+   }
+  },
+  {
+   "date": "2026-09-12",
+   "commit": "a411756",
+   "note": "Cycle 9. Recent-search persistence, first-run onboarding, page audit fixes (mobile nav, compare overflow, zero-neutral backtest cell), API hardening tests, Playwright smoke suite, provider documentation.",
+   "reliability": {
+    "backend_tests_passing": 449,
+    "backend_tests_failing": 0,
+    "frontend_unit_tests_passing": 248,
+    "frontend_unit_tests_failing": 0,
+    "browser_smoke_tests_passing": 22,
+    "browser_smoke_tests_skipped": 2,
+    "browser_smoke_note": "11 scenarios x 2 viewports (1280px, 390px) over the production build with fixture-mocked API; the 2 skipped are the opt-in @live test (E2E_LIVE=1).",
+    "backend_lint_clean": true,
+    "frontend_lint_clean": true,
+    "typecheck_clean": true,
+    "production_build_passing": true,
+    "browser_console_errors": 0,
+    "browser_console_warnings": 0,
+    "npm_audit_vulnerabilities_all_groups": 0,
+    "how": "cd backend && ruff check . && pytest ; cd frontend && npm run typecheck && npm run lint && node ./node_modules/vitest/vitest.mjs run --no-file-parallelism && npm run build && npm run test:e2e ; npm audit",
+    "how_note": "449 backend = 424 + 25 demo-mode tests; 248 frontend = 244 + 2 App demo-banner tests + 2 date-parsing tests"
+   },
+   "api_hardening": {
+    "malformed_requests_probed_live": 29,
+    "server_errors_500": 0,
+    "stack_trace_leaks": 0,
+    "pinned_as_tests": 29,
+    "note": "Every route answered malformed input with a 4xx and a plain detail string; providers stubbed to raise if reached."
+   },
+   "performance": {
+    "initial_js_bundle_bytes": 288080,
+    "initial_js_gzip_bytes": 89920,
+    "lazy_chart_chunk_bytes": 323150,
+    "lazy_chart_gzip_bytes": 96560,
+    "css_bytes": 50630,
+    "css_gzip_bytes": 8210,
+    "analyze_page_unique_api_requests": 6,
+    "how": "cd frontend && npm run build ; Playwright network log on #/analyze/AAPL",
+    "note": "+8.1 kB initial JS vs cycle 8 for the tool guide, persisted recent searches, and inline glossary tips."
+   },
+   "accessibility": {
+    "axe_checks_passing": 22,
+    "color_contrast_machine_checked": false
+   },
+   "size": {
+    "backend_python_loc": 6247,
+    "frontend_ts_loc": 10241,
+    "api_endpoints": 17,
+    "commits": 51,
+    "pages": 6,
+    "how": "git rev-list --count HEAD ; find backend/app -name '*.py' | xargs wc -l ; find frontend/src frontend/e2e -name '*.ts' -o -name '*.tsx' | grep -v fixtures | xargs wc -l"
+   },
+   "lighthouse": {
+    "target": "production build via vite preview, http://127.0.0.1:4173/ (dashboard route)",
+    "before_fixes": {
+     "accessibility": 97,
+     "best_practices": 100,
+     "seo": 91,
+     "failed": [
+      "color-contrast (--text-subtle 3.05:1)",
+      "label-content-name-mismatch (range buttons)",
+      "robots-txt (SPA fallback)"
+     ]
     },
-    {
-      "date": "2026-08-11",
-      "commit": "408fb0e",
-      "note": "Cycle 2. Backtest engine added; success metric now measurable.",
-      "reliability": {
-        "backend_tests_passing": 247,
-        "backend_tests_failing": 0,
-        "frontend_tests_passing": 76,
-        "frontend_tests_failing": 0,
-        "backend_lint_clean": true,
-        "frontend_lint_clean": true,
-        "typecheck_clean": true,
-        "production_build_passing": true,
-        "how": "cd backend && ruff check . && pytest ; cd frontend && npm run typecheck && npm run lint && npm test && npm run build"
-      },
-      "backtest_validity": {
-        "lookahead_guard_test_passing": true,
-        "leakage_guard_test_passing": true,
-        "costs_on_by_default_bps": 10.0,
-        "strategies_implemented": 4,
-        "note": "Validity properties, not performance. See success_metric.important_caveat."
-      },
-      "observed_example": {
-        "ticker": "AAPL",
-        "range": "5Y",
-        "bars": 262,
-        "note": "One live observation, recorded as evidence the engine works and produces honest results. NOT a target to improve.",
-        "buy_and_hold_out_of_sample_return": 0.374,
-        "rsi_in_sample_return": 0.48,
-        "rsi_out_of_sample_return": 0.268,
-        "rsi_excess_vs_benchmark": -0.106,
-        "rules_beating_benchmark": 1,
-        "rules_tested": 3
-      },
-      "size": {
-        "api_endpoints": 10,
-        "commits": 15
-      }
+    "after_fixes": {
+     "accessibility": 100,
+     "best_practices": 100,
+     "seo": 100
     },
-    {
-      "date": "2026-08-11",
-      "commit": "pending",
-      "note": "Cycle 3. Backtest UI. Two display defects found by eye and fixed.",
-      "reliability": {
-        "backend_tests_passing": 247,
-        "backend_tests_failing": 0,
-        "frontend_tests_passing": 76,
-        "frontend_tests_failing": 0,
-        "backend_lint_clean": true,
-        "frontend_lint_clean": true,
-        "typecheck_clean": true,
-        "production_build_passing": true,
-        "browser_console_errors": 0
-      },
-      "performance": {
-        "initial_js_bundle_bytes": 229340,
-        "initial_js_gzip_bytes": 72970,
-        "note": "+5.3 kB vs cycle 2 for the backtest panel. Chart chunk unchanged."
-      },
-      "observed_example": {
-        "ticker": "AAPL",
-        "range": "1Y",
-        "bars": 251,
-        "rules_beating_benchmark": 0,
-        "rules_tested": 3,
-        "note": "Live observation, evidence the engine reports honestly. NOT a target."
-      }
+    "devices": [
+     "desktop",
+     "mobile"
+    ],
+    "core_web_vitals_lab": {
+     "lcp_ms": 116,
+     "cls": 0.0,
+     "note": "localhost, no network or CPU throttling; a lab floor, not a field number"
     },
-    {
-      "date": "2026-08-17",
-      "commit": "pending",
-      "note": "Cycle 4. T-6 analytics surfaced, watchlist, a11y suite, chart measurement fix.",
-      "reliability": {
-        "backend_tests_passing": 278,
-        "backend_tests_failing": 0,
-        "frontend_tests_passing": 151,
-        "frontend_tests_failing": 0,
-        "backend_lint_clean": true,
-        "frontend_lint_clean": true,
-        "typecheck_clean": true,
-        "production_build_passing": true,
-        "browser_console_errors": 0,
-        "browser_console_warnings": 0,
-        "how": "cd backend && ruff check . && pytest ; cd frontend && npm run typecheck && npm run lint && npm test && npm run build",
-        "note": "Console warnings were 4 per chart mount before the ResponsiveContainer fix; now 0. Suite verified stable across three consecutive runs with dev servers stopped."
-      },
-      "performance": {
-        "initial_js_bundle_bytes": 241700,
-        "initial_js_gzip_bytes": 76830,
-        "lazy_chart_chunk_bytes": 322710,
-        "lazy_chart_gzip_bytes": 96460,
-        "css_bytes": 32360,
-        "css_gzip_bytes": 5970,
-        "how": "cd frontend && npm run build",
-        "note": "Chart chunk fell 5.2 kB (327890 -> 322710) by dropping ResponsiveContainer in favour of an explicit measurement. Initial bundle grew 12.4 kB for the simulation, correlation and watchlist features."
-      },
-      "security": {
-        "secrets_tracked": 0,
-        "secrets_in_git_history": 0,
-        "history_objects_scanned": 402,
-        "dependency_advisories_high": 0,
-        "env_example_documents_unread_variables": 0,
-        "how": "git log --all --diff-filter=A -- .env personal.md ; git grep over git rev-list --all ; npm audit",
-        "note": "One high advisory (nanoid GHSA-2v37-7h3g-55p8) found and fixed. Three variables documented in .env.example were read by no code path and were removed."
-      },
-      "accessibility": {
-        "axe_checks_passing": 14,
-        "color_contrast_machine_checked": false,
-        "note": "axe rasterises to a canvas to measure contrast and jsdom has none, so that rule is explicitly disabled rather than silently no-opping. Contrast remains a browser check."
-      },
-      "size": {
-        "backend_python_loc": 3967,
-        "frontend_ts_loc": 5806,
-        "api_endpoints": 12,
-        "commits": 24
-      }
-    },
-    {
-      "date": "2026-08-31",
-      "commit": "f5bd110",
-      "note": "Cycle 5. Portfolio simulator (FA7) and security comparison (FA6).",
-      "reliability": {
-        "backend_tests_passing": 354,
-        "backend_tests_failing": 0,
-        "frontend_tests_passing": 187,
-        "frontend_tests_failing": 0,
-        "backend_lint_clean": true,
-        "frontend_lint_clean": true,
-        "typecheck_clean": true,
-        "production_build_passing": true,
-        "browser_console_errors": 0,
-        "a11y_checks": 18,
-        "how": "cd backend && ruff check . && pytest ; cd frontend && npm run typecheck && npm run lint && npm test && npm run build"
-      },
-      "portfolio_validity": {
-        "contributions_never_counted_as_returns": true,
-        "deposits_cannot_hide_drawdowns": true,
-        "costs_on_by_default_bps": 10.0,
-        "note": "Validity properties pinned by adversarial tests; portfolio RETURNS remain facts about the market, not targets."
-      },
-      "size": {
-        "api_endpoints": 17,
-        "commits": 20
-      }
-    },
-    {
-      "date": "2026-08-31",
-      "commit": "a7e5ca5",
-      "note": "Cycles 6-7. Multi-page shell + Explore preference matching (FA10).",
-      "reliability": {
-        "backend_tests_passing": 369,
-        "backend_tests_failing": 0,
-        "frontend_tests_passing": 206,
-        "frontend_tests_failing": 0,
-        "backend_lint_clean": true,
-        "frontend_lint_clean": true,
-        "typecheck_clean": true,
-        "production_build_passing": true,
-        "browser_console_errors": 0,
-        "browser_console_warnings": 0,
-        "npm_audit_prod_vulnerabilities": 0,
-        "how": "cd backend && ruff check . && pytest ; cd frontend && npm run typecheck && npm run lint && npm test && npm run build ; npm audit --omit=dev"
-      },
-      "security_audit": {
-        "git_history_env_or_personal_commits": 0,
-        "key_shaped_strings_in_history": 0,
-        "sensitive_tracked_paths": 0,
-        "misleading_language_hits_outside_negations": 0
-      },
-      "size": {
-        "api_endpoints": 16,
-        "commits": 33,
-        "pages": 6
-      }
-    },
-    {
-      "date": "2026-09-04",
-      "commit": "323cd32",
-      "note": "Cycle 8. Historical pattern detection (Phase 8) with anti-lookahead guarantees, plus the pattern UI.",
-      "reliability": {
-        "backend_tests_passing": 395,
-        "backend_tests_failing": 0,
-        "frontend_tests_passing": 217,
-        "frontend_tests_failing": 0,
-        "backend_lint_clean": true,
-        "frontend_lint_clean": true,
-        "typecheck_clean": true,
-        "production_build_passing": true,
-        "browser_console_errors": 0,
-        "browser_console_warnings": 0,
-        "how": "cd backend && ruff check . && pytest ; cd frontend && npm run typecheck && npm run lint && node ./node_modules/vitest/vitest.mjs run --no-file-parallelism && npm run build"
-      },
-      "pattern_validity": {
-        "future_mutation_invariance_tests_passing": 2,
-        "note": "Mutating every bar after a cutoff (x5 melt-up and x0.2 crash) leaves all detections at or before the cutoff byte-identical. Baselines shift one bar so no statistic includes the bar it judges. Outcome windows use future bars only to DESCRIBE history, never to decide detection; boundary events are excluded and counted; zero-sample stats are null; samples under 10 are flagged."
-      },
-      "performance": {
-        "initial_js_bundle_bytes": 279990,
-        "initial_js_gzip_bytes": 86870,
-        "lazy_chart_chunk_bytes": 323150,
-        "lazy_chart_gzip_bytes": 96560,
-        "css_bytes": 49620,
-        "css_gzip_bytes": 8090,
-        "how": "cd frontend && npm run build"
-      },
-      "size": {
-        "backend_python_loc": 6245,
-        "frontend_ts_loc": 9357,
-        "api_endpoints": 17,
-        "commits": 36,
-        "pages": 6,
-        "how": "git rev-list --count HEAD ; find backend/app -name '*.py' | xargs wc -l ; find frontend/src -name '*.ts' -o -name '*.tsx' | xargs wc -l"
-      }
-    },
-    {
-      "date": "2026-09-12",
-      "commit": "a411756",
-      "note": "Cycle 9. Recent-search persistence, first-run onboarding, page audit fixes (mobile nav, compare overflow, zero-neutral backtest cell), API hardening tests, Playwright smoke suite, provider documentation.",
-      "reliability": {
-        "backend_tests_passing": 449,
-        "backend_tests_failing": 0,
-        "frontend_unit_tests_passing": 248,
-        "frontend_unit_tests_failing": 0,
-        "browser_smoke_tests_passing": 22,
-        "browser_smoke_tests_skipped": 2,
-        "browser_smoke_note": "11 scenarios x 2 viewports (1280px, 390px) over the production build with fixture-mocked API; the 2 skipped are the opt-in @live test (E2E_LIVE=1).",
-        "backend_lint_clean": true,
-        "frontend_lint_clean": true,
-        "typecheck_clean": true,
-        "production_build_passing": true,
-        "browser_console_errors": 0,
-        "browser_console_warnings": 0,
-        "npm_audit_vulnerabilities_all_groups": 0,
-        "how": "cd backend && ruff check . && pytest ; cd frontend && npm run typecheck && npm run lint && node ./node_modules/vitest/vitest.mjs run --no-file-parallelism && npm run build && npm run test:e2e ; npm audit",
-        "how_note": "449 backend = 424 + 25 demo-mode tests; 248 frontend = 244 + 2 App demo-banner tests + 2 date-parsing tests"
-      },
-      "api_hardening": {
-        "malformed_requests_probed_live": 29,
-        "server_errors_500": 0,
-        "stack_trace_leaks": 0,
-        "pinned_as_tests": 29,
-        "note": "Every route answered malformed input with a 4xx and a plain detail string; providers stubbed to raise if reached."
-      },
-      "performance": {
-        "initial_js_bundle_bytes": 288080,
-        "initial_js_gzip_bytes": 89920,
-        "lazy_chart_chunk_bytes": 323150,
-        "lazy_chart_gzip_bytes": 96560,
-        "css_bytes": 50630,
-        "css_gzip_bytes": 8210,
-        "analyze_page_unique_api_requests": 6,
-        "how": "cd frontend && npm run build ; Playwright network log on #/analyze/AAPL",
-        "note": "+8.1 kB initial JS vs cycle 8 for the tool guide, persisted recent searches, and inline glossary tips."
-      },
-      "accessibility": {
-        "axe_checks_passing": 22,
-        "color_contrast_machine_checked": false
-      },
-      "size": {
-        "backend_python_loc": 6247,
-        "frontend_ts_loc": 10241,
-        "api_endpoints": 17,
-        "commits": 51,
-        "pages": 6,
-        "how": "git rev-list --count HEAD ; find backend/app -name '*.py' | xargs wc -l ; find frontend/src frontend/e2e -name '*.ts' -o -name '*.tsx' | grep -v fixtures | xargs wc -l"
-      },
-      "lighthouse": {
-        "target": "production build via vite preview, http://127.0.0.1:4173/ (dashboard route)",
-        "before_fixes": {
-          "accessibility": 97,
-          "best_practices": 100,
-          "seo": 91,
-          "failed": [
-            "color-contrast (--text-subtle 3.05:1)",
-            "label-content-name-mismatch (range buttons)",
-            "robots-txt (SPA fallback)"
-          ]
-        },
-        "after_fixes": {
-          "accessibility": 100,
-          "best_practices": 100,
-          "seo": 100
-        },
-        "devices": [
-          "desktop",
-          "mobile"
-        ],
-        "core_web_vitals_lab": {
-          "lcp_ms": 116,
-          "cls": 0.0,
-          "note": "localhost, no network or CPU throttling; a lab floor, not a field number"
-        },
-        "how": "chrome-devtools MCP lighthouse_audit (navigation mode) and performance_start_trace on the preview build"
-      },
-      "public_demo": {
-        "url": "https://stock-predictor-one-iota.vercel.app",
-        "deployed": "2026-09-15",
-        "host": "Vercel hobby, one project: static Vite build + Python function (api/index.py) behind /api rewrites, region iad1",
-        "data": "synthetic (DEMO_MODE); no market-data provider is called; live feeds return 503",
-        "verified_live": [
-          "dashboard with demo banner",
-          "analyze deep link + patterns",
-          "compare",
-          "portfolio replay",
-          "explore (20 funds)",
-          "learn (17 entries)",
-          "invalid ticker 404 guidance",
-          "390px layout",
-          "dark/light toggle",
-          "/docs disabled",
-          "8 malformed inputs -> 4xx without leaks",
-          "security headers + HSTS"
-        ],
-        "console_errors_on_verified_pages": 0,
-        "note": "Real market data remains local-only (T-3, T-8, PROVIDERS.md). Verified by hand with Playwright against the live URL, not by CI."
-      }
-    },
-    {
-      "date": "2026-10-03",
-      "commit": "see git log (cycle 10)",
-      "note": "Cycle 10. Provider-agnostic price layer: PriceProvider protocol, normalized Bar/AdjustmentBasis/Capability, validated registry, normalized errors; yfinance becomes one adapter.",
-      "reliability": {
-        "backend_tests_passing": 491,
-        "backend_tests_failing": 0,
-        "frontend_unit_tests_passing": 248,
-        "frontend_unit_tests_failing": 0,
-        "browser_smoke_tests_passing": 23,
-        "browser_smoke_tests_skipped": 3,
-        "backend_lint_clean": true,
-        "frontend_lint_clean": true,
-        "typecheck_clean": true,
-        "production_build_passing": true,
-        "how": "cd backend && ruff check . && pytest ; cd frontend && npm run typecheck && npm run lint && node ./node_modules/vitest/vitest.mjs run --no-file-parallelism && npm run build && npm run test:e2e"
-      },
-      "architecture_guards": {
-        "only_adapter_imports_yfinance": true,
-        "analytics_import_no_services": true,
-        "routes_and_service_import_no_vendor_adapter": true,
-        "contract_tests_per_provider": 2,
-        "production_refuses_yfinance": true,
-        "note": "Each pinned by tests in test_architecture.py, test_price_provider_contract.py, test_provider_registry.py."
-      }
-    },
-    {
-      "date": "2026-10-04",
-      "commit": "see git log (cycle 11)",
-      "note": "Cycle 11. Analytics correctness audit: one frequency source, intraday never annualized, shared weekly/monthly resampling labeled by last session, data-quality contract, indicator/backtest/pattern/portfolio invariants, versioned demo dataset, US Eastern test timezone.",
-      "reliability": {
-        "backend_tests_passing": 559,
-        "backend_tests_failing": 0,
-        "frontend_unit_tests_passing": 248,
-        "frontend_unit_tests_failing": 0,
-        "browser_smoke_tests_passing": 23,
-        "browser_smoke_tests_skipped": 3,
-        "backend_lint_clean": true,
-        "frontend_lint_clean": true,
-        "typecheck_clean": true,
-        "production_build_passing": true,
-        "how": "cd backend && ruff check . && pytest ; cd frontend && npm run typecheck && npm run lint && node ./node_modules/vitest/vitest.mjs run --no-file-parallelism && npm run build && npm run test:e2e"
-      },
-      "analytics_audit": {
-        "bugs_fixed": [
-          "intraday ranges annualized as daily (1D/5D)",
-          "weekly/monthly bar labels differed by provider (period start vs last session)",
-          "duplicate-timestamp rule differed between risk (last) and patterns (first)",
-          "five private frequency tables in routes"
-        ],
-        "invariants_added": [
-          "indicator causality under truncation and future mutation",
-          "indicator scale behavior",
-          "backtest causality per strategy and parameter",
-          "oracle earns only its lagged return",
-          "per-detector pattern causality and outcome recomputation",
-          "portfolio flat-price and collapse adversaries",
-          "data-quality normalize/reject rules",
-          "golden demo bars + DATASET_VERSION"
-        ]
-      },
-      "performance_ms_warm_demo": {
-        "analysis_1y": 13.2,
-        "analysis_max": 20.0,
-        "patterns_5y": 6.9,
-        "backtest_5y": 32.3,
-        "simulation_1y": 21.1,
-        "compare_3": 13.1,
-        "portfolio_5y": 16.6,
-        "explore_21": 38.1,
-        "note": "Indicators computed twice in analysis (~5 ms); left as is."
-      }
-    }
-  ]
+    "how": "chrome-devtools MCP lighthouse_audit (navigation mode) and performance_start_trace on the preview build"
+   },
+   "public_demo": {
+    "url": "https://stock-predictor-one-iota.vercel.app",
+    "deployed": "2026-09-15",
+    "host": "Vercel hobby, one project: static Vite build + Python function (api/index.py) behind /api rewrites, region iad1",
+    "data": "synthetic (DEMO_MODE); no market-data provider is called; live feeds return 503",
+    "verified_live": [
+     "dashboard with demo banner",
+     "analyze deep link + patterns",
+     "compare",
+     "portfolio replay",
+     "explore (20 funds)",
+     "learn (17 entries)",
+     "invalid ticker 404 guidance",
+     "390px layout",
+     "dark/light toggle",
+     "/docs disabled",
+     "8 malformed inputs -> 4xx without leaks",
+     "security headers + HSTS"
+    ],
+    "console_errors_on_verified_pages": 0,
+    "note": "Real market data remains local-only (T-3, T-8, PROVIDERS.md). Verified by hand with Playwright against the live URL, not by CI."
+   }
+  },
+  {
+   "date": "2026-10-03",
+   "commit": "see git log (cycle 10)",
+   "note": "Cycle 10. Provider-agnostic price layer: PriceProvider protocol, normalized Bar/AdjustmentBasis/Capability, validated registry, normalized errors; yfinance becomes one adapter.",
+   "reliability": {
+    "backend_tests_passing": 491,
+    "backend_tests_failing": 0,
+    "frontend_unit_tests_passing": 248,
+    "frontend_unit_tests_failing": 0,
+    "browser_smoke_tests_passing": 23,
+    "browser_smoke_tests_skipped": 3,
+    "backend_lint_clean": true,
+    "frontend_lint_clean": true,
+    "typecheck_clean": true,
+    "production_build_passing": true,
+    "how": "cd backend && ruff check . && pytest ; cd frontend && npm run typecheck && npm run lint && node ./node_modules/vitest/vitest.mjs run --no-file-parallelism && npm run build && npm run test:e2e"
+   },
+   "architecture_guards": {
+    "only_adapter_imports_yfinance": true,
+    "analytics_import_no_services": true,
+    "routes_and_service_import_no_vendor_adapter": true,
+    "contract_tests_per_provider": 2,
+    "production_refuses_yfinance": true,
+    "note": "Each pinned by tests in test_architecture.py, test_price_provider_contract.py, test_provider_registry.py."
+   }
+  },
+  {
+   "date": "2026-10-04",
+   "commit": "see git log (cycle 11)",
+   "note": "Cycle 11. Analytics correctness audit: one frequency source, intraday never annualized, shared weekly/monthly resampling labeled by last session, data-quality contract, indicator/backtest/pattern/portfolio invariants, versioned demo dataset, US Eastern test timezone.",
+   "reliability": {
+    "backend_tests_passing": 559,
+    "backend_tests_failing": 0,
+    "frontend_unit_tests_passing": 248,
+    "frontend_unit_tests_failing": 0,
+    "browser_smoke_tests_passing": 23,
+    "browser_smoke_tests_skipped": 3,
+    "backend_lint_clean": true,
+    "frontend_lint_clean": true,
+    "typecheck_clean": true,
+    "production_build_passing": true,
+    "how": "cd backend && ruff check . && pytest ; cd frontend && npm run typecheck && npm run lint && node ./node_modules/vitest/vitest.mjs run --no-file-parallelism && npm run build && npm run test:e2e"
+   },
+   "analytics_audit": {
+    "bugs_fixed": [
+     "intraday ranges annualized as daily (1D/5D)",
+     "weekly/monthly bar labels differed by provider (period start vs last session)",
+     "duplicate-timestamp rule differed between risk (last) and patterns (first)",
+     "five private frequency tables in routes"
+    ],
+    "invariants_added": [
+     "indicator causality under truncation and future mutation",
+     "indicator scale behavior",
+     "backtest causality per strategy and parameter",
+     "oracle earns only its lagged return",
+     "per-detector pattern causality and outcome recomputation",
+     "portfolio flat-price and collapse adversaries",
+     "data-quality normalize/reject rules",
+     "golden demo bars + DATASET_VERSION"
+    ]
+   },
+   "performance_ms_warm_demo": {
+    "analysis_1y": 13.2,
+    "analysis_max": 20.0,
+    "patterns_5y": 6.9,
+    "backtest_5y": 32.3,
+    "simulation_1y": 21.1,
+    "compare_3": 13.1,
+    "portfolio_5y": 16.6,
+    "explore_21": 38.1,
+    "note": "Indicators computed twice in analysis (~5 ms); left as is."
+   }
+  },
+  {
+   "date": "2026-10-18",
+   "commit": "see git log (cycle 13)",
+   "note": "Cycle 13. SEC EDGAR filings and XBRL fundamentals (zero cost), drawdown duration, price freshness disclosure.",
+   "reliability": {
+    "backend_tests_passing": 666,
+    "backend_tests_failing": 0,
+    "frontend_unit_tests_passing": 266,
+    "frontend_unit_tests_failing": 0,
+    "browser_smoke_tests_passing": 25,
+    "browser_smoke_tests_skipped": 3,
+    "backend_lint_clean": true,
+    "frontend_lint_clean": true,
+    "typecheck_clean": true,
+    "production_build_passing": true,
+    "how": "cd backend && ruff check . && pytest ; cd frontend && npm run typecheck && npm run lint && npx vitest run && npm run build && npm run test:e2e"
+   },
+   "sec_integration": {
+    "live_sec_requests_in_tests": 0,
+    "fixtures": "recorded from sec.gov and data.sec.gov on 2026-10-18 and trimmed, plus hand-built cases",
+    "backend_live_sec_verified": false,
+    "why_not_live": "No SEC_USER_AGENT contact is configured; supplying one is the operator's decision (TENSIONS T-9). SEC response shapes were verified in a browser on 2026-10-18."
+   },
+   "performance": {
+    "initial_js_bundle_bytes": 306720,
+    "how": "cd frontend && npm run build"
+   }
+  }
+ ]
 }
