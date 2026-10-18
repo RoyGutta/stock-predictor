@@ -39,6 +39,9 @@ import { WatchlistPanel } from "../features/watchlist/WatchlistPanel";
 import { LearnPanel } from "../features/education/LearnPanel";
 import { QuoteSummary, RangeSelector } from "../features/quote/QuotePanel";
 import { SearchBox } from "../features/search/SearchBox";
+import { FilingsPanel } from "../features/sec/FilingsPanel";
+import { FundamentalsPanel } from "../features/sec/FundamentalsPanel";
+import { FILINGS, FUNDAMENTALS } from "./secFixtures";
 import type {
   BacktestResponse,
   CorrelationResponse,
@@ -217,6 +220,37 @@ describe("accessibility", () => {
 
   it("risk panel has no violations", async () => {
     await expectNoViolations(<RiskPanel risk={risk} />);
+  });
+
+  it("risk panel with drawdown duration has no violations", async () => {
+    await expectNoViolations(
+      <RiskPanel
+        risk={{
+          ...risk,
+          current_drawdown: -0.08,
+          current_drawdown_peak_date: "2025-07-01",
+          longest_underwater_bars: 41,
+          longest_underwater_start: "2025-02-18",
+          longest_underwater_end: null,
+          longest_underwater_recovered: false,
+          time_underwater: 0.62,
+        }}
+      />,
+    );
+  });
+
+  it("SEC filings panel has no violations, populated and failed", async () => {
+    const ready = { data: FILINGS, loading: false, error: null, status: null };
+    await expectNoViolations(<FilingsPanel state={ready} query="AAPL" onChooseCompany={noop} />);
+    const missing = { data: null, loading: false, error: "No SEC filer matching 'VOO'.", status: 404 };
+    await expectNoViolations(<FilingsPanel state={missing} query="VOO" onChooseCompany={noop} />);
+  });
+
+  it("reported financials panel has no violations", async () => {
+    const ready = { data: FUNDAMENTALS, loading: false, error: null, status: null };
+    await expectNoViolations(
+      <FundamentalsPanel state={ready} period="annual" onPeriodChange={noop} />,
+    );
   });
 
   it("quote summary has no violations", async () => {

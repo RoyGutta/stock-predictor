@@ -173,6 +173,18 @@ export interface RiskMetrics {
   drawdown_trough_date: string | null;
   /** Null if the price never regained its previous peak within the range. */
   drawdown_recovery_date: string | null;
+  /** Last close relative to the highest close in this range; 0 at a new high. */
+  current_drawdown?: number | null;
+  current_drawdown_peak_date?: string | null;
+  /** Most consecutive bars that closed below an earlier peak in this range. */
+  longest_underwater_bars?: number | null;
+  longest_underwater_start?: string | null;
+  /** First bar back at the peak; null when still below it at the end. */
+  longest_underwater_end?: string | null;
+  /** False: the spell was still open, so its true length is at least the bar count. */
+  longest_underwater_recovered?: boolean | null;
+  /** Fraction of bars below the running peak. */
+  time_underwater?: number | null;
   value_at_risk_95: number | null;
   conditional_value_at_risk_95: number | null;
   observations: number;
@@ -330,6 +342,10 @@ export interface Capabilities {
   demo: boolean;
   /** Standing disclosure to show whenever demo is true. */
   demo_note: string | null;
+  /** What the price source does and does not guarantee about freshness. */
+  price_freshness?: string;
+  /** SEC filings and reported financials are enabled on this server. */
+  sec_filings?: boolean;
 }
 
 // --- backtesting -----------------------------------------------------------

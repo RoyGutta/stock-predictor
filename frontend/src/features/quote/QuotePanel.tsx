@@ -50,11 +50,13 @@ export function RangeSelector({ value, onChange, disabled = false }: RangeSelect
 
 interface QuoteSummaryProps {
   quote: Quote;
+  /** The price source's own statement of what it does and does not guarantee. */
+  freshness?: string;
   watched: boolean;
   onToggleWatch: () => void;
 }
 
-export function QuoteSummary({ quote, watched, onToggleWatch }: QuoteSummaryProps) {
+export function QuoteSummary({ quote, freshness, watched, onToggleWatch }: QuoteSummaryProps) {
   const positive = quote.change_points >= 0;
   const intraday = INTRADAY_RANGES.has(quote.range);
 
@@ -98,8 +100,11 @@ export function QuoteSummary({ quote, watched, onToggleWatch }: QuoteSummaryProp
         <p className="quote__meta">
           As of {formatTimestamp(quote.as_of, intraday)} · data from {quote.source} ·{" "}
           {ADJUSTMENT_LABELS[quote.adjustment ?? "unspecified"]}
-          {quote.adjustment !== "synthetic" && " · delayed and for education only"}
+          {quote.adjustment !== "synthetic" && " · may be delayed; for education only"}
         </p>
+        {freshness && quote.adjustment !== "synthetic" && (
+          <p className="quote__meta">{freshness}</p>
+        )}
       </div>
     </Card>
   );

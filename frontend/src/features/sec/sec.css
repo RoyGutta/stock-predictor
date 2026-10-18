@@ -1,0 +1,298 @@
+/* SEC filings and reported financials. Tokens only; both themes are first-class. */
+
+.sec__divider {
+  margin: var(--space-2) 0 0;
+  padding: var(--space-3) var(--space-4);
+  border-left: 3px solid var(--accent);
+  background: var(--surface);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  max-width: 80ch;
+  text-wrap: pretty;
+}
+
+.sec__source,
+.sec__meta,
+.sec__note,
+.sec__empty {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  max-width: 80ch;
+  text-wrap: pretty;
+}
+
+.sec__source {
+  margin-bottom: var(--space-3);
+}
+
+.sec__source a,
+.sec-detail a,
+.sec-table a {
+  color: var(--accent);
+}
+
+.sec__meta {
+  margin-bottom: var(--space-3);
+}
+
+.sec__note {
+  margin-top: var(--space-3);
+  font-size: var(--text-xs);
+}
+
+.sec__loading {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.sec-tag {
+  display: inline-block;
+  margin-left: var(--space-2);
+  padding: 0 var(--space-2);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: 999px;
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* --- filings ------------------------------------------------------------- */
+
+.sec-filings {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+}
+
+.sec-filing {
+  display: grid;
+  grid-template-columns: 5.5rem minmax(0, 1fr) auto;
+  gap: var(--space-3);
+  align-items: start;
+  padding: var(--space-3) 0;
+  border-top: var(--border-width) solid var(--border);
+}
+
+.sec-filing__form {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text);
+}
+
+.sec-filing__title {
+  font-size: var(--text-sm);
+  color: var(--text);
+}
+
+.sec-filing__dates,
+.sec-filing__items {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.sec-filing__link {
+  font-size: var(--text-sm);
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+@media (max-width: 560px) {
+  .sec-filing {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-1);
+  }
+}
+
+.sec-lookup {
+  display: grid;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.sec-lookup__label {
+  display: block;
+  font-size: var(--text-sm);
+  margin-bottom: var(--space-2);
+}
+
+.sec-lookup__row {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.sec-lookup__input {
+  flex: 1 1 14rem;
+  min-width: 0;
+  padding: var(--space-2) var(--space-3);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface-raised);
+  color: var(--text);
+  font: inherit;
+}
+
+.sec-lookup__results {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: var(--space-1);
+}
+
+/* --- reported financials ------------------------------------------------ */
+
+.sec-table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.sec-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.sec-table th,
+.sec-table td {
+  padding: var(--space-2) var(--space-3);
+  border-top: var(--border-width) solid var(--border);
+  text-align: right;
+  vertical-align: top;
+}
+
+.sec-table th:first-child {
+  text-align: left;
+}
+
+.sec-table thead th {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.sec-table__period {
+  display: block;
+  font-weight: 400;
+  font-size: var(--text-2xs);
+}
+
+.sec-table__section th {
+  text-align: left;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+  padding-top: var(--space-4);
+}
+
+.sec-table__measure {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: var(--border-strong);
+  text-underline-offset: 3px;
+}
+
+.sec-table__measure[aria-pressed="true"] {
+  font-weight: 600;
+  text-decoration-color: var(--accent);
+}
+
+.sec-table__row--active {
+  background: var(--surface);
+}
+
+.sec-table__value {
+  display: block;
+  color: var(--text);
+}
+
+.sec-table__yoy,
+.sec-table__tag {
+  display: block;
+  font-size: var(--text-2xs);
+  color: var(--text-muted);
+}
+
+.sec-table__tag {
+  font-family: var(--font-mono);
+  overflow-wrap: anywhere;
+}
+
+.sec-table__missing {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  /* XBRL tag names are single 40-60 character words. */
+  overflow-wrap: anywhere;
+}
+
+.sec-table td.sec-table__missing,
+.sec-table--detail td,
+.sec-table--detail th {
+  text-align: left;
+}
+
+.sec-detail {
+  margin-top: var(--space-5);
+  display: grid;
+  gap: var(--space-3);
+}
+
+.sec-detail__title {
+  font-size: var(--text-base);
+}
+
+.sec-detail__definition {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  max-width: 80ch;
+}
+
+.sec-trend {
+  width: 100%;
+  height: auto;
+  max-height: 200px;
+}
+
+.sec-trend__axis {
+  stroke: var(--border-strong);
+  stroke-width: 1;
+}
+
+.sec-trend__bar {
+  fill: var(--accent);
+}
+
+.sec-trend__bar--negative {
+  fill: var(--down);
+}
+
+.sec-trend__label {
+  fill: var(--text-muted);
+  font-size: 11px;
+  font-family: var(--font-sans);
+}
+
+@media (max-width: 560px) {
+  .sec-table th,
+  .sec-table td {
+    padding: var(--space-2);
+  }
+
+  /* "Period ended" and the date stack instead of forcing the table wider. */
+  .sec-table thead th {
+    white-space: normal;
+  }
+}

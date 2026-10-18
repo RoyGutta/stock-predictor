@@ -1,0 +1,578 @@
+{
+ "source": "U.S. Securities and Exchange Commission (EDGAR)",
+ "retrieved_at": "2026-10-18T16:52:00+00:00",
+ "stale": false,
+ "stale_reason": null,
+ "company": {
+  "cik": 320193,
+  "cik_padded": "0000320193",
+  "name": "Apple Inc.",
+  "tickers": [
+   "AAPL"
+  ],
+  "edgar_url": "https://www.sec.gov/edgar/browse/?CIK=320193"
+ },
+ "period": "annual",
+ "coverage": "us-gaap",
+ "coverage_note": null,
+ "note": "Figures are as reported in the company's own filings and describe the periods shown, not the present. SEC publishes them within about a minute of a filing; they are not real-time data.",
+ "metrics": [
+  {
+   "key": "revenue",
+   "label": "Revenue",
+   "unit": "USD",
+   "kind": "duration",
+   "definition": "Total revenue as reported. The tag changed with the 2018 revenue standard; each value names the tag it came from.",
+   "tags_considered": [
+    "RevenueFromContractWithCustomerExcludingAssessedTax",
+    "Revenues",
+    "SalesRevenueNet",
+    "RevenueFromContractWithCustomerIncludingAssessedTax"
+   ],
+   "points": [
+    {
+     "period_start": "2023-10-01",
+     "period_end": "2024-09-28",
+     "duration_days": 363,
+     "value": 391035000000.0,
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax",
+     "form": "10-K",
+     "filed": "2025-10-31",
+     "accession_number": "0000320193-25-000079",
+     "filing_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/0000320193-25-000079-index.htm",
+     "amended": false,
+     "revised": false,
+     "first_reported_value": null,
+     "yoy": null
+    },
+    {
+     "period_start": "2024-09-29",
+     "period_end": "2025-09-27",
+     "duration_days": 363,
+     "value": 416161000000.0,
+     "tag": "RevenueFromContractWithCustomerExcludingAssessedTax",
+     "form": "10-K",
+     "filed": "2025-10-31",
+     "accession_number": "0000320193-25-000079",
+     "filing_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/0000320193-25-000079-index.htm",
+     "amended": false,
+     "revised": false,
+     "first_reported_value": null,
+     "yoy": {
+      "prior_period_end": "2024-09-28",
+      "prior_value": 391035000000.0,
+      "change": 25126000000.0,
+      "change_pct": 0.064255,
+      "note": null
+     }
+    }
+   ],
+   "missing_reason": null,
+   "ignored_units": []
+  },
+  {
+   "key": "gross_profit",
+   "label": "Gross profit",
+   "unit": "USD",
+   "kind": "duration",
+   "definition": "Revenue minus cost of revenue, as reported. Many service and financial companies do not report it.",
+   "tags_considered": [
+    "GrossProfit"
+   ],
+   "points": [
+    {
+     "period_start": "2023-10-01",
+     "period_end": "2024-09-28",
+     "duration_days": 363,
+     "value": 180683000000.0,
+     "tag": "GrossProfit",
+     "form": "10-K",
+     "filed": "2025-10-31",
+     "accession_number": "0000320193-25-000079",
+     "filing_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/0000320193-25-000079-index.htm",
+     "amended": false,
+     "revised": false,
+     "first_reported_value": null,
+     "yoy": null
+    },
+    {
+     "period_start": "2024-09-29",
+     "period_end": "2025-09-27",
+     "duration_days": 363,
+     "value": 195201000000.0,
+     "tag": "GrossProfit",
+     "form": "10-K",
+     "filed": "2025-10-31",
+     "accession_number": "0000320193-25-000079",
+     "filing_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/0000320193-25-000079-index.htm",
+     "amended": false,
+     "revised": false,
+     "first_reported_value": null,
+     "yoy": {
+      "prior_period_end": "2024-09-28",
+      "prior_value": 180683000000.0,
+      "change": 14518000000.0,
+      "change_pct": 0.080351,
+      "note": null
+     }
+    }
+   ],
+   "missing_reason": null,
+   "ignored_units": []
+  },
+  {
+   "key": "operating_income",
+   "label": "Operating income",
+   "unit": "USD",
+   "kind": "duration",
+   "definition": "Profit from operations before interest and taxes, as reported.",
+   "tags_considered": [
+    "OperatingIncomeLoss"
+   ],
+   "points": [
+    {
+     "period_start": "2023-10-01",
+     "period_end": "2024-09-28",
+     "duration_days": 363,
+     "value": 123216000000.0,
+     "tag": "OperatingIncomeLoss",
+     "form": "10-K",
+     "filed": "2025-10-31",
+     "accession_number": "0000320193-25-000079",
+     "filing_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/0000320193-25-000079-index.htm",
+     "amended": false,
+     "revised": false,
+     "first_reported_value": null,
+     "yoy": null
+    },
+    {
+     "period_start": "2024-09-29",
+     "period_end": "2025-09-27",
+     "duration_days": 363,
+     "value": 133050000000.0,
+     "tag": "OperatingIncomeLoss",
+     "form": "10-K",
+     "filed": "2025-10-31",
+     "accession_number": "0000320193-25-000079",
+     "filing_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/0000320193-25-000079-index.htm",
+     "amended": false,
+     "revised": false,
+     "first_reported_value": null,
+     "yoy": {
+      "prior_period_end": "2024-09-28",
+      "prior_value": 123216000000.0,
+      "change": 9834000000.0,
+      "change_pct": 0.079811,
+      "note": null
+     }
+    }
+   ],
+   "missing_reason": null,
+   "ignored_units": []
+  },
+  {
+   "key": "net_income",
+   "label": "Net income",
+   "unit": "USD",
+   "kind": "duration",
+   "definition": "Net income attributable to the parent company's shareholders.",
+   "tags_considered": [
+    "NetIncomeLoss"
+   ],
+   "points": [
+    {
+     "period_start": "2007-09-30",
+     "period_end": "2008-09-27",
+     "duration_days": 363,
+     "value": 6119000000.0,
+     "tag": "NetIncomeLoss",
+     "form": "10-K",
+     "filed": "2010-10-27",
+     "accession_number": "0001193125-10-238044",
+     "filing_url": "https://www.sec.gov/Archives/edgar/data/320193/000119312510238044/0001193125-10-238044-index.htm",
+     "amended": false,
+     "revised": true,
+     "first_reported_value": 4834000000.0,
+     "yoy": null
+    },
+    {
+     "period_start": "2021-09-26",
+     "period_end": "2022-09-24",
+     "duration_days": 363,
+     "value": 99803000000.0,
+     "tag": "NetIncomeLoss",
+     "form": "10-K",
+     "filed": "2024-11-01",
+     "accession_number": "0000320193-24-000123",
+     "filing_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019324000123/0000320193-24-000123-index.htm",
+     "amended": false,
+     "revised": false,
+     "first_reported_value": null,
+     "yoy": null
+    },
+    {
+     "period_start": "2022-09-25",
+     "period_end": "2023-09-30",
+     "duration_days": 370,
+     "value": 96995000000.0,
+     "tag": "NetIncomeLoss",
+     "form": "10-K",
+     "filed": "2025-10-31",
+     "accession_number": "0000320193-25-000079",
+     "filing_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/0000320193-25-000079-index.htm",
+     "amended": false,
+     "revised": false,
+     "first_reported_value": null,
+     "yoy": {
+      "prior_period_end": "2022-09-24",
+      "prior_value": 99803000000.0,
+      "change": -2808000000.0,
+      "change_pct": -0.028135,
+      "note": "The periods differ in length (370 vs 363 days), for example a 53-week year."
+     }
+    },
+    {
+     "period_start": "2023-10-01",
+     "period_end": "2024-09-28",
+     "duration_days": 363,
+     "value": 93736000000.0,
+     "tag": "NetIncomeLoss",
+     "form": "10-K",
+     "filed": "2025-10-31",
+     "accession_number": "0000320193-25-000079",
+     "filing_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/0000320193-25-000079-index.htm",
+     "amended": false,
+     "revised": false,
+     "first_reported_value": null,
+     "yoy": {
+      "prior_period_end": "2023-09-30",
+      "prior_value": 96995000000.0,
+      "change": -3259000000.0,
+      "change_pct": -0.0336,
+      "note": "The periods differ in length (363 vs 370 days), for example a 53-week year."
+     }
+    },
+    {
+     "period_start": "2024-09-29",
+     "period_end": "2025-09-27",
+     "duration_days": 363,
+     "value": 112010000000.0,
+     "tag": "NetIncomeLoss",
+     "form": "10-K",
+     "filed": "2025-10-31",
+     "accession_number": "0000320193-25-000079",
+     "filing_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/0000320193-25-000079-index.htm",
+     "amended": false,
+     "revised": false,
+     "first_reported_value": null,
+     "yoy": {
+      "prior_period_end": "2024-09-28",
+      "prior_value": 93736000000.0,
+      "change": 18274000000.0,
+      "change_pct": 0.194952,
+      "note": null
+     }
+    }
+   ],
+   "missing_reason": null,
+   "ignored_units": []
+  },
+  {
+   "key": "eps_basic",
+   "label": "EPS (basic)",
+   "unit": "USD/shares",
+   "kind": "duration",
+   "definition": "Net income per weighted-average share outstanding.",
+   "tags_considered": [
+    "EarningsPerShareBasic"
+   ],
+   "points": [],
+   "missing_reason": "Not reported under the US GAAP tag this view reads (EarningsPerShareBasic). The company may use a different or custom tag, or not report it. It is left blank rather than estimated.",
+   "ignored_units": []
+  },
+  {
+   "key": "eps_diluted",
+   "label": "EPS (diluted)",
+   "unit": "USD/shares",
+   "kind": "duration",
+   "definition": "Net income per share including the effect of options and convertibles.",
+   "tags_considered": [
+    "EarningsPerShareDiluted"
+   ],
+   "points": [],
+   "missing_reason": "Not reported under the US GAAP tag this view reads (EarningsPerShareDiluted). The company may use a different or custom tag, or not report it. It is left blank rather than estimated.",
+   "ignored_units": []
+  },
+  {
+   "key": "cash",
+   "label": "Cash and equivalents",
+   "unit": "USD",
+   "kind": "instant",
+   "definition": "Balance at period end. When only the second tag is reported, the figure includes restricted cash; the tag is shown with every value.",
+   "tags_considered": [
+    "CashAndCashEquivalentsAtCarryingValue",
+    "CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalents"
+   ],
+   "points": [],
+   "missing_reason": "Not reported under the US GAAP tags this view reads (CashAndCashEquivalentsAtCarryingValue, CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalents). The company may use a different or custom tag, or not report it. It is left blank rather than estimated.",
+   "ignored_units": []
+  },
+  {
+   "key": "total_assets",
+   "label": "Total assets",
+   "unit": "USD",
+   "kind": "instant",
+   "definition": "Balance at period end.",
+   "tags_considered": [
+    "Assets"
+   ],
+   "points": [
+    {
+     "period_start": null,
+     "period_end": "2024-09-28",
+     "duration_days": null,
+     "value": 364980000000.0,
+     "tag": "Assets",
+     "form": "10-K",
+     "filed": "2025-10-31",
+     "accession_number": "0000320193-25-000079",
+     "filing_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/0000320193-25-000079-index.htm",
+     "amended": false,
+     "revised": false,
+     "first_reported_value": null,
+     "yoy": null
+    },
+    {
+     "period_start": null,
+     "period_end": "2025-09-27",
+     "duration_days": null,
+     "value": 359241000000.0,
+     "tag": "Assets",
+     "form": "10-K",
+     "filed": "2025-10-31",
+     "accession_number": "0000320193-25-000079",
+     "filing_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/0000320193-25-000079-index.htm",
+     "amended": false,
+     "revised": false,
+     "first_reported_value": null,
+     "yoy": {
+      "prior_period_end": "2024-09-28",
+      "prior_value": 364980000000.0,
+      "change": -5739000000.0,
+      "change_pct": -0.015724,
+      "note": null
+     }
+    }
+   ],
+   "missing_reason": null,
+   "ignored_units": []
+  },
+  {
+   "key": "total_liabilities",
+   "label": "Total liabilities",
+   "unit": "USD",
+   "kind": "instant",
+   "definition": "Balance at period end. Some companies never report a total; it is not derived from other lines here.",
+   "tags_considered": [
+    "Liabilities"
+   ],
+   "points": [],
+   "missing_reason": "Not reported under the US GAAP tag this view reads (Liabilities). The company may use a different or custom tag, or not report it. It is left blank rather than estimated.",
+   "ignored_units": []
+  },
+  {
+   "key": "operating_cash_flow",
+   "label": "Operating cash flow",
+   "unit": "USD",
+   "kind": "duration",
+   "definition": "Net cash provided by (used in) operating activities.",
+   "tags_considered": [
+    "NetCashProvidedByUsedInOperatingActivities"
+   ],
+   "points": [],
+   "missing_reason": "Not reported under the US GAAP tag this view reads (NetCashProvidedByUsedInOperatingActivities). The company may use a different or custom tag, or not report it. It is left blank rather than estimated.",
+   "ignored_units": []
+  },
+  {
+   "key": "capital_expenditures",
+   "label": "Capital expenditures",
+   "unit": "USD",
+   "kind": "duration",
+   "definition": "Cash paid for property, plant, and equipment, reported as a positive payment. The second tag is broader and is used only when the first is absent.",
+   "tags_considered": [
+    "PaymentsToAcquirePropertyPlantAndEquipment",
+    "PaymentsToAcquireProductiveAssets"
+   ],
+   "points": [],
+   "missing_reason": "Not reported under the US GAAP tags this view reads (PaymentsToAcquirePropertyPlantAndEquipment, PaymentsToAcquireProductiveAssets). The company may use a different or custom tag, or not report it. It is left blank rather than estimated.",
+   "ignored_units": []
+  }
+ ],
+ "derived": [
+  {
+   "key": "gross_margin",
+   "label": "Gross margin",
+   "unit": "ratio",
+   "definition": "Gross profit divided by revenue for the same period.",
+   "caveat": "Margins differ structurally across industries; compare a company with its own history rather than with unrelated businesses.",
+   "components": [
+    "gross_profit",
+    "revenue"
+   ],
+   "points": [
+    {
+     "period_start": "2023-10-01",
+     "period_end": "2024-09-28",
+     "duration_days": 363,
+     "value": 0.462063,
+     "components": {
+      "gross_profit": 180683000000.0,
+      "revenue": 391035000000.0
+     },
+     "form": "10-K",
+     "filed": "2025-10-31",
+     "accession_number": "0000320193-25-000079",
+     "filing_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/0000320193-25-000079-index.htm",
+     "yoy": null
+    },
+    {
+     "period_start": "2024-09-29",
+     "period_end": "2025-09-27",
+     "duration_days": 363,
+     "value": 0.469052,
+     "components": {
+      "gross_profit": 195201000000.0,
+      "revenue": 416161000000.0
+     },
+     "form": "10-K",
+     "filed": "2025-10-31",
+     "accession_number": "0000320193-25-000079",
+     "filing_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/0000320193-25-000079-index.htm",
+     "yoy": null
+    }
+   ],
+   "missing_reason": null,
+   "periods_blocked_different_filing": 0
+  },
+  {
+   "key": "operating_margin",
+   "label": "Operating margin",
+   "unit": "ratio",
+   "definition": "Operating income divided by revenue for the same period.",
+   "caveat": "One-off charges in a single period can move it sharply; read it across several periods.",
+   "components": [
+    "operating_income",
+    "revenue"
+   ],
+   "points": [
+    {
+     "period_start": "2023-10-01",
+     "period_end": "2024-09-28",
+     "duration_days": 363,
+     "value": 0.315102,
+     "components": {
+      "operating_income": 123216000000.0,
+      "revenue": 391035000000.0
+     },
+     "form": "10-K",
+     "filed": "2025-10-31",
+     "accession_number": "0000320193-25-000079",
+     "filing_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/0000320193-25-000079-index.htm",
+     "yoy": null
+    },
+    {
+     "period_start": "2024-09-29",
+     "period_end": "2025-09-27",
+     "duration_days": 363,
+     "value": 0.319708,
+     "components": {
+      "operating_income": 133050000000.0,
+      "revenue": 416161000000.0
+     },
+     "form": "10-K",
+     "filed": "2025-10-31",
+     "accession_number": "0000320193-25-000079",
+     "filing_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/0000320193-25-000079-index.htm",
+     "yoy": null
+    }
+   ],
+   "missing_reason": null,
+   "periods_blocked_different_filing": 0
+  },
+  {
+   "key": "net_margin",
+   "label": "Net margin",
+   "unit": "ratio",
+   "definition": "Net income divided by revenue for the same period.",
+   "caveat": "Includes taxes, interest, and non-operating items, which can dominate in some years.",
+   "components": [
+    "net_income",
+    "revenue"
+   ],
+   "points": [
+    {
+     "period_start": "2023-10-01",
+     "period_end": "2024-09-28",
+     "duration_days": 363,
+     "value": 0.239713,
+     "components": {
+      "net_income": 93736000000.0,
+      "revenue": 391035000000.0
+     },
+     "form": "10-K",
+     "filed": "2025-10-31",
+     "accession_number": "0000320193-25-000079",
+     "filing_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/0000320193-25-000079-index.htm",
+     "yoy": null
+    },
+    {
+     "period_start": "2024-09-29",
+     "period_end": "2025-09-27",
+     "duration_days": 363,
+     "value": 0.269151,
+     "components": {
+      "net_income": 112010000000.0,
+      "revenue": 416161000000.0
+     },
+     "form": "10-K",
+     "filed": "2025-10-31",
+     "accession_number": "0000320193-25-000079",
+     "filing_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/0000320193-25-000079-index.htm",
+     "yoy": null
+    }
+   ],
+   "missing_reason": null,
+   "periods_blocked_different_filing": 0
+  },
+  {
+   "key": "free_cash_flow",
+   "label": "Free cash flow",
+   "unit": "USD",
+   "definition": "Operating cash flow minus capital expenditures, both as reported for the same period.",
+   "caveat": "A common non-GAAP measure that companies define differently; this is the plain difference of the two reported lines, not any company's own figure.",
+   "components": [
+    "operating_cash_flow",
+    "capital_expenditures"
+   ],
+   "points": [],
+   "missing_reason": "Needs operating cash flow and capital expenditures, which this view does not have.",
+   "periods_blocked_different_filing": 0
+  },
+  {
+   "key": "liabilities_to_assets",
+   "label": "Liabilities / assets",
+   "unit": "ratio",
+   "definition": "Total liabilities divided by total assets at the same balance-sheet date.",
+   "caveat": "Shows how much of the balance sheet is funded by obligations rather than equity; banks and insurers run structurally high ratios.",
+   "components": [
+    "total_liabilities",
+    "total_assets"
+   ],
+   "points": [],
+   "missing_reason": "Needs total liabilities, which this view does not have.",
+   "periods_blocked_different_filing": 0
+  }
+ ],
+ "latest_filed": "2025-10-31",
+ "source_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000320193.json"
+}

@@ -39,6 +39,14 @@ function respond(route: Route): Promise<void> {
     if (sub === "/patterns") return json(fixture(`patterns-${ticker}`));
     return json(fixture(`quote-${ticker}`));
   }
+  const sec = path.match(/^\/api\/v1\/sec\/company\/([^/]+)\/(filings|fundamentals)$/);
+  if (sec) {
+    const [, query, kind] = sec;
+    if (query !== "AAPL") return notFound(`SEC's ticker list has no filer matching '${query}'.`);
+    if (kind === "filings") return json(fixture("sec-filings-AAPL"));
+    const period = url.searchParams.get("period") === "quarterly" ? "quarterly" : "annual";
+    return json(fixture(`sec-fundamentals-AAPL-${period}`));
+  }
   if (path.startsWith("/api/v1/market/news/")) return json(fixture("news-AAPL"));
   if (path.startsWith("/api/v1/market/profile/")) return json(fixture("profile-AAPL"));
 
@@ -237,6 +245,25 @@ test("explore shows the whole disclosed universe, misses included", async ({ pag
   // A fund that missed most checks is still on the page.
   expect(text).toMatch(/1\/3/);
   expect(text).toMatch(/not a recommendation/i);
+  await noHorizontalOverflow(page);
+});
+
+test("SEC filings and reported financials carry their own source and link to sec.gov", async ({
+  page,
+}) => {
+  await page.goto("/#/analyze/AAPL");
+  await expect(page.getByText("Company reports from the SEC.")).toBeVisible();
+  const filings = page.locator("section", { has: page.getByRole("heading", { name: "SEC filings" }) });
+  await expect(filings.getByText(/Source: U.S. Securities and Exchange Commission/)).toBeVisible();
+  const first = filings.getByRole("link", { name: /Open on SEC.gov/ }).first();
+  await expect(first).toHaveAttribute("href", /^https:\/\/www\.sec\.gov\/Archives\//);
+  const reported = page.locator("section", {
+    has: page.getByRole("heading", { name: "Reported financials" }),
+  });
+  await expect(reported.getByText(/not real-time data/)).toBeVisible();
+  await expect(reported.getByRole("region", { name: /Revenue: history and sources/ })).toBeVisible();
+  await reported.getByRole("button", { name: "Quarterly" }).click();
+  await expect(reported.getByText(/Quarterly figures are only those/)).toBeVisible();
   await noHorizontalOverflow(page);
 });
 

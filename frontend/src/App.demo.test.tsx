@@ -44,11 +44,17 @@ describe("App demo disclosure", () => {
     );
     render(<App />);
     const note = await screen.findByRole("note");
-    expect(note).toHaveTextContent(/demo data/i);
+    expect(note).toHaveTextContent(/demo prices/i);
     expect(note).toHaveTextContent(/not live market data/i);
+    // The synthetic disclosure covers prices only: SEC reports shown alongside
+    // them are real, and the banner must not imply otherwise.
+    expect(note).toHaveTextContent(/SEC filings and reported financials, where shown, are real/i);
     await waitFor(() =>
-      expect(screen.getByText(/synthetic demonstration dataset, not from market data/i)).toBeInTheDocument(),
+      expect(
+        screen.getByText(/synthetic demonstration dataset rather than market data/i),
+      ).toBeInTheDocument(),
     );
+    expect(screen.getByText(/companies' actual reports/i)).toBeInTheDocument();
   });
 
   it("renders no banner and the normal footer when prices are real", async () => {

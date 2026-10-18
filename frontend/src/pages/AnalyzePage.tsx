@@ -19,6 +19,7 @@ import {
 } from "../features/quote/QuotePanel";
 import { useRecentSearches } from "../features/quote/useRecentSearches";
 import { SearchBox } from "../features/search/SearchBox";
+import { SecSection } from "../features/sec/SecSection";
 import { SimulationPanel } from "../features/simulation/SimulationPanel";
 import { WatchlistPanel } from "../features/watchlist/WatchlistPanel";
 import { useWatchlist } from "../features/watchlist/useWatchlist";
@@ -170,6 +171,7 @@ export function AnalyzePage() {
             {quote && !error && (
               <QuoteSummary
                 quote={quote}
+                freshness={capabilities.data?.price_freshness}
                 watched={watchlist.has(quote.ticker)}
                 onToggleWatch={() => watchlist.toggle(quote.ticker)}
               />
@@ -181,9 +183,9 @@ export function AnalyzePage() {
               <div className="welcome">
                 <h1 className="welcome__title">Analyze a security</h1>
                 <p className="welcome__body">
-                  Search for any listed ticker to see its real price history, standard
-                  technical indicators, risk statistics, and what the evidence does and
-                  does not show.
+                  Search for a ticker to see its price history, standard technical
+                  indicators, risk statistics, the company&rsquo;s own SEC filings and reported
+                  financials, and what the evidence does and does not show.
                 </p>
                 <div className="welcome__examples">
                   {EXAMPLE_TICKERS.map((symbol) => (
@@ -281,6 +283,10 @@ export function AnalyzePage() {
               started={patternsFor === quote.ticker}
               onRun={() => setPatternsFor(quote.ticker)}
             />
+          )}
+
+          {quote && !error && capabilities.data && (
+            <SecSection ticker={quote.ticker} capabilities={capabilities.data} />
           )}
 
           {quote &&

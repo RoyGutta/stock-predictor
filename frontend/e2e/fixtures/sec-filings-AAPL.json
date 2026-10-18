@@ -1,0 +1,118 @@
+{
+ "source": "U.S. Securities and Exchange Commission (EDGAR)",
+ "retrieved_at": "2026-10-18T16:52:00+00:00",
+ "stale": false,
+ "stale_reason": null,
+ "company": {
+  "cik": 320193,
+  "cik_padded": "0000320193",
+  "name": "Apple Inc.",
+  "tickers": [
+   "AAPL"
+  ],
+  "edgar_url": "https://www.sec.gov/edgar/browse/?CIK=320193",
+  "entity_type": "operating",
+  "fiscal_year_end": "0926",
+  "industry": "Electronic Computers"
+ },
+ "filings": [
+  {
+   "form": "8-K/A",
+   "base_form": "8-K",
+   "form_description": "Current report (material event)",
+   "amendment": true,
+   "filing_date": "2026-09-01",
+   "report_date": "2026-04-17",
+   "accession_number": "0001140361-26-035325",
+   "items": [
+    {
+     "code": "5.02",
+     "description": "Departure or appointment of directors or officers"
+    }
+   ],
+   "description": "8-K/A",
+   "document_url": "https://www.sec.gov/Archives/edgar/data/320193/000114036126035325/ef20081427_8ka.htm",
+   "index_url": "https://www.sec.gov/Archives/edgar/data/320193/000114036126035325/0001140361-26-035325-index.htm"
+  },
+  {
+   "form": "10-Q",
+   "base_form": "10-Q",
+   "form_description": "Quarterly report",
+   "amendment": false,
+   "filing_date": "2026-07-31",
+   "report_date": "2026-06-27",
+   "accession_number": "0000320193-26-000020",
+   "items": [],
+   "description": "10-Q",
+   "document_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019326000020/aapl-20260627.htm",
+   "index_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019326000020/0000320193-26-000020-index.htm"
+  },
+  {
+   "form": "8-K",
+   "base_form": "8-K",
+   "form_description": "Current report (material event)",
+   "amendment": false,
+   "filing_date": "2026-07-30",
+   "report_date": "2026-07-30",
+   "accession_number": "0000320193-26-000018",
+   "items": [
+    {
+     "code": "2.02",
+     "description": "Results of operations and financial condition"
+    },
+    {
+     "code": "9.01",
+     "description": "Financial statements and exhibits"
+    }
+   ],
+   "description": "8-K",
+   "document_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019326000018/aapl-20260730.htm",
+   "index_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019326000018/0000320193-26-000018-index.htm"
+  },
+  {
+   "form": "10-K",
+   "base_form": "10-K",
+   "form_description": "Annual report",
+   "amendment": false,
+   "filing_date": "2025-10-31",
+   "report_date": "2025-09-27",
+   "accession_number": "0000320193-25-000079",
+   "items": [],
+   "description": "10-K",
+   "document_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/aapl-20250927.htm",
+   "index_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/0000320193-25-000079-index.htm"
+  },
+  {
+   "form": "10-Q",
+   "base_form": "10-Q",
+   "form_description": "Quarterly report",
+   "amendment": false,
+   "filing_date": "2025-08-01",
+   "report_date": "2025-06-28",
+   "accession_number": "0000320193-25-000073",
+   "items": [],
+   "description": "10-Q",
+   "document_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000073/aapl-20250628.htm",
+   "index_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000073/0000320193-25-000073-index.htm"
+  },
+  {
+   "form": "8-K",
+   "base_form": "8-K",
+   "form_description": "Current report (material event)",
+   "amendment": false,
+   "filing_date": "2025-07-01",
+   "report_date": null,
+   "accession_number": "0000320193-25-000999",
+   "items": [
+    {
+     "code": "5.99",
+     "description": null
+    }
+   ],
+   "description": null,
+   "document_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000999/0000320193-25-000999-index.htm",
+   "index_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000999/0000320193-25-000999-index.htm"
+  }
+ ],
+ "coverage_note": "Shows reports from SEC's recent-filings index, which covers at least the last year. Older filings are on the company's EDGAR page."
+}

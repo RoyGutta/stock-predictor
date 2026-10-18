@@ -87,8 +87,10 @@ function App() {
 
         {demo && (
           <div className="app__demo" role="note">
-            <strong>Demo data.</strong> Synthetic dataset for demonstration, frozen at
-            2025-12-31. Not live market data and not any real security.
+            <strong>Demo prices.</strong> Every price on this site comes from a synthetic
+            dataset frozen at 2025-12-31: not live market data and not any real security&rsquo;s
+            history. SEC filings and reported financials, where shown, are real and labelled
+            as such.
           </div>
         )}
 
@@ -102,9 +104,9 @@ function App() {
           <p>
             Educational tool. Not investment advice.{" "}
             {demo
-              ? "Every figure on this site is computed from a synthetic demonstration dataset, not from market data,"
-              : "Market data may be delayed or incomplete,"}{" "}
-            and every figure shown describes the past — none of it predicts what happens next.
+              ? "Prices, and every statistic computed from them, come from a synthetic demonstration dataset rather than market data; SEC filings and reported financials are companies' actual reports."
+              : "Market data may be delayed or incomplete; SEC filings and reported financials are companies' own reports."}{" "}
+            Every figure shown describes the past — none of it predicts what happens next.
             Investing involves risk, including loss of principal.
           </p>
         </footer>

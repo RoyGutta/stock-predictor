@@ -26,6 +26,12 @@ import type {
   SectorPerformance,
   SimulationResponse,
 } from "../types/market";
+import type {
+  FilingsResponse,
+  FundamentalsPeriod,
+  FundamentalsResponse,
+  SecSearchResponse,
+} from "../types/sec";
 
 // Same-origin by default: production serves the API under /api on the same
 // host, and vite dev/preview proxy /api to the local backend (vite.config.ts).
@@ -261,4 +267,33 @@ export function fetchPatterns(
     `/api/v1/stocks/${encodeURIComponent(ticker)}/patterns?${query}`,
     signal,
   );
+}
+
+// --- SEC EDGAR -------------------------------------------------------------
+
+/** Recent 10-K, 10-Q, 8-K and equivalents for a ticker, CIK, or company name. */
+export function fetchSecFilings(query: string, signal?: AbortSignal): Promise<FilingsResponse> {
+  return request<FilingsResponse>(
+    `/api/v1/sec/company/${encodeURIComponent(query)}/filings?limit=12`,
+    signal,
+  );
+}
+
+/** Reported financial measures from SEC XBRL company facts. */
+export function fetchSecFundamentals(
+  query: string,
+  period: FundamentalsPeriod,
+  signal?: AbortSignal,
+): Promise<FundamentalsResponse> {
+  const params = new URLSearchParams({ period });
+  return request<FundamentalsResponse>(
+    `/api/v1/sec/company/${encodeURIComponent(query)}/fundamentals?${params}`,
+    signal,
+  );
+}
+
+/** SEC filers matching a ticker or company name, for choosing the right one. */
+export function searchSecCompanies(query: string, signal?: AbortSignal): Promise<SecSearchResponse> {
+  const params = new URLSearchParams({ q: query, limit: "8" });
+  return request<SecSearchResponse>(`/api/v1/sec/search?${params}`, signal);
 }
