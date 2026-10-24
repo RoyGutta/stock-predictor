@@ -189,6 +189,31 @@ export const GLOSSARY = {
       "worse one.",
   },
 
+  yieldCurve: {
+    term: "Yield curve",
+    short: "Treasury yields lined up from the shortest maturity to the longest.",
+    full:
+      "Each point is the yield the U.S. Treasury reads from its daily par yield curve for a " +
+      "fixed maturity, from 1 month to 30 years. Usually longer loans pay more, so the curve " +
+      "slopes upward. The values are end-of-day indicative rates published after the market " +
+      "closes, not live trades.",
+    limits:
+      "It shows what rates were on one business day. It does not forecast rates, the economy, " +
+      "or stock prices.",
+  },
+
+  yieldSpread: {
+    term: "Yield spread",
+    short: "A longer-maturity yield minus a shorter one, in percentage points.",
+    full:
+      "10-year minus 2-year subtracts the 2-year yield from the 10-year yield on the same day. " +
+      "A spread of 0.31 percentage points is 31 basis points (one basis point is one hundredth " +
+      "of a percentage point). Below zero, the curve is inverted on that measure.",
+    limits:
+      "Inversions have preceded several U.S. recessions, but the lag has varied widely and " +
+      "some inversions were not followed by one. It is a description, not a forecast.",
+  },
+
   currentDrawdown: {
     term: "Below its high now",
     short: "How far the last close sits under the highest close in this period.",

@@ -52,6 +52,7 @@ function respond(route: Route): Promise<void> {
 
   const simple: Record<string, string> = {
     "/api/v1/market/capabilities": "capabilities",
+    "/api/v1/market/treasury/yield-curve": "treasury",
     "/api/v1/market/status": "status",
     "/api/v1/market/movers": "movers",
     "/api/v1/market/sectors": "sectors",
@@ -93,6 +94,21 @@ async function noHorizontalOverflow(page: Page): Promise<void> {
   );
   expect(overflow, "the page must never scroll sideways").toBe(false);
 }
+
+test("dashboard shows official Treasury yields with their own date and source", async ({
+  page,
+}) => {
+  await page.goto("/#/dashboard");
+  const panel = page.locator("section", {
+    has: page.getByRole("heading", { name: "U.S. Treasury yields" }),
+  });
+  await expect(panel.getByText(/Latest published observation: Fri, Oct 23, 2026/)).toBeVisible();
+  await expect(panel.getByText(/not live transaction prices/)).toBeVisible();
+  await expect(panel.getByRole("img", { name: /Treasury par yield curve/ })).toBeVisible();
+  await expect(panel.getByRole("table", { name: /Treasury par yields by maturity/ })).toBeVisible();
+  await expect(panel.getByText(/Upward sloping/)).toBeVisible();
+  await noHorizontalOverflow(page);
+});
 
 test("dashboard orients a first-time visitor", async ({ page }) => {
   await page.goto("/#/dashboard");

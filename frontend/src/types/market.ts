@@ -346,6 +346,8 @@ export interface Capabilities {
   price_freshness?: string;
   /** SEC filings and reported financials are enabled on this server. */
   sec_filings?: boolean;
+  /** The official U.S. Treasury yield curve is available. */
+  treasury?: boolean;
 }
 
 // --- backtesting -----------------------------------------------------------

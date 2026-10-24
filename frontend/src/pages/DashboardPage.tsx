@@ -4,10 +4,14 @@ import { Button, Card } from "../components/ui";
 import { ToolGuide } from "../features/education/ToolGuide";
 import { CapabilityNotice, MoversPanel, SectorsPanel } from "../features/market/MarketPanels";
 import { SearchBox } from "../features/search/SearchBox";
+import { useSecResource } from "../features/sec/useSec";
+import { TreasuryPanel } from "../features/treasury/TreasuryPanel";
 import { WatchlistPanel } from "../features/watchlist/WatchlistPanel";
 import { useWatchlist } from "../features/watchlist/useWatchlist";
 import { useWatchlistQuotes } from "../features/watchlist/useWatchlistQuotes";
 import { Link } from "../app/router";
+import { fetchYieldCurve } from "../lib/api";
+import type { YieldCurveResponse } from "../types/treasury";
 import { useNavigate } from "../app/routes";
 import {
   useCapabilities,
@@ -31,6 +35,11 @@ export function DashboardPage() {
   const canShowSectors = capabilities.data?.sectors ?? false;
 
   const movers = useMovers(canShowMovers);
+  // Treasury data needs no configuration, so it loads once capabilities confirm it.
+  const yieldCurve = useSecResource<YieldCurveResponse>(
+    capabilities.data?.treasury ? "treasury" : null,
+    (signal) => fetchYieldCurve(signal),
+  );
   const sectors = useSectors(canShowSectors);
 
   const watchlist = useWatchlist();
@@ -85,6 +94,14 @@ export function DashboardPage() {
           </Card>
 
           <ToolGuide />
+
+          {capabilities.data?.treasury && (
+            <TreasuryPanel
+              data={yieldCurve.data}
+              loading={yieldCurve.loading}
+              error={yieldCurve.error}
+            />
+          )}
 
           {canShowMovers ? (
             <MoversPanel

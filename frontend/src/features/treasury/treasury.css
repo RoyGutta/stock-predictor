@@ -1,0 +1,150 @@
+/* U.S. Treasury yields. Tokens only; both themes are first-class. */
+
+.ust-loading {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.ust-source,
+.ust-note,
+.ust-shape,
+.ust-legend {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  max-width: 80ch;
+  text-wrap: pretty;
+}
+
+.ust-source {
+  margin-bottom: var(--space-3);
+}
+
+.ust-source a {
+  color: var(--accent);
+}
+
+.ust-note {
+  margin-top: var(--space-3);
+  font-size: var(--text-xs);
+}
+
+.ust-shape {
+  margin: var(--space-3) 0;
+}
+
+.ust-shape strong {
+  color: var(--text);
+}
+
+.ust-spreads {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: var(--space-4);
+  margin: var(--space-4) 0;
+}
+
+.ust-chart {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.ust-chart__grid {
+  stroke: var(--grid);
+  stroke-width: 1;
+}
+
+.ust-chart__zero {
+  stroke: var(--border-strong);
+  stroke-width: 1.5;
+}
+
+.ust-chart__tick {
+  fill: var(--text-muted);
+  font-size: 11px;
+  font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums;
+}
+
+.ust-chart__line {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+}
+
+.ust-chart__line--prior {
+  stroke: var(--text-subtle);
+  stroke-dasharray: 5 4;
+  stroke-width: 1.5;
+}
+
+.ust-chart__line--second {
+  stroke: var(--text-muted);
+  stroke-dasharray: 2 3;
+}
+
+.ust-chart__dot {
+  fill: var(--accent);
+}
+
+.ust-legend {
+  font-size: var(--text-xs);
+  margin-bottom: var(--space-3);
+}
+
+.ust-legend__solid,
+.ust-legend__dashed {
+  display: inline-block;
+  width: 1.5rem;
+  vertical-align: middle;
+  border-top: 2px solid var(--accent);
+}
+
+.ust-legend__dashed {
+  border-top: 2px dashed var(--text-subtle);
+}
+
+.ust-table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.ust-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.ust-table th,
+.ust-table td {
+  padding: var(--space-2) var(--space-3);
+  border-top: var(--border-width) solid var(--border);
+  text-align: right;
+}
+
+.ust-table th:first-child {
+  text-align: left;
+}
+
+.ust-table thead th {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.ust-subtitle {
+  font-size: var(--text-base);
+  margin: var(--space-5) 0 var(--space-2);
+}
+
+.ust-history {
+  margin: 0;
+}
+
+@media (max-width: 560px) {
+  .ust-table th,
+  .ust-table td {
+    padding: var(--space-2);
+  }
+}

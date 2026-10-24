@@ -42,6 +42,8 @@ import { SearchBox } from "../features/search/SearchBox";
 import { FilingsPanel } from "../features/sec/FilingsPanel";
 import { FundamentalsPanel } from "../features/sec/FundamentalsPanel";
 import { FILINGS, FUNDAMENTALS } from "./secFixtures";
+import { TreasuryPanel } from "../features/treasury/TreasuryPanel";
+import { TREASURY } from "./treasuryFixture";
 import type {
   BacktestResponse,
   CorrelationResponse,
@@ -244,6 +246,12 @@ describe("accessibility", () => {
     await expectNoViolations(<FilingsPanel state={ready} query="AAPL" onChooseCompany={noop} />);
     const missing = { data: null, loading: false, error: "No SEC filer matching 'VOO'.", status: 404 };
     await expectNoViolations(<FilingsPanel state={missing} query="VOO" onChooseCompany={noop} />);
+  });
+
+  it("treasury panel has no violations", async () => {
+    await expectNoViolations(
+      <TreasuryPanel data={TREASURY} loading={false} error={null} />,
+    );
   });
 
   it("reported financials panel has no violations", async () => {

@@ -89,8 +89,8 @@ function App() {
           <div className="app__demo" role="note">
             <strong>Demo prices.</strong> Every price on this site comes from a synthetic
             dataset frozen at 2025-12-31: not live market data and not any real security&rsquo;s
-            history. SEC filings and reported financials, where shown, are real and labelled
-            as such.
+            history. Treasury yields and SEC filings, where shown, are real official data and
+            labelled as such.
           </div>
         )}
 
@@ -104,8 +104,8 @@ function App() {
           <p>
             Educational tool. Not investment advice.{" "}
             {demo
-              ? "Prices, and every statistic computed from them, come from a synthetic demonstration dataset rather than market data; SEC filings and reported financials are companies' actual reports."
-              : "Market data may be delayed or incomplete; SEC filings and reported financials are companies' own reports."}{" "}
+              ? "Prices, and every statistic computed from them, come from a synthetic demonstration dataset rather than market data; Treasury yields are official U.S. Treasury data, and SEC filings and reported financials are companies' actual reports."
+              : "Market data may be delayed or incomplete; Treasury yields are official U.S. Treasury data, and SEC filings and reported financials are companies' own reports."}{" "}
             Every figure shown describes the past — none of it predicts what happens next.
             Investing involves risk, including loss of principal.
           </p>

@@ -76,10 +76,12 @@ export function ToolGuide() {
           bias.
         </p>
         <p>
-          <strong>Where the numbers come from.</strong> Public market-data providers
-          supply the prices, news, and company data. Quotes can be delayed and carry
-          their own timestamp; every statistic states its window and sample size,
-          and anything missing is shown as missing -- never as zero.
+          <strong>Where the numbers come from.</strong> Each panel names its source.
+          Prices come from the configured price source, which on the public demo is a
+          synthetic dataset, labelled on every page. Treasury yields come from the U.S.
+          Treasury and company filings from the SEC, each with its own observation or
+          filing date. Every statistic states its window and sample size, and anything
+          missing is shown as missing -- never as zero.
         </p>
       </div>
     </Card>

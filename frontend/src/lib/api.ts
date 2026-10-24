@@ -32,6 +32,7 @@ import type {
   FundamentalsResponse,
   SecSearchResponse,
 } from "../types/sec";
+import type { YieldCurveResponse } from "../types/treasury";
 
 // Same-origin by default: production serves the API under /api on the same
 // host, and vite dev/preview proxy /api to the local backend (vite.config.ts).
@@ -296,4 +297,11 @@ export function fetchSecFundamentals(
 export function searchSecCompanies(query: string, signal?: AbortSignal): Promise<SecSearchResponse> {
   const params = new URLSearchParams({ q: query, limit: "8" });
   return request<SecSearchResponse>(`/api/v1/sec/search?${params}`, signal);
+}
+
+// --- U.S. Treasury -----------------------------------------------------------
+
+/** Official par yield curve with spreads and one-month changes. */
+export function fetchYieldCurve(signal?: AbortSignal): Promise<YieldCurveResponse> {
+  return request<YieldCurveResponse>("/api/v1/market/treasury/yield-curve", signal);
 }

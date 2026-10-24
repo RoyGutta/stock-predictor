@@ -48,7 +48,7 @@ describe("App demo disclosure", () => {
     expect(note).toHaveTextContent(/not live market data/i);
     // The synthetic disclosure covers prices only: SEC reports shown alongside
     // them are real, and the banner must not imply otherwise.
-    expect(note).toHaveTextContent(/SEC filings and reported financials, where shown, are real/i);
+    expect(note).toHaveTextContent(/Treasury yields and SEC filings, where shown, are real/i);
     await waitFor(() =>
       expect(
         screen.getByText(/synthetic demonstration dataset rather than market data/i),

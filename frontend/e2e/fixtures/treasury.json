@@ -1,0 +1,949 @@
+{
+ "source": "U.S. Department of the Treasury, Daily Treasury Par Yield Curve Rates",
+ "source_url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve",
+ "methodology": "Par yields are read by Treasury from its daily par yield curve, which is based on closing market bid prices of the most recently auctioned Treasury securities in the over-the-counter market. They are end-of-day indicative rates, not live transaction prices, and are published after the market day; weekends and market holidays have no observation.",
+ "units": "percent (bond-equivalent yield); spreads in percentage points and basis points",
+ "retrieved_at": "2026-10-24T23:28:43+00:00",
+ "stale": false,
+ "stale_reason": null,
+ "observation_age_days": 1,
+ "upward_threshold_pp": 0.5,
+ "latest": {
+  "date": "2026-10-23",
+  "comparison_date": "2026-09-23",
+  "curve": [
+   {
+    "key": "BC_1MONTH",
+    "label": "1 Mo",
+    "months": 1.0,
+    "value": 4.11,
+    "prior_value": 3.99,
+    "change_pp": 0.12,
+    "change_bp": 12
+   },
+   {
+    "key": "BC_1_5MONTH",
+    "label": "1.5 Mo",
+    "months": 1.5,
+    "value": 4.11,
+    "prior_value": 4.07,
+    "change_pp": 0.04,
+    "change_bp": 4
+   },
+   {
+    "key": "BC_2MONTH",
+    "label": "2 Mo",
+    "months": 2.0,
+    "value": 4.16,
+    "prior_value": 4.1,
+    "change_pp": 0.06,
+    "change_bp": 6
+   },
+   {
+    "key": "BC_3MONTH",
+    "label": "3 Mo",
+    "months": 3.0,
+    "value": 4.22,
+    "prior_value": 4.19,
+    "change_pp": 0.03,
+    "change_bp": 3
+   },
+   {
+    "key": "BC_4MONTH",
+    "label": "4 Mo",
+    "months": 4.0,
+    "value": 4.3,
+    "prior_value": 4.3,
+    "change_pp": 0.0,
+    "change_bp": 0
+   },
+   {
+    "key": "BC_6MONTH",
+    "label": "6 Mo",
+    "months": 6.0,
+    "value": 4.3,
+    "prior_value": 4.31,
+    "change_pp": -0.01,
+    "change_bp": -1
+   },
+   {
+    "key": "BC_1YEAR",
+    "label": "1 Yr",
+    "months": 12.0,
+    "value": 4.44,
+    "prior_value": 4.49,
+    "change_pp": -0.05,
+    "change_bp": -5
+   },
+   {
+    "key": "BC_2YEAR",
+    "label": "2 Yr",
+    "months": 24.0,
+    "value": 4.69,
+    "prior_value": 4.85,
+    "change_pp": -0.16,
+    "change_bp": -16
+   },
+   {
+    "key": "BC_3YEAR",
+    "label": "3 Yr",
+    "months": 36.0,
+    "value": 4.75,
+    "prior_value": 4.97,
+    "change_pp": -0.22,
+    "change_bp": -22
+   },
+   {
+    "key": "BC_5YEAR",
+    "label": "5 Yr",
+    "months": 60.0,
+    "value": 4.82,
+    "prior_value": 4.99,
+    "change_pp": -0.17,
+    "change_bp": -17
+   },
+   {
+    "key": "BC_7YEAR",
+    "label": "7 Yr",
+    "months": 84.0,
+    "value": 4.89,
+    "prior_value": 5.05,
+    "change_pp": -0.16,
+    "change_bp": -16
+   },
+   {
+    "key": "BC_10YEAR",
+    "label": "10 Yr",
+    "months": 120.0,
+    "value": 5.0,
+    "prior_value": 5.11,
+    "change_pp": -0.11,
+    "change_bp": -11
+   },
+   {
+    "key": "BC_20YEAR",
+    "label": "20 Yr",
+    "months": 240.0,
+    "value": 5.37,
+    "prior_value": 5.45,
+    "change_pp": -0.08,
+    "change_bp": -8
+   },
+   {
+    "key": "BC_30YEAR",
+    "label": "30 Yr",
+    "months": 360.0,
+    "value": 5.33,
+    "prior_value": 5.4,
+    "change_pp": -0.07,
+    "change_bp": -7
+   }
+  ],
+  "spreads": [
+   {
+    "key": "10y_2y",
+    "label": "10-year minus 2-year",
+    "long": "BC_10YEAR",
+    "short": "BC_2YEAR",
+    "value_pp": 0.31,
+    "value_bp": 31,
+    "prior_value_pp": 0.26,
+    "change_pp": 0.05,
+    "change_bp": 5
+   },
+   {
+    "key": "10y_3m",
+    "label": "10-year minus 3-month",
+    "long": "BC_10YEAR",
+    "short": "BC_3MONTH",
+    "value_pp": 0.78,
+    "value_bp": 78,
+    "prior_value_pp": 0.92,
+    "change_pp": -0.14,
+    "change_bp": -14
+   }
+  ],
+  "shape": "upward",
+  "missing_core_maturities": []
+ },
+ "history": [
+  {
+   "date": "2026-09-01",
+   "yields": {
+    "BC_1MONTH": 3.85,
+    "BC_1_5MONTH": 3.88,
+    "BC_2MONTH": 3.89,
+    "BC_3MONTH": 3.92,
+    "BC_4MONTH": 3.97,
+    "BC_6MONTH": 4.0,
+    "BC_1YEAR": 4.18,
+    "BC_2YEAR": 4.39,
+    "BC_3YEAR": 4.46,
+    "BC_5YEAR": 4.55,
+    "BC_7YEAR": 4.66,
+    "BC_10YEAR": 4.79,
+    "BC_20YEAR": 5.27,
+    "BC_30YEAR": 5.27
+   },
+   "spread_10y_2y": 0.4,
+   "spread_10y_3m": 0.87
+  },
+  {
+   "date": "2026-09-02",
+   "yields": {
+    "BC_1MONTH": 3.83,
+    "BC_1_5MONTH": 3.87,
+    "BC_2MONTH": 3.89,
+    "BC_3MONTH": 3.92,
+    "BC_4MONTH": 4.02,
+    "BC_6MONTH": 4.0,
+    "BC_1YEAR": 4.16,
+    "BC_2YEAR": 4.39,
+    "BC_3YEAR": 4.45,
+    "BC_5YEAR": 4.54,
+    "BC_7YEAR": 4.66,
+    "BC_10YEAR": 4.79,
+    "BC_20YEAR": 5.27,
+    "BC_30YEAR": 5.27
+   },
+   "spread_10y_2y": 0.4,
+   "spread_10y_3m": 0.87
+  },
+  {
+   "date": "2026-09-03",
+   "yields": {
+    "BC_1MONTH": 3.83,
+    "BC_1_5MONTH": 3.82,
+    "BC_2MONTH": 3.91,
+    "BC_3MONTH": 3.89,
+    "BC_4MONTH": 3.99,
+    "BC_6MONTH": 3.95,
+    "BC_1YEAR": 4.11,
+    "BC_2YEAR": 4.34,
+    "BC_3YEAR": 4.41,
+    "BC_5YEAR": 4.52,
+    "BC_7YEAR": 4.63,
+    "BC_10YEAR": 4.77,
+    "BC_20YEAR": 5.25,
+    "BC_30YEAR": 5.25
+   },
+   "spread_10y_2y": 0.43,
+   "spread_10y_3m": 0.88
+  },
+  {
+   "date": "2026-09-04",
+   "yields": {
+    "BC_1MONTH": 3.79,
+    "BC_1_5MONTH": 3.83,
+    "BC_2MONTH": 3.9,
+    "BC_3MONTH": 3.91,
+    "BC_4MONTH": 4.0,
+    "BC_6MONTH": 3.98,
+    "BC_1YEAR": 4.13,
+    "BC_2YEAR": 4.37,
+    "BC_3YEAR": 4.45,
+    "BC_5YEAR": 4.54,
+    "BC_7YEAR": 4.65,
+    "BC_10YEAR": 4.78,
+    "BC_20YEAR": 5.25,
+    "BC_30YEAR": 5.24
+   },
+   "spread_10y_2y": 0.41,
+   "spread_10y_3m": 0.87
+  },
+  {
+   "date": "2026-09-08",
+   "yields": {
+    "BC_1MONTH": 3.81,
+    "BC_1_5MONTH": 3.88,
+    "BC_2MONTH": 3.91,
+    "BC_3MONTH": 3.94,
+    "BC_4MONTH": 4.02,
+    "BC_6MONTH": 4.0,
+    "BC_1YEAR": 4.15,
+    "BC_2YEAR": 4.39,
+    "BC_3YEAR": 4.44,
+    "BC_5YEAR": 4.57,
+    "BC_7YEAR": 4.68,
+    "BC_10YEAR": 4.8,
+    "BC_20YEAR": 5.26,
+    "BC_30YEAR": 5.25
+   },
+   "spread_10y_2y": 0.41,
+   "spread_10y_3m": 0.86
+  },
+  {
+   "date": "2026-09-09",
+   "yields": {
+    "BC_1MONTH": 3.81,
+    "BC_1_5MONTH": 3.88,
+    "BC_2MONTH": 3.93,
+    "BC_3MONTH": 3.95,
+    "BC_4MONTH": 4.06,
+    "BC_6MONTH": 4.01,
+    "BC_1YEAR": 4.17,
+    "BC_2YEAR": 4.43,
+    "BC_3YEAR": 4.49,
+    "BC_5YEAR": 4.61,
+    "BC_7YEAR": 4.71,
+    "BC_10YEAR": 4.83,
+    "BC_20YEAR": 5.28,
+    "BC_30YEAR": 5.28
+   },
+   "spread_10y_2y": 0.4,
+   "spread_10y_3m": 0.88
+  },
+  {
+   "date": "2026-09-10",
+   "yields": {
+    "BC_1MONTH": 3.91,
+    "BC_1_5MONTH": 3.93,
+    "BC_2MONTH": 4.01,
+    "BC_3MONTH": 4.0,
+    "BC_4MONTH": 4.11,
+    "BC_6MONTH": 4.07,
+    "BC_1YEAR": 4.28,
+    "BC_2YEAR": 4.56,
+    "BC_3YEAR": 4.63,
+    "BC_5YEAR": 4.75,
+    "BC_7YEAR": 4.84,
+    "BC_10YEAR": 4.95,
+    "BC_20YEAR": 5.39,
+    "BC_30YEAR": 5.37
+   },
+   "spread_10y_2y": 0.39,
+   "spread_10y_3m": 0.95
+  },
+  {
+   "date": "2026-09-11",
+   "yields": {
+    "BC_1MONTH": 3.93,
+    "BC_1_5MONTH": 3.99,
+    "BC_2MONTH": 4.05,
+    "BC_3MONTH": 4.07,
+    "BC_4MONTH": 4.15,
+    "BC_6MONTH": 4.12,
+    "BC_1YEAR": 4.35,
+    "BC_2YEAR": 4.63,
+    "BC_3YEAR": 4.69,
+    "BC_5YEAR": 4.78,
+    "BC_7YEAR": 4.87,
+    "BC_10YEAR": 4.96,
+    "BC_20YEAR": 5.38,
+    "BC_30YEAR": 5.35
+   },
+   "spread_10y_2y": 0.33,
+   "spread_10y_3m": 0.89
+  },
+  {
+   "date": "2026-09-14",
+   "yields": {
+    "BC_1MONTH": 3.94,
+    "BC_1_5MONTH": 4.0,
+    "BC_2MONTH": 4.06,
+    "BC_3MONTH": 4.11,
+    "BC_4MONTH": 4.18,
+    "BC_6MONTH": 4.18,
+    "BC_1YEAR": 4.37,
+    "BC_2YEAR": 4.65,
+    "BC_3YEAR": 4.73,
+    "BC_5YEAR": 4.8,
+    "BC_7YEAR": 4.88,
+    "BC_10YEAR": 4.97,
+    "BC_20YEAR": 5.37,
+    "BC_30YEAR": 5.34
+   },
+   "spread_10y_2y": 0.32,
+   "spread_10y_3m": 0.86
+  },
+  {
+   "date": "2026-09-15",
+   "yields": {
+    "BC_1MONTH": 3.93,
+    "BC_1_5MONTH": 4.0,
+    "BC_2MONTH": 4.06,
+    "BC_3MONTH": 4.11,
+    "BC_4MONTH": 4.19,
+    "BC_6MONTH": 4.17,
+    "BC_1YEAR": 4.39,
+    "BC_2YEAR": 4.67,
+    "BC_3YEAR": 4.76,
+    "BC_5YEAR": 4.83,
+    "BC_7YEAR": 4.91,
+    "BC_10YEAR": 5.0,
+    "BC_20YEAR": 5.4,
+    "BC_30YEAR": 5.36
+   },
+   "spread_10y_2y": 0.33,
+   "spread_10y_3m": 0.89
+  },
+  {
+   "date": "2026-09-16",
+   "yields": {
+    "BC_1MONTH": 3.96,
+    "BC_1_5MONTH": 4.0,
+    "BC_2MONTH": 4.07,
+    "BC_3MONTH": 4.14,
+    "BC_4MONTH": 4.24,
+    "BC_6MONTH": 4.22,
+    "BC_1YEAR": 4.45,
+    "BC_2YEAR": 4.74,
+    "BC_3YEAR": 4.82,
+    "BC_5YEAR": 4.86,
+    "BC_7YEAR": 4.94,
+    "BC_10YEAR": 5.01,
+    "BC_20YEAR": 5.39,
+    "BC_30YEAR": 5.35
+   },
+   "spread_10y_2y": 0.27,
+   "spread_10y_3m": 0.87
+  },
+  {
+   "date": "2026-09-17",
+   "yields": {
+    "BC_1MONTH": 3.97,
+    "BC_1_5MONTH": 3.98,
+    "BC_2MONTH": 4.09,
+    "BC_3MONTH": 4.12,
+    "BC_4MONTH": 4.23,
+    "BC_6MONTH": 4.2,
+    "BC_1YEAR": 4.4,
+    "BC_2YEAR": 4.67,
+    "BC_3YEAR": 4.75,
+    "BC_5YEAR": 4.78,
+    "BC_7YEAR": 4.86,
+    "BC_10YEAR": 4.94,
+    "BC_20YEAR": 5.32,
+    "BC_30YEAR": 5.29
+   },
+   "spread_10y_2y": 0.27,
+   "spread_10y_3m": 0.82
+  },
+  {
+   "date": "2026-09-18",
+   "yields": {
+    "BC_1MONTH": 3.97,
+    "BC_1_5MONTH": 3.98,
+    "BC_2MONTH": 4.1,
+    "BC_3MONTH": 4.14,
+    "BC_4MONTH": 4.24,
+    "BC_6MONTH": 4.24,
+    "BC_1YEAR": 4.44,
+    "BC_2YEAR": 4.76,
+    "BC_3YEAR": 4.83,
+    "BC_5YEAR": 4.86,
+    "BC_7YEAR": 4.93,
+    "BC_10YEAR": 5.01,
+    "BC_20YEAR": 5.38,
+    "BC_30YEAR": 5.34
+   },
+   "spread_10y_2y": 0.25,
+   "spread_10y_3m": 0.87
+  },
+  {
+   "date": "2026-09-21",
+   "yields": {
+    "BC_1MONTH": 3.96,
+    "BC_1_5MONTH": 4.02,
+    "BC_2MONTH": 4.1,
+    "BC_3MONTH": 4.17,
+    "BC_4MONTH": 4.26,
+    "BC_6MONTH": 4.27,
+    "BC_1YEAR": 4.45,
+    "BC_2YEAR": 4.76,
+    "BC_3YEAR": 4.82,
+    "BC_5YEAR": 4.83,
+    "BC_7YEAR": 4.89,
+    "BC_10YEAR": 4.96,
+    "BC_20YEAR": 5.33,
+    "BC_30YEAR": 5.29
+   },
+   "spread_10y_2y": 0.2,
+   "spread_10y_3m": 0.79
+  },
+  {
+   "date": "2026-09-22",
+   "yields": {
+    "BC_1MONTH": 3.97,
+    "BC_1_5MONTH": 4.04,
+    "BC_2MONTH": 4.09,
+    "BC_3MONTH": 4.16,
+    "BC_4MONTH": 4.26,
+    "BC_6MONTH": 4.26,
+    "BC_1YEAR": 4.43,
+    "BC_2YEAR": 4.71,
+    "BC_3YEAR": 4.81,
+    "BC_5YEAR": 4.83,
+    "BC_7YEAR": 4.89,
+    "BC_10YEAR": 4.96,
+    "BC_20YEAR": 5.33,
+    "BC_30YEAR": 5.29
+   },
+   "spread_10y_2y": 0.25,
+   "spread_10y_3m": 0.8
+  },
+  {
+   "date": "2026-09-23",
+   "yields": {
+    "BC_1MONTH": 3.99,
+    "BC_1_5MONTH": 4.07,
+    "BC_2MONTH": 4.1,
+    "BC_3MONTH": 4.19,
+    "BC_4MONTH": 4.3,
+    "BC_6MONTH": 4.31,
+    "BC_1YEAR": 4.49,
+    "BC_2YEAR": 4.85,
+    "BC_3YEAR": 4.97,
+    "BC_5YEAR": 4.99,
+    "BC_7YEAR": 5.05,
+    "BC_10YEAR": 5.11,
+    "BC_20YEAR": 5.45,
+    "BC_30YEAR": 5.4
+   },
+   "spread_10y_2y": 0.26,
+   "spread_10y_3m": 0.92
+  },
+  {
+   "date": "2026-09-24",
+   "yields": {
+    "BC_1MONTH": 4.01,
+    "BC_1_5MONTH": 4.1,
+    "BC_2MONTH": 4.18,
+    "BC_3MONTH": 4.24,
+    "BC_4MONTH": 4.33,
+    "BC_6MONTH": 4.34,
+    "BC_1YEAR": 4.51,
+    "BC_2YEAR": 4.87,
+    "BC_3YEAR": 4.99,
+    "BC_5YEAR": 5.03,
+    "BC_7YEAR": 5.1,
+    "BC_10YEAR": 5.18,
+    "BC_20YEAR": 5.53,
+    "BC_30YEAR": 5.47
+   },
+   "spread_10y_2y": 0.31,
+   "spread_10y_3m": 0.94
+  },
+  {
+   "date": "2026-09-25",
+   "yields": {
+    "BC_1MONTH": 4.04,
+    "BC_1_5MONTH": 4.14,
+    "BC_2MONTH": 4.2,
+    "BC_3MONTH": 4.24,
+    "BC_4MONTH": 4.32,
+    "BC_6MONTH": 4.33,
+    "BC_1YEAR": 4.5,
+    "BC_2YEAR": 4.81,
+    "BC_3YEAR": 4.94,
+    "BC_5YEAR": 4.98,
+    "BC_7YEAR": 5.06,
+    "BC_10YEAR": 5.17,
+    "BC_20YEAR": 5.54,
+    "BC_30YEAR": 5.49
+   },
+   "spread_10y_2y": 0.36,
+   "spread_10y_3m": 0.93
+  },
+  {
+   "date": "2026-09-28",
+   "yields": {
+    "BC_1MONTH": 4.04,
+    "BC_1_5MONTH": 4.14,
+    "BC_2MONTH": 4.2,
+    "BC_3MONTH": 4.28,
+    "BC_4MONTH": 4.33,
+    "BC_6MONTH": 4.41,
+    "BC_1YEAR": 4.59,
+    "BC_2YEAR": 4.92,
+    "BC_3YEAR": 5.01,
+    "BC_5YEAR": 5.06,
+    "BC_7YEAR": 5.15,
+    "BC_10YEAR": 5.24,
+    "BC_20YEAR": 5.6,
+    "BC_30YEAR": 5.56
+   },
+   "spread_10y_2y": 0.32,
+   "spread_10y_3m": 0.96
+  },
+  {
+   "date": "2026-09-29",
+   "yields": {
+    "BC_1MONTH": 4.04,
+    "BC_1_5MONTH": 4.14,
+    "BC_2MONTH": 4.18,
+    "BC_3MONTH": 4.25,
+    "BC_4MONTH": 4.3,
+    "BC_6MONTH": 4.36,
+    "BC_1YEAR": 4.58,
+    "BC_2YEAR": 4.89,
+    "BC_3YEAR": 4.98,
+    "BC_5YEAR": 5.06,
+    "BC_7YEAR": 5.16,
+    "BC_10YEAR": 5.26,
+    "BC_20YEAR": 5.64,
+    "BC_30YEAR": 5.59
+   },
+   "spread_10y_2y": 0.37,
+   "spread_10y_3m": 1.01
+  },
+  {
+   "date": "2026-09-30",
+   "yields": {
+    "BC_1MONTH": 4.02,
+    "BC_1_5MONTH": 4.13,
+    "BC_2MONTH": 4.16,
+    "BC_3MONTH": 4.2,
+    "BC_4MONTH": 4.29,
+    "BC_6MONTH": 4.33,
+    "BC_1YEAR": 4.54,
+    "BC_2YEAR": 4.88,
+    "BC_3YEAR": 5.0,
+    "BC_5YEAR": 5.09,
+    "BC_7YEAR": 5.19,
+    "BC_10YEAR": 5.29,
+    "BC_20YEAR": 5.68,
+    "BC_30YEAR": 5.64
+   },
+   "spread_10y_2y": 0.41,
+   "spread_10y_3m": 1.09
+  },
+  {
+   "date": "2026-10-01",
+   "yields": {
+    "BC_1MONTH": 4.06,
+    "BC_1_5MONTH": 4.1,
+    "BC_2MONTH": 4.13,
+    "BC_3MONTH": 4.17,
+    "BC_4MONTH": 4.26,
+    "BC_6MONTH": 4.27,
+    "BC_1YEAR": 4.44,
+    "BC_2YEAR": 4.78,
+    "BC_3YEAR": 4.91,
+    "BC_5YEAR": 5.01,
+    "BC_7YEAR": 5.12,
+    "BC_10YEAR": 5.24,
+    "BC_20YEAR": 5.64,
+    "BC_30YEAR": 5.61
+   },
+   "spread_10y_2y": 0.46,
+   "spread_10y_3m": 1.07
+  },
+  {
+   "date": "2026-10-02",
+   "yields": {
+    "BC_1MONTH": 4.04,
+    "BC_1_5MONTH": 4.09,
+    "BC_2MONTH": 4.11,
+    "BC_3MONTH": 4.19,
+    "BC_4MONTH": 4.26,
+    "BC_6MONTH": 4.27,
+    "BC_1YEAR": 4.46,
+    "BC_2YEAR": 4.83,
+    "BC_3YEAR": 4.96,
+    "BC_5YEAR": 5.06,
+    "BC_7YEAR": 5.17,
+    "BC_10YEAR": 5.28,
+    "BC_20YEAR": 5.67,
+    "BC_30YEAR": 5.63
+   },
+   "spread_10y_2y": 0.45,
+   "spread_10y_3m": 1.09
+  },
+  {
+   "date": "2026-10-05",
+   "yields": {
+    "BC_1MONTH": 4.05,
+    "BC_1_5MONTH": 4.1,
+    "BC_2MONTH": 4.13,
+    "BC_3MONTH": 4.22,
+    "BC_4MONTH": 4.27,
+    "BC_6MONTH": 4.3,
+    "BC_1YEAR": 4.47,
+    "BC_2YEAR": 4.84,
+    "BC_3YEAR": 4.97,
+    "BC_5YEAR": 5.06,
+    "BC_7YEAR": 5.19,
+    "BC_10YEAR": 5.31,
+    "BC_20YEAR": 5.7,
+    "BC_30YEAR": 5.66
+   },
+   "spread_10y_2y": 0.47,
+   "spread_10y_3m": 1.09
+  },
+  {
+   "date": "2026-10-06",
+   "yields": {
+    "BC_1MONTH": 4.06,
+    "BC_1_5MONTH": 4.12,
+    "BC_2MONTH": 4.13,
+    "BC_3MONTH": 4.21,
+    "BC_4MONTH": 4.26,
+    "BC_6MONTH": 4.28,
+    "BC_1YEAR": 4.46,
+    "BC_2YEAR": 4.79,
+    "BC_3YEAR": 4.88,
+    "BC_5YEAR": 5.03,
+    "BC_7YEAR": 5.15,
+    "BC_10YEAR": 5.27,
+    "BC_20YEAR": 5.68,
+    "BC_30YEAR": 5.64
+   },
+   "spread_10y_2y": 0.48,
+   "spread_10y_3m": 1.06
+  },
+  {
+   "date": "2026-10-07",
+   "yields": {
+    "BC_1MONTH": 4.07,
+    "BC_1_5MONTH": 4.13,
+    "BC_2MONTH": 4.14,
+    "BC_3MONTH": 4.22,
+    "BC_4MONTH": 4.28,
+    "BC_6MONTH": 4.28,
+    "BC_1YEAR": 4.42,
+    "BC_2YEAR": 4.77,
+    "BC_3YEAR": 4.87,
+    "BC_5YEAR": 5.03,
+    "BC_7YEAR": 5.15,
+    "BC_10YEAR": 5.28,
+    "BC_20YEAR": 5.71,
+    "BC_30YEAR": 5.67
+   },
+   "spread_10y_2y": 0.51,
+   "spread_10y_3m": 1.06
+  },
+  {
+   "date": "2026-10-08",
+   "yields": {
+    "BC_1MONTH": 4.14,
+    "BC_1_5MONTH": 4.14,
+    "BC_2MONTH": 4.13,
+    "BC_3MONTH": 4.23,
+    "BC_4MONTH": 4.29,
+    "BC_6MONTH": 4.3,
+    "BC_1YEAR": 4.44,
+    "BC_2YEAR": 4.75,
+    "BC_3YEAR": 4.85,
+    "BC_5YEAR": 4.99,
+    "BC_7YEAR": 5.11,
+    "BC_10YEAR": 5.22,
+    "BC_20YEAR": 5.64,
+    "BC_30YEAR": 5.6
+   },
+   "spread_10y_2y": 0.47,
+   "spread_10y_3m": 0.99
+  },
+  {
+   "date": "2026-10-09",
+   "yields": {
+    "BC_1MONTH": 4.13,
+    "BC_1_5MONTH": 4.13,
+    "BC_2MONTH": 4.13,
+    "BC_3MONTH": 4.25,
+    "BC_4MONTH": 4.29,
+    "BC_6MONTH": 4.32,
+    "BC_1YEAR": 4.47,
+    "BC_2YEAR": 4.8,
+    "BC_3YEAR": 4.89,
+    "BC_5YEAR": 5.02,
+    "BC_7YEAR": 5.13,
+    "BC_10YEAR": 5.24,
+    "BC_20YEAR": 5.65,
+    "BC_30YEAR": 5.6
+   },
+   "spread_10y_2y": 0.44,
+   "spread_10y_3m": 0.99
+  },
+  {
+   "date": "2026-10-13",
+   "yields": {
+    "BC_1MONTH": 4.1,
+    "BC_1_5MONTH": 4.15,
+    "BC_2MONTH": 4.15,
+    "BC_3MONTH": 4.26,
+    "BC_4MONTH": 4.32,
+    "BC_6MONTH": 4.34,
+    "BC_1YEAR": 4.48,
+    "BC_2YEAR": 4.79,
+    "BC_3YEAR": 4.9,
+    "BC_5YEAR": 5.0,
+    "BC_7YEAR": 5.11,
+    "BC_10YEAR": 5.21,
+    "BC_20YEAR": 5.6,
+    "BC_30YEAR": 5.56
+   },
+   "spread_10y_2y": 0.42,
+   "spread_10y_3m": 0.95
+  },
+  {
+   "date": "2026-10-14",
+   "yields": {
+    "BC_1MONTH": 4.11,
+    "BC_1_5MONTH": 4.15,
+    "BC_2MONTH": 4.15,
+    "BC_3MONTH": 4.28,
+    "BC_4MONTH": 4.36,
+    "BC_6MONTH": 4.37,
+    "BC_1YEAR": 4.53,
+    "BC_2YEAR": 4.82,
+    "BC_3YEAR": 4.92,
+    "BC_5YEAR": 5.0,
+    "BC_7YEAR": 5.09,
+    "BC_10YEAR": 5.19,
+    "BC_20YEAR": 5.57,
+    "BC_30YEAR": 5.52
+   },
+   "spread_10y_2y": 0.37,
+   "spread_10y_3m": 0.91
+  },
+  {
+   "date": "2026-10-15",
+   "yields": {
+    "BC_1MONTH": 4.17,
+    "BC_1_5MONTH": 4.15,
+    "BC_2MONTH": 4.19,
+    "BC_3MONTH": 4.28,
+    "BC_4MONTH": 4.35,
+    "BC_6MONTH": 4.35,
+    "BC_1YEAR": 4.49,
+    "BC_2YEAR": 4.77,
+    "BC_3YEAR": 4.85,
+    "BC_5YEAR": 4.91,
+    "BC_7YEAR": 5.0,
+    "BC_10YEAR": 5.1,
+    "BC_20YEAR": 5.48,
+    "BC_30YEAR": 5.43
+   },
+   "spread_10y_2y": 0.33,
+   "spread_10y_3m": 0.82
+  },
+  {
+   "date": "2026-10-16",
+   "yields": {
+    "BC_1MONTH": 4.12,
+    "BC_1_5MONTH": 4.14,
+    "BC_2MONTH": 4.17,
+    "BC_3MONTH": 4.26,
+    "BC_4MONTH": 4.32,
+    "BC_6MONTH": 4.34,
+    "BC_1YEAR": 4.46,
+    "BC_2YEAR": 4.74,
+    "BC_3YEAR": 4.82,
+    "BC_5YEAR": 4.89,
+    "BC_7YEAR": 4.98,
+    "BC_10YEAR": 5.09,
+    "BC_20YEAR": 5.47,
+    "BC_30YEAR": 5.43
+   },
+   "spread_10y_2y": 0.35,
+   "spread_10y_3m": 0.83
+  },
+  {
+   "date": "2026-10-19",
+   "yields": {
+    "BC_1MONTH": 4.11,
+    "BC_1_5MONTH": 4.14,
+    "BC_2MONTH": 4.17,
+    "BC_3MONTH": 4.27,
+    "BC_4MONTH": 4.34,
+    "BC_6MONTH": 4.37,
+    "BC_1YEAR": 4.5,
+    "BC_2YEAR": 4.77,
+    "BC_3YEAR": 4.85,
+    "BC_5YEAR": 4.94,
+    "BC_7YEAR": 5.04,
+    "BC_10YEAR": 5.15,
+    "BC_20YEAR": 5.53,
+    "BC_30YEAR": 5.48
+   },
+   "spread_10y_2y": 0.38,
+   "spread_10y_3m": 0.88
+  },
+  {
+   "date": "2026-10-20",
+   "yields": {
+    "BC_1MONTH": 4.1,
+    "BC_1_5MONTH": 4.13,
+    "BC_2MONTH": 4.17,
+    "BC_3MONTH": 4.26,
+    "BC_4MONTH": 4.34,
+    "BC_6MONTH": 4.36,
+    "BC_1YEAR": 4.51,
+    "BC_2YEAR": 4.79,
+    "BC_3YEAR": 4.86,
+    "BC_5YEAR": 4.94,
+    "BC_7YEAR": 5.02,
+    "BC_10YEAR": 5.12,
+    "BC_20YEAR": 5.47,
+    "BC_30YEAR": 5.42
+   },
+   "spread_10y_2y": 0.33,
+   "spread_10y_3m": 0.86
+  },
+  {
+   "date": "2026-10-21",
+   "yields": {
+    "BC_1MONTH": 4.09,
+    "BC_1_5MONTH": 4.12,
+    "BC_2MONTH": 4.16,
+    "BC_3MONTH": 4.25,
+    "BC_4MONTH": 4.34,
+    "BC_6MONTH": 4.35,
+    "BC_1YEAR": 4.52,
+    "BC_2YEAR": 4.81,
+    "BC_3YEAR": 4.89,
+    "BC_5YEAR": 4.95,
+    "BC_7YEAR": 5.03,
+    "BC_10YEAR": 5.13,
+    "BC_20YEAR": 5.47,
+    "BC_30YEAR": 5.42
+   },
+   "spread_10y_2y": 0.32,
+   "spread_10y_3m": 0.88
+  },
+  {
+   "date": "2026-10-22",
+   "yields": {
+    "BC_1MONTH": 4.11,
+    "BC_1_5MONTH": 4.1,
+    "BC_2MONTH": 4.16,
+    "BC_3MONTH": 4.22,
+    "BC_4MONTH": 4.29,
+    "BC_6MONTH": 4.29,
+    "BC_1YEAR": 4.41,
+    "BC_2YEAR": 4.65,
+    "BC_3YEAR": 4.72,
+    "BC_5YEAR": 4.78,
+    "BC_7YEAR": 4.86,
+    "BC_10YEAR": 4.96,
+    "BC_20YEAR": 5.32,
+    "BC_30YEAR": 5.29
+   },
+   "spread_10y_2y": 0.31,
+   "spread_10y_3m": 0.74
+  },
+  {
+   "date": "2026-10-23",
+   "yields": {
+    "BC_1MONTH": 4.11,
+    "BC_1_5MONTH": 4.11,
+    "BC_2MONTH": 4.16,
+    "BC_3MONTH": 4.22,
+    "BC_4MONTH": 4.3,
+    "BC_6MONTH": 4.3,
+    "BC_1YEAR": 4.44,
+    "BC_2YEAR": 4.69,
+    "BC_3YEAR": 4.75,
+    "BC_5YEAR": 4.82,
+    "BC_7YEAR": 4.89,
+    "BC_10YEAR": 5.0,
+    "BC_20YEAR": 5.37,
+    "BC_30YEAR": 5.33
+   },
+   "spread_10y_2y": 0.31,
+   "spread_10y_3m": 0.78
+  }
+ ],
+ "notes": []
+}
