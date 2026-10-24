@@ -1,0 +1,224 @@
+/* Money Manager. Tokens only; both themes are first-class. */
+
+.money-tabs {
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.money-basis,
+.money-sub {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  max-width: 80ch;
+  text-wrap: pretty;
+}
+
+.money-sub {
+  display: block;
+  font-size: var(--text-xs);
+}
+
+.money-basis {
+  margin-top: var(--space-3);
+}
+
+.money-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: var(--space-4);
+}
+
+.money-steps {
+  display: grid;
+  gap: var(--space-3);
+  padding-left: var(--space-5);
+  margin-bottom: var(--space-4);
+  font-size: var(--text-sm);
+  max-width: 72ch;
+}
+
+.money-table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  margin-top: var(--space-4);
+}
+
+.money-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.money-table caption {
+  text-align: left;
+  font-weight: 600;
+  padding-bottom: var(--space-2);
+}
+
+.money-table th,
+.money-table td {
+  padding: var(--space-2) var(--space-3);
+  border-top: var(--border-width) solid var(--border);
+  text-align: right;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+
+.money-table th:first-child,
+.money-table td:nth-child(3) {
+  text-align: left;
+}
+
+.money-table thead th {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.money-negative {
+  color: var(--down);
+  font-weight: 600;
+}
+
+.money-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+}
+
+.money-item {
+  padding: var(--space-3) 0;
+  border-top: var(--border-width) solid var(--border);
+  display: grid;
+  gap: var(--space-2);
+}
+
+.money-item__head {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  align-items: flex-start;
+}
+
+.money-item__name {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.money-item__amount {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.money-tag {
+  display: inline-block;
+  margin-left: var(--space-2);
+  padding: 0 var(--space-2);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: 999px;
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.money-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.money-warn {
+  font-size: var(--text-sm);
+  color: var(--down);
+}
+
+.money-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: var(--space-3) var(--space-4);
+  align-items: end;
+}
+
+.money-form label,
+.money-filters label,
+.money-inline label {
+  display: grid;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.money-form input,
+.money-form select,
+.money-form textarea,
+.money-filters input,
+.money-filters select,
+.money-inline input,
+.money-inline select {
+  min-width: 0;
+  padding: var(--space-2) var(--space-3);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface-raised);
+  color: var(--text);
+  font: inherit;
+}
+
+.money-form textarea {
+  min-height: 4rem;
+  resize: vertical;
+}
+
+.money-form__wide {
+  grid-column: 1 / -1;
+}
+
+.money-form .money-check,
+.money-check {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  font-size: var(--text-sm);
+  color: var(--text);
+}
+
+.money-filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: var(--space-3);
+}
+
+.money-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: end;
+  margin: var(--space-2) 0;
+}
+
+.money-splits {
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3);
+}
+
+.money-splits legend {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  padding: 0 var(--space-1);
+}
+
+.money-details summary {
+  cursor: pointer;
+  font-size: var(--text-sm);
+  color: var(--accent);
+}
+
+.money-subtitle {
+  font-size: var(--text-base);
+  margin: var(--space-5) 0 var(--space-3);
+}

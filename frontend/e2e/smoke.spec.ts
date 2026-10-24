@@ -133,7 +133,7 @@ test("dashboard orients a first-time visitor", async ({ page }) => {
 test("every navigation destination is visible at this viewport", async ({ page }) => {
   await page.goto("/#/dashboard");
   const links = page.locator(".app__nav-link");
-  await expect(links).toHaveCount(6);
+  await expect(links).toHaveCount(7); // Dashboard, Analyze, Explore, Compare, Portfolio, Money, Learn
   const viewport = page.viewportSize()!.width;
   for (const link of await links.all()) {
     const box = await link.boundingBox();
@@ -280,6 +280,32 @@ test("SEC filings and reported financials carry their own source and link to sec
   await expect(reported.getByRole("region", { name: /Revenue: history and sources/ })).toBeVisible();
   await reported.getByRole("button", { name: "Quarterly" }).click();
   await expect(reported.getByText(/Quarterly figures are only those/)).toBeVisible();
+  await noHorizontalOverflow(page);
+});
+
+test("money manager keeps records in the browser and sends none of them anywhere", async ({
+  page,
+}) => {
+  const outbound: string[] = [];
+  page.on("request", (request) => {
+    outbound.push(`${request.url()} ${request.postData() ?? ""}`);
+  });
+  await page.goto("/#/money");
+  await expect(page.getByRole("heading", { name: "Money Manager" })).toBeVisible();
+  await page.getByRole("button", { name: "Add your first account" }).click();
+  await page.getByLabel("Name").fill("Marker-Checking-7731");
+  await page.getByLabel(/Balance or value/).fill("2500.00");
+  await page.getByRole("button", { name: "Save account" }).click();
+  await page.getByRole("button", { name: "Transactions" }).click();
+  await page.getByRole("button", { name: "Add transaction" }).click();
+  await page.getByLabel("Amount").fill("42.10");
+  await page.getByLabel("Description").fill("Marker-Groceries-7731");
+  await page.getByRole("button", { name: "Save transaction" }).click();
+  await expect(page.getByText("Marker-Groceries-7731")).toBeVisible();
+  await page.reload();
+  await page.getByRole("button", { name: "Overview" }).click();
+  await expect(page.getByText("$2,457.90").first()).toBeVisible();
+  expect(outbound.filter((r) => r.includes("7731") || r.includes("2457"))).toEqual([]);
   await noHorizontalOverflow(page);
 });
 

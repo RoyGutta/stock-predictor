@@ -7,6 +7,7 @@ import { ComparePage } from "./pages/ComparePage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { ExplorePage } from "./pages/ExplorePage";
 import { LearnPage } from "./pages/LearnPage";
+import { MoneyPage } from "./pages/MoneyPage";
 import { PortfolioPage } from "./pages/PortfolioPage";
 import { useCapabilities, useMarketStatus } from "./hooks/useMarketData";
 import { useTheme } from "./hooks/useTheme";
@@ -23,6 +24,7 @@ const NAV_ITEMS: { page: Page; label: string }[] = [
   { page: "explore", label: "Explore" },
   { page: "compare", label: "Compare" },
   { page: "portfolio", label: "Portfolio" },
+  { page: "money", label: "Money" },
   { page: "learn", label: "Learn" },
 ];
 
@@ -39,6 +41,8 @@ function CurrentPage() {
       return <LearnPage />;
     case "explore":
       return <ExplorePage />;
+    case "money":
+      return <MoneyPage />;
     default:
       return <DashboardPage />;
   }

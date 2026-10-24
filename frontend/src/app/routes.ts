@@ -15,6 +15,7 @@ export type Page =
   | "explore"
   | "compare"
   | "portfolio"
+  | "money"
   | "learn";
 
 export interface Route {
@@ -31,6 +32,7 @@ const PAGES: ReadonlySet<string> = new Set([
   "explore",
   "compare",
   "portfolio",
+  "money",
   "learn",
 ]);
 
