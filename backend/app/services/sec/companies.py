@@ -101,7 +101,7 @@ async def load_ticker_map() -> Fetched:
     )
 
 
-def _validated(query: str) -> str:
+def validate_query(query: str) -> str:
     text = query.strip()
     if not _QUERY.match(text):
         raise InvalidCompanyQuery()
@@ -110,7 +110,7 @@ def _validated(query: str) -> str:
 
 def search(mapping: TickerMap, query: str, limit: int = 10) -> list[Company]:
     """Candidates ranked: exact ticker, exact name, name prefix, name contains."""
-    text = _validated(query)
+    text = validate_query(query)
     ticker = normalize_ticker(text)
     target = normalize_name(text)
     ranked: list[tuple[int, str, Company]] = []
@@ -133,7 +133,7 @@ def search(mapping: TickerMap, query: str, limit: int = 10) -> list[Company]:
 
 def resolve(mapping: TickerMap, query: str) -> Company:
     """One filer for a ticker, CIK, or exact company name -- or a precise error."""
-    text = _validated(query)
+    text = validate_query(query)
 
     cik_match = _CIK.match(text.replace(" ", ""))
     # Short digit strings could be numeric tickers, so a bare number is read as

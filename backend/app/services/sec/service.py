@@ -21,7 +21,13 @@ from app.services.sec.client import (
     SecNotFound,
     get_sec_client,
 )
-from app.services.sec.companies import Company, load_ticker_map, resolve, search
+from app.services.sec.companies import (
+    Company,
+    load_ticker_map,
+    resolve,
+    search,
+    validate_query,
+)
 from app.services.sec.filings import reduce_submissions, select_filings
 
 SOURCE = "U.S. Securities and Exchange Commission (EDGAR)"
@@ -62,11 +68,15 @@ def company_out(company: Company, name: str | None = None) -> dict[str, Any]:
 
 
 async def _resolve(query: str) -> tuple[Company, Fetched]:
+    # Validate before any SEC access: a malformed query is the caller's error
+    # (400) whatever the server's configuration or SEC's availability.
+    validate_query(query)
     mapping = await load_ticker_map()
     return resolve(mapping.data, query), mapping
 
 
 async def search_companies(query: str, limit: int) -> dict[str, Any]:
+    validate_query(query)
     mapping = await load_ticker_map()
     matches = search(mapping.data, query, limit)
     return {

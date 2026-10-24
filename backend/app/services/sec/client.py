@@ -27,6 +27,7 @@ from collections import OrderedDict
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime
+from email.utils import parsedate_to_datetime
 from typing import Any
 
 import httpx
@@ -49,6 +50,26 @@ ARCHIVES_URL = "https://www.sec.gov/Archives/edgar/data"
 COMPANY_PAGE_URL = "https://www.sec.gov/edgar/browse/?CIK={cik}"
 
 _MAX_ENTRIES = 48
+# SEC: a client over the limit "may be limited for a brief period. Once the rate
+# of requests has dropped below the threshold for 10 minutes, the user may
+# resume." Without a Retry-After header, back off for that documented period.
+DEFAULT_BACKOFF_SECONDS = 600
+MAX_BACKOFF_SECONDS = 3_600
+
+
+def retry_after_seconds(value: str | None, now: float) -> float:
+    """Seconds to wait from a Retry-After header (delta or HTTP date), bounded."""
+    if value:
+        text = value.strip()
+        try:
+            seconds = float(text)
+        except ValueError:
+            try:
+                seconds = parsedate_to_datetime(text).timestamp() - now
+            except (TypeError, ValueError, IndexError):
+                seconds = DEFAULT_BACKOFF_SECONDS
+        return min(max(seconds, 1.0), MAX_BACKOFF_SECONDS)
+    return DEFAULT_BACKOFF_SECONDS
 
 
 class SecNotConfigured(ProviderError):
@@ -64,6 +85,17 @@ class SecNotConfigured(ProviderError):
 class SecNotFound(ProviderError):
     def __init__(self, message: str = "SEC has no record at that address.") -> None:
         super().__init__(message, status_code=404)
+
+
+class SecBackingOff(ProviderRateLimited):
+    """SEC asked this server to slow down; no request is sent until it may resume."""
+
+    def __init__(self, resume_at: float) -> None:
+        super().__init__(PROVIDER)
+        self.args = (
+            "SEC EDGAR asked this server to slow down. No request will be sent to SEC "
+            f"before {_iso(resume_at)}.",
+        )
 
 
 class SecRejected(ProviderError):
@@ -121,6 +153,8 @@ class SecClient:
         self._throttle_lock = asyncio.Lock()
         self._url_locks: dict[str, asyncio.Lock] = {}
         self._cache: OrderedDict[str, _Entry] = OrderedDict()
+        # Wall-clock time before which no request goes to SEC (Retry-After).
+        self._backoff_until = 0.0
         self.requests_made = 0  # observable by tests; never exposed by the API
 
     async def get(
@@ -150,7 +184,18 @@ class SecClient:
                     logger.warning("SEC request failed; serving cached copy of %s", url)
                     return Fetched(entry.data, _iso(entry.fetched_at), True, str(exc))
                 raise
+            finally:
+                self._prune_locks()
             return self._answer(entry)
+
+    def _prune_locks(self) -> None:
+        """Keep the per-URL lock table bounded: drop idle locks for uncached URLs."""
+        if len(self._url_locks) <= _MAX_ENTRIES * 2:
+            return
+        for url in list(self._url_locks):
+            lock = self._url_locks[url]
+            if url not in self._cache and not lock.locked():
+                del self._url_locks[url]
 
     @staticmethod
     def _answer(entry: _Entry) -> Fetched:
@@ -180,6 +225,8 @@ class SecClient:
             if entry.last_modified:
                 headers["If-Modified-Since"] = entry.last_modified
 
+        if self._clock() < self._backoff_until:
+            raise SecBackingOff(self._backoff_until)
         await self._throttle()
         self.requests_made += 1
         try:
@@ -206,9 +253,14 @@ class SecClient:
             negative = _Entry(None, now, now, not_found=True)
             self._store(url, negative)
             raise SecNotFound()
-        if status == 403:
-            raise SecRejected()
-        if status == 429:
+        if status in (403, 429):
+            # SEC answers both an over-limit client and an undeclared tool this
+            # way. Either way, hammering it again is the wrong response.
+            wait = retry_after_seconds(response.headers.get("retry-after"), now)
+            self._backoff_until = max(self._backoff_until, now + wait)
+            logger.warning("SEC returned HTTP %s; pausing SEC requests for %.0fs", status, wait)
+            if status == 403:
+                raise SecRejected()
             raise ProviderRateLimited(PROVIDER)
         if status >= 500:
             raise ProviderUnavailable(PROVIDER)

@@ -240,3 +240,16 @@ def test_sec_modules_never_import_a_price_provider() -> None:
         }
         forbidden = ("yfinance", "providers.yahoo", "providers.registry", "market_data")
         assert not any(word in name for name in imported for word in forbidden), path
+
+
+def test_invalid_query_is_a_client_error_even_when_sec_is_not_configured(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delenv("SEC_USER_AGENT", raising=False)
+    get_settings.cache_clear()
+    reset_sec_client()
+    client = TestClient(app)
+    assert client.get("/api/v1/sec/company/%3Cx%3E/filings").status_code == 400
+    assert client.get("/api/v1/sec/search?q=%3Cx%3E").status_code == 400
+    assert client.get("/api/v1/sec/company/AAPL/filings").status_code == 503
+    get_settings.cache_clear()

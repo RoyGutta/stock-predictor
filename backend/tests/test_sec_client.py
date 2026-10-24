@@ -238,3 +238,91 @@ def test_no_retries_one_failure_is_one_request():
 def test_request_rate_above_sec_limit_is_refused_at_startup():
     with pytest.raises(RuntimeError, match="10 requests per second"):
         replace(get_settings(), sec_max_requests_per_second=10).validate()
+
+
+# --- cycle 14: Retry-After, backoff, provenance of cache hits, bounded locks --------
+
+
+def test_retry_after_seconds_holds_every_request_until_it_expires():
+    clock = Clock()
+    state = {"limited": True}
+
+    def handler(_r):
+        if state["limited"]:
+            return httpx.Response(429, headers={"Retry-After": "120"})
+        return json_response({"v": 1})
+
+    recorder = Recorder({URL: handler})
+    client = make_client(recorder, clock=clock)
+    with pytest.raises(ProviderRateLimited):
+        run(client.get(URL, ttl=60))
+    state["limited"] = False
+    clock.now += 119
+    with pytest.raises(ProviderRateLimited, match="slow down"):
+        run(client.get(URL, ttl=60))
+    assert len(recorder.requests) == 1  # nothing sent during the pause
+    clock.now += 2
+    assert run(client.get(URL, ttl=60)).data == {"v": 1}
+    assert len(recorder.requests) == 2
+
+
+def test_retry_after_http_date_and_documented_default():
+    from app.services.sec.client import DEFAULT_BACKOFF_SECONDS, retry_after_seconds
+
+    now = 1_800_000_000.0  # 2027-01-15T08:00:00Z
+    assert retry_after_seconds("Fri, 15 Jan 2027 08:01:30 GMT", now) == pytest.approx(90)
+    assert retry_after_seconds(None, now) == DEFAULT_BACKOFF_SECONDS == 600
+    assert retry_after_seconds("garbage", now) == 600
+    assert retry_after_seconds("99999", now) == 3600  # bounded
+    assert retry_after_seconds("-5", now) == 1.0
+
+
+def test_backoff_serves_flagged_stale_copy_without_contacting_sec():
+    clock = Clock()
+    state = {"limited": False}
+
+    def handler(_r):
+        return httpx.Response(429) if state["limited"] else json_response({"v": 1})
+
+    recorder = Recorder({URL: handler})
+    client = make_client(recorder, clock=clock)
+    fresh = run(client.get(URL, ttl=60))
+    state["limited"] = True
+    clock.now += 61
+    first = run(client.get(URL, ttl=60))  # the 429 itself
+    clock.now += 61
+    second = run(client.get(URL, ttl=60))  # inside the 600 s default pause
+    assert first.stale and second.stale
+    assert second.retrieved_at == fresh.retrieved_at  # the real as-of time
+    assert len(recorder.requests) == 2
+
+
+def test_403_also_pauses_requests():
+    recorder = Recorder({URL: lambda _r: httpx.Response(403)})
+    client = make_client(recorder, clock=Clock())
+    with pytest.raises(SecRejected):
+        run(client.get(URL, ttl=60))
+    with pytest.raises(ProviderRateLimited):
+        run(client.get(URL, ttl=60))
+    assert len(recorder.requests) == 1
+
+
+def test_cache_hit_reports_when_sec_served_it_not_when_it_was_read():
+    clock = Clock()
+    client = make_client(Recorder({URL: lambda _r: json_response({"v": 1})}), clock=clock)
+    first = run(client.get(URL, ttl=600))
+    clock.now += 300
+    again = run(client.get(URL, ttl=600))
+    assert again.retrieved_at == first.retrieved_at and again.stale is False
+
+
+def test_per_url_lock_table_stays_bounded():
+    from app.services.sec.client import _MAX_ENTRIES
+
+    routes = {f"{URL}?n={i}": (lambda _r: httpx.Response(404)) for i in range(400)}
+    client = make_client(Recorder(routes), clock=Clock())
+    for i in range(400):
+        with pytest.raises(SecNotFound):
+            run(client.get(f"{URL}?n={i}", ttl=600))
+    assert len(client._url_locks) <= _MAX_ENTRIES * 2 + 1
+    assert len(client._cache) <= _MAX_ENTRIES
