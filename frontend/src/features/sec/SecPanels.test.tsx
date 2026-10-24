@@ -195,6 +195,32 @@ describe("FundamentalsPanel", () => {
     );
   });
 
+  it("gives empty cells an accessible explanation, not only a dash", () => {
+    renderPanel();
+    expect(
+      screen.getAllByText("Not reported for this period").length,
+    ).toBeGreaterThan(0);
+  });
+
+  it("names a period replaced by a later filing ending the same day", () => {
+    const conflict =
+      "Two periods end on 2025-09-27: 2024-09-29 to 2025-09-27 (10-K filed 2025-10-31) was replaced.";
+    const data = {
+      ...FUNDAMENTALS,
+      metrics: FUNDAMENTALS.metrics.map((m) =>
+        m.key === "revenue" ? { ...m, period_conflicts: [conflict] } : m,
+      ),
+    };
+    render(
+      <FundamentalsPanel
+        state={ready(data)}
+        period="annual"
+        onPeriodChange={vi.fn()}
+      />,
+    );
+    expect(screen.getByText(conflict)).toBeInTheDocument();
+  });
+
   it("switches between annual and quarterly", () => {
     const onPeriodChange = vi.fn();
     renderPanel(onPeriodChange);

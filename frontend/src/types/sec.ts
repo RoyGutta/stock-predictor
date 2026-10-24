@@ -90,6 +90,8 @@ export interface MetricSeries {
   points: FactPoint[];
   missing_reason: string | null;
   ignored_units: string[];
+  /** Periods replaced by a later-filed period ending the same day. */
+  period_conflicts?: string[];
 }
 
 export interface DerivedPoint {

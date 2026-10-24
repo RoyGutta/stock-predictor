@@ -237,12 +237,11 @@ function MeasureRow({
             const point = byEnd.get(end);
             if (!point) {
               return (
-                <td
-                  key={end}
-                  className="sec-table__cell"
-                  title="Not reported for this period"
-                >
-                  {EMPTY}
+                <td key={end} className="sec-table__cell">
+                  <span aria-hidden="true">{EMPTY}</span>
+                  <span className="visually-hidden">
+                    Not reported for this period
+                  </span>
                 </td>
               );
             }
@@ -279,6 +278,12 @@ function MeasureDetail({ row }: { row: Row }) {
         {row.definition}
         {"caveat" in row ? ` ${row.caveat}` : ""}
       </p>
+      {"period_conflicts" in row &&
+        (row.period_conflicts ?? []).map((conflict) => (
+          <p key={conflict} className="sec__note">
+            {conflict}
+          </p>
+        ))}
       {row.points.length === 0 ? (
         <p className="sec__empty">{row.missing_reason}</p>
       ) : (

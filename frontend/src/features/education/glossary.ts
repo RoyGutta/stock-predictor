@@ -189,6 +189,31 @@ export const GLOSSARY = {
       "worse one.",
   },
 
+  currentDrawdown: {
+    term: "Below its high now",
+    short: "How far the last close sits under the highest close in this period.",
+    full:
+      "If the highest close in the window was $120 and the latest is $90, it is 25% below " +
+      "its high. Zero means the latest close is the period's high.",
+    limits:
+      "Only highs inside the selected range count. A stock that peaked years earlier can show " +
+      "0% here while still far below its all-time high.",
+  },
+
+  timeBelowHigh: {
+    term: "Time below a high",
+    short: "How long prices stayed under a previous peak before regaining it.",
+    full:
+      "The longest run of consecutive closes below an earlier high, counted in bars (trading " +
+      "days, weeks, or months, matching the chart), from the peak to the first close back at " +
+      "or above it. A run still open when the period ends is shown with a plus sign: it " +
+      "lasted at least that long. The share of time below a high counts every close that " +
+      "sat under the highest close before it.",
+    limits:
+      "It counts bars, not calendar days, and sees only the selected range. It says how long " +
+      "past declines lasted, not how long any future one will.",
+  },
+
   valueAtRisk: {
     term: "Value at Risk (95%)",
     short: "On the worst 1 day in 20, losses were at least this large.",

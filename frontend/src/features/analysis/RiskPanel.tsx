@@ -99,6 +99,7 @@ export function RiskPanel({ risk }: { risk: RiskMetrics }) {
           <>
             <Stat
               label="Below its high now"
+              term="currentDrawdown"
               value={formatPercentPlain(risk.current_drawdown)}
               tone={
                 risk.current_drawdown != null && risk.current_drawdown < 0 ? "negative" : undefined
@@ -109,9 +110,15 @@ export function RiskPanel({ risk }: { risk: RiskMetrics }) {
                   : `High set ${risk.current_drawdown_peak_date ?? "in this period"}`
               }
             />
-            <Stat label="Longest time below a high" value={spell.value} note={spell.note} />
+            <Stat
+              label="Longest time below a high"
+              term="timeBelowHigh"
+              value={spell.value}
+              note={spell.note}
+            />
             <Stat
               label="Time spent below a high"
+              term="timeBelowHigh"
               value={formatPercentPlain(risk.time_underwater)}
               note="Share of this period's closes"
             />
