@@ -251,3 +251,15 @@ because XBRL tag names such as
 **Applies from now on:** for any new panel, render it once over realistic data
 at desktop and phone width before writing the final tests, and pin each defect
 found that way with a test.
+
+## L-14 · Validate the request before consulting configuration
+
+Production answered `/api/v1/sec/company/<x>/filings` with 503 "not enabled"
+instead of 400, because the SEC client checked its configuration before the
+service validated the query. The caller's error was reported as the server's.
+Found only by probing production with malformed input; no test sent a bad query
+to an unconfigured server.
+
+**Applies from now on:** input validation runs first, before any configuration,
+cache, or upstream step, and each route has a test with the feature disabled and
+a malformed input.

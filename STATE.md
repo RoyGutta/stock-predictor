@@ -1,6 +1,6 @@
 # State
 
-**Updated:** 2026-10-18 · **Commit:** see `git log` · **Cycle:** 13 (SEC filings and fundamentals; zero cost)
+**Updated:** 2026-10-24 · **Commit:** see `git log` · **Cycle:** 14 (production hardening and analytical validation)
 
 ## Objective
 
@@ -118,6 +118,14 @@ frontend/ React 19 + TS strict + Vite      backend/ FastAPI + Python 3.11+
 - **Price freshness disclosure** (cycle 13): each provider states what it does and
   does not guarantee; the quote says "may be delayed" rather than asserting a delay.
 
+- **Cycle 14 hardening**: `.claude-flow/`, `.swarm/`, `.hive-mind/` ignored (local
+  agent state; never in history). SEC client honours `Retry-After` and pauses after
+  429/403; per-URL lock table bounded. Malformed SEC queries are 400 even when SEC
+  is not configured. Fundamentals keep one value per period end (later filing wins,
+  replaced period named). Drawdown duration drops missing closes. Empty table cells
+  carry screen-reader text; two glossary terms define the duration statistics.
+  Adversarial and known-answer tests added (backend 666 to 684, frontend 266 to 268).
+
 **Baseline metrics:** `METRICS.json` (424 backend tests, 244 frontend unit, 22 browser
 smoke, 0 failing; npm audit 0 across all groups; Lighthouse a11y/best-practices/SEO
 100/100/100 on the production build).
@@ -179,8 +187,8 @@ standing manual step.
 ## Cold-start checklist for the next session
 
 ```bash
-cd backend && source .venv/bin/activate && ruff check . && pytest   # expect 666 passed
-cd frontend && npm run typecheck && npm run lint && npm test        # expect 266 passed
+cd backend && source .venv/bin/activate && ruff check . && pytest   # expect 684 passed
+cd frontend && npm run typecheck && npm run lint && npm test        # expect 268 passed
 cd frontend && npm run test:e2e                                      # expect 25 passed, 3 skipped
 ```
 Stop dev servers before running tests (T-5 — now also guarded by a 20s

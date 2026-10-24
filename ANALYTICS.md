@@ -92,7 +92,10 @@ price-level outputs scale linearly.
   the last close against the window's highest close; time underwater is the share
   of bars below the running peak. Highs are measured inside the window only.
   Pinned: recovery, open spell, latest-peak date, monotonic rise, share, scale
-  invariance, empty input.
+  invariance, empty input. Cycle 14 added known-answer series (a recovered and an
+  open spell of equal length: the earlier one is reported), recovery at exactly the
+  prior high, and missing closes, which are dropped rather than allowed to poison
+  the running peak. Durations count bars, not calendar days.
 
 ## 5. Backtest guarantees
 
@@ -186,9 +189,14 @@ Source: SEC XBRL company facts. Pure functions; every rule below is a test in
 | Revenue merges successive tags of one concept, by priority; every other metric uses one tag per series | Revenue's tag changed in 2018; cash with and without restricted cash is not one concept |
 | Year over year compares with the period ending 350-380 days earlier; percent withheld when the earlier value is zero or negative; a note when period lengths differ by more than 3 days | 53-week years and losses |
 | Missing measure: `points: []` plus a reason in words; never 0 | Hard constraint 13 |
+| One value per period end within a view: when two periods of the same kind end on the same day with different starts (a fiscal-calendar change), the later filing wins and the replaced one is named in `period_conflicts` (cycle 14) | One column per period end; previously the survivor was arbitrary |
 
 Derived (`analytics/fundamentals_derived.py`): gross, operating and net margin;
 free cash flow (operating cash flow minus capex); liabilities / assets. Computed
 only when both components cover the identical period and come from the same
-filing; both components are returned with each value. Ratio changes are given in
+filing; both components are returned with each value. Cycle 14 adversarial tests
+pin that a quarter is never paired with a year-to-date figure ending the same day,
+that a 365-day and a 366-day period ending together are not paired, that a
+component in a different unit blocks the ratio rather than being converted, and
+that a quarter is never compared year over year with an annual figure. Ratio changes are given in
 percentage points, never as a percent of a percent.

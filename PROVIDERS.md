@@ -594,6 +594,14 @@ Implementation: `backend/app/services/sec/` (client, lookup, filings, service) a
 spaced at `SEC_MAX_REQUESTS_PER_SECOND` (default 4, refused above 9), share one
 upstream call per URL, are cached after reduction to the fields used, are never
 retried, and fall back to a flagged stale copy for up to 7 days when SEC fails.
+After a 429 or 403 the client sends nothing to SEC until `Retry-After` has passed
+(seconds or HTTP date, bounded to an hour; 10 minutes when absent, matching SEC's
+documented block), serving the stale copy meanwhile. All of this is per process;
+see README, Known limitations.
+
+Live verification status (2026-10-24): not performed from the backend. No
+`SEC_USER_AGENT` is configured locally or on Vercel, and the code never sends a
+request without one. Response shapes were verified in a browser on 2026-10-18.
 No contact value is shipped; the operator supplies their own.
 
 Remaining limits: US GAAP tags only; recent-filings index only; spacing is

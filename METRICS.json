@@ -472,6 +472,42 @@
     "initial_js_bundle_bytes": 306720,
     "how": "cd frontend && npm run build"
    }
+  },
+  {
+   "date": "2026-10-24",
+   "commit": "see git log (cycle 14)",
+   "note": "Cycle 14. Hygiene, SEC client backoff, validation order, period-end conflicts, drawdown NaN handling, accessibility of empty cells.",
+   "reliability": {
+    "backend_tests_passing": 684,
+    "backend_tests_failing": 0,
+    "backend_tests_skipped": 0,
+    "frontend_unit_tests_passing": 268,
+    "frontend_unit_tests_failing": 0,
+    "browser_smoke_tests_listed": 28,
+    "browser_smoke_tests_passing": 25,
+    "browser_smoke_tests_skipped": 3,
+    "backend_lint_clean": true,
+    "frontend_lint_clean": true,
+    "typecheck_clean": true,
+    "production_build_passing": true,
+    "npm_audit_production_vulnerabilities": 0,
+    "how": "cd backend && ruff check . && pytest ; cd frontend && npm run typecheck && npm run lint && npx vitest run && npm run build && npm run test:e2e ; npm audit --omit=dev"
+   },
+   "lighthouse_local_preview_with_sec_panels": {
+    "desktop_light": {
+     "accessibility": 100,
+     "best_practices": 100,
+     "seo": 100
+    },
+    "mobile_390_dark": {
+     "accessibility": 100,
+     "best_practices": 100,
+     "seo": 100
+    },
+    "how": "chrome-devtools Lighthouse snapshot after SEC panels rendered; backend replaying recorded SEC data",
+    "not_production": "production SEC panels are disabled until SEC_USER_AGENT is set"
+   },
+   "sec_live_backend_verification": false
   }
  ]
 }

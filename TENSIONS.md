@@ -161,3 +161,9 @@ no request. Secondary: request spacing is per process, so many concurrent
 serverless instances could together exceed 10 requests/second. Acceptable at
 demo traffic with the default of 4/second; a shared limiter would be needed for
 more.
+
+Cycle 14 update: still open. Verified on 2026-10-24 that production returns 503
+with the configuration instructions for SEC routes, 400 for malformed queries
+(previously 503: configuration was checked before input), and never contacts SEC.
+The client now honours `Retry-After` and pauses after 429/403, but only within one
+process; cross-instance coordination remains unsolved within the free stack.

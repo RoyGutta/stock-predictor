@@ -51,7 +51,7 @@ product's central design decision, and the codebase enforces it with tests.
 | Compare | Two to six securities over the identical window and method, with a return-correlation matrix; no ranking |
 | Explore | Preference matching over a disclosed universe of 20 ETFs; every criterion shows the measurement behind it and funds that miss are shown, not hidden |
 | Market context | Biggest movers (sub-$5 issues flagged, not filtered), sector snapshot, company profile, headlines, symbol search, session status |
-| Learn | A 17-entry learning path drawn from a 30-term plain-English glossary; each entry ends with what the concept cannot tell you |
+| Learn | A 17-entry learning path drawn from a 32-term plain-English glossary; each entry ends with what the concept cannot tell you |
 
 ## What it deliberately does not do
 
@@ -364,9 +364,15 @@ provider whose terms permit public display is integrated and the conditions in
   cash flows are not derived by subtraction, so the quarterly view has gaps.
 - The filings list comes from SEC's recent-filings index (at least the last year);
   older filings are linked through the company's EDGAR page.
-- SEC request spacing is per process. On serverless hosting each warm instance
-  spaces its own requests; the default of 4 per second leaves room under SEC's
-  10 per second for a few concurrent instances, not for many.
+- SEC request coordination is per process. Within a process: one upstream call
+  per URL at a time, responses cached (filings 10 min, facts 1 h, ticker map 24 h,
+  at most 48 entries), requests spaced at 4 per second, no retries, and after a
+  429 or 403 no request at all until SEC's `Retry-After` passes (10 minutes when
+  SEC gives none) while a flagged stale copy is served. On serverless hosting each
+  warm instance does this independently; there is no shared limiter, so the
+  default leaves room under SEC's 10 per second for a few concurrent instances,
+  not for many. A shared limiter would need a store this free architecture does
+  not have.
 
 Open engineering questions are tracked in `TENSIONS.md`, current state in
 `STATE.md`, measured numbers in `METRICS.json`, and durable lessons in
