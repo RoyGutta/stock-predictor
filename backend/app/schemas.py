@@ -303,6 +303,10 @@ class CapabilityStatus(BaseModel):
         default="",
         description="What the price provider does and does not guarantee about freshness.",
     )
+    treasury: bool = Field(
+        default=False,
+        description="Official U.S. Treasury yield curve is available (needs no configuration).",
+    )
     sec_filings: bool = Field(
         default=False,
         description="SEC filings and reported financials are enabled (needs SEC_USER_AGENT).",

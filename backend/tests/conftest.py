@@ -23,6 +23,7 @@ from app.services.market import clear_cache
 from app.services.market_data import clear_caches
 from app.services.providers.registry import reset_price_provider
 from app.services.sec.client import reset_sec_client
+from app.services.treasury import reset_treasury_client
 
 
 @pytest.fixture(autouse=True)
@@ -35,3 +36,4 @@ def _isolate_global_state() -> None:
     reset_price_provider()
     # The SEC client holds a response cache and rate-limit state.
     reset_sec_client()
+    reset_treasury_client()

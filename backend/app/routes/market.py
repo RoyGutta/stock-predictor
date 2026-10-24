@@ -15,7 +15,8 @@ from app.schemas import (
     SearchResult,
     SectorPerformance,
 )
-from app.services import market
+from app.schemas_treasury import YieldCurveResponse
+from app.services import market, treasury
 from app.services.market_data import MarketDataError, normalize_ticker
 from app.services.providers.base import Capability, ProviderError
 from app.services.providers.registry import get_price_provider
@@ -85,6 +86,7 @@ async def read_capabilities() -> CapabilityStatus:
         "adjustment": provider.adjustment.value,
         "price_freshness": getattr(provider, "freshness", ""),
         "sec_filings": settings.has_sec_user_agent,
+        "treasury": True,
     }
     if not settings.has_sec_user_agent:
         notes["sec_filings"] = (
@@ -144,6 +146,26 @@ async def read_capabilities() -> CapabilityStatus:
         notes=notes,
         **price_fields,
     )
+
+
+@router.get(
+    "/treasury/yield-curve",
+    response_model=YieldCurveResponse,
+    summary="Official U.S. Treasury par yield curve, spreads, and one-month changes",
+    responses={
+        429: {"model": ErrorResponse, "description": "Treasury asked this server to slow down"},
+        502: {"model": ErrorResponse, "description": "Treasury unreachable or response invalid"},
+    },
+)
+async def read_yield_curve(
+    history_days: int = Query(default=92, ge=30, le=92, description="Days of history"),
+) -> YieldCurveResponse:
+    """Real data in every deployment, including the public demo: Treasury's
+    statistics are U.S. government works, shown with attribution."""
+    try:
+        return YieldCurveResponse(**await treasury.get_yield_curve(history_days))
+    except ProviderError as exc:
+        raise _handle(exc) from exc
 
 
 @router.get(
