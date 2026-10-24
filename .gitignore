@@ -83,3 +83,11 @@ Thumbs.db
 
 # Playwright MCP scratch output
 .playwright-mcp/
+
+# ---------------------------------------------------------------------------
+# Local agent tooling state (policy ledgers, swarm/memory databases).
+# Machine-local; never part of the published project.
+# ---------------------------------------------------------------------------
+.claude-flow/
+.swarm/
+.hive-mind/
