@@ -215,3 +215,22 @@ percentage points, never as a percent of a percent.
 
 Descriptive only: no forecast, no link to the synthetic stock prices, and the UI
 states that inversions have not always been followed by recessions.
+
+## 13. Money Manager ledger (`frontend/src/features/money/ledger.ts`, cycle 15)
+
+Pure TypeScript, run in the browser. Every rule is in `ledger.test.ts`.
+
+| Rule | Detail |
+|---|---|
+| Units | Integer cents throughout; no floating-point money |
+| Sign | Natural balances: assets = held, liabilities = owed, both normally >= 0. Transaction amounts positive; `valuation` carries a signed change |
+| Opening balance | Balance at the start of `opening_date`; never income. Transactions dated earlier count in income/spending reports but not in the balance, and are flagged |
+| Income / spending | Income = `income`. Spending = `expense` + interest portion of debt payments - `refund`. Transfers and valuations are neither |
+| Transfers | Conserve net worth (200 random cases pinned). A payment to a debt may carry `interest_cents`: only principal reduces the debt; interest is spending |
+| Cards | A card purchase is spending once, when charged; paying the card is a transfer |
+| Pending | Excluded from balances and flows until settled; counted and shown |
+| Currency | Only USD enters totals; other currencies listed as excluded |
+| Months | Complete calendar months only; months before the earliest account start are not shown (not zeros) |
+| Ratios | Debts / assets (null without assets); recorded minimum payments / average monthly income over the last 3 complete months with activity (debts without a minimum are named as excluded); liquid funds / average monthly spending. Null, never 0, when inputs are missing |
+| Payoff | Monthly: interest = round(balance x APR / 12), then payment. Infeasible when the payment does not exceed the first month's interest. No APR or payment means no estimate. Known answer: $10,000 at 6% clears in 120 payments of $111.03 |
+| Reconciliation | Statement balance minus recorded balance on a date |

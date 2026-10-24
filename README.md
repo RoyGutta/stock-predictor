@@ -39,6 +39,7 @@ product's central design decision, and the codebase enforces it with tests.
 | Area | Summary |
 |---|---|
 | Price history | OHLCV history over eight ranges, from one day of 5-minute bars to full monthly history, with CSV export. Locally from yfinance; synthetic in the public demo |
+| Money Manager | A private, local-first ledger: cash, bank, investment, property, and debt accounts with opening balances; income, expenses, refunds, transfers (debt payments split into principal and interest), and value changes; categories and splits; net worth, liquid funds, monthly income and spending, savings rate, months of spending covered, debt ratios, and payoff estimates per debt; statement reconciliation; encrypted backup and restore; CSV export (formula-safe) and import with preview and duplicate detection. Stored only in the browser; never sent to the server |
 | Treasury yields | The official U.S. Treasury par yield curve (1 month to 30 years) for the latest published business day, the 10-year minus 2-year and 10-year minus 3-month spreads in points and basis points, one-month changes against a real published day, the curve's shape under a stated definition, and about three months of spread history. Real data on the public site |
 | SEC filings | A company's recent 10-K, 10-Q, 8-K and foreign-issuer equivalents from SEC EDGAR, with filing date, period, amendment flag, 8-K items, and a link to the original on sec.gov |
 | Reported financials | Revenue, gross profit, operating income, net income, basic and diluted EPS, cash, total assets and liabilities, operating cash flow and capex from SEC XBRL company facts, annual or quarterly, with year-over-year change and the filing behind every value; margins, free cash flow and liabilities/assets computed only from same-period, same-filing lines |
@@ -351,6 +352,20 @@ regardless of project variables, so enabling SEC cannot switch prices to yfinanc
 provider whose terms permit public display is integrated and the conditions in
 `PROVIDERS.md` section 6 are confirmed in writing.
 
+## Money Manager privacy model
+
+Everything entered on the Money page stays in the browser's localStorage on that
+device and browser profile. No request carries it: a browser test records every
+request while entering and reloading data and asserts none contains it, and a
+unit test fails if the page calls `fetch`. There are no accounts, bank logins,
+aggregators, analytics, or AI services involved. Clearing site data, a private
+window, or another browser or device means the data is not there; the encrypted
+backup (AES-256-GCM, key from the user's passphrase via PBKDF2-SHA-256 with
+600,000 iterations, header authenticated) is the only way to keep or move it, and
+a lost passphrase cannot be recovered. Unreadable stored data is set aside, not
+deleted; data written by a newer version is never overwritten; a restore keeps the
+previous data for one undo; delete-all requires typing DELETE.
+
 ## Known limitations
 
 - The stock screener requires a paid data plan and is not implemented.
@@ -366,6 +381,12 @@ provider whose terms permit public display is integrated and the conditions in
   cash flows are not derived by subtraction, so the quarterly view has gaps.
 - The filings list comes from SEC's recent-filings index (at least the last year);
   older filings are linked through the company's EDGAR page.
+- Money Manager: localStorage holds roughly 5 MB (on the order of 20,000
+  transactions); only USD accounts enter totals and currencies are not converted;
+  it does not value holdings from market prices, and the public site has none to
+  offer (prices there are synthetic). Payoff estimates use monthly APR / 12
+  accrual. Budgets, goals, recurring items, forecasts, and debt-strategy
+  comparison are not built yet (STATE.md, roadmap).
 - SEC request coordination is per process. Within a process: one upstream call
   per URL at a time, responses cached (filings 10 min, facts 1 h, ticker map 24 h,
   at most 48 entries), requests spaced at 4 per second, no retries, and after a

@@ -263,3 +263,14 @@ to an unconfigured server.
 **Applies from now on:** input validation runs first, before any configuration,
 cache, or upstream step, and each route has a test with the feature disabled and
 a malformed input.
+
+## L-15 · "No activity" and "not tracked" are different facts
+
+The first Money Manager overview listed the six previous months, showing $0.00
+income and spending for months before any account existed. Every number was
+arithmetically correct and the table still misstated the user's history:
+untracked is missing data, and missing data is not zero (hard constraint 13).
+Found by rendering seeded data in a browser, as L-13 recommends.
+
+**Applies from now on:** any time series built from user records starts at the
+point records begin; earlier periods are omitted with a sentence saying why.

@@ -508,6 +508,51 @@
     "not_production": "production SEC panels are disabled until SEC_USER_AGENT is set"
    },
    "sec_live_backend_verification": false
+  },
+  {
+   "date": "2026-10-24",
+   "commit": "see git log (cycle 15)",
+   "note": "Cycle 15. Treasury yield curve (live-verified), Money Manager core.",
+   "reliability": {
+    "backend_tests_passing": 734,
+    "backend_tests_failing": 0,
+    "frontend_unit_tests_passing": 374,
+    "frontend_unit_tests_failing": 0,
+    "frontend_test_files": 26,
+    "browser_smoke_tests_listed": 32,
+    "browser_smoke_tests_passing": 29,
+    "browser_smoke_tests_skipped": 3,
+    "backend_lint_clean": true,
+    "frontend_lint_clean": true,
+    "typecheck_clean": true,
+    "production_build_passing": true,
+    "npm_audit_production_vulnerabilities": 0,
+    "how": "cd backend && ruff check . && pytest ; cd frontend && npm run typecheck && npm run lint && npx vitest run && npm run build && npm run test:e2e ; npm audit --omit=dev"
+   },
+   "treasury_live_check": {
+    "date": "2026-10-24",
+    "requests": 4,
+    "latest_observation": "2026-10-23",
+    "spread_10y_2y_bp": 31,
+    "spread_10y_3m_bp": 78,
+    "history_days": 65
+   },
+   "lighthouse_snapshot_mobile_390_dark": {
+    "dashboard_with_live_treasury": {
+     "accessibility": 100,
+     "best_practices": 100,
+     "seo": 100
+    },
+    "money_with_seeded_records": {
+     "accessibility": 100,
+     "best_practices": 100,
+     "seo": 100
+    }
+   },
+   "performance": {
+    "initial_js_bundle_bytes": 372700,
+    "how": "cd frontend && npm run build"
+   }
   }
  ]
 }

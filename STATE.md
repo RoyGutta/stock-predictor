@@ -133,6 +133,13 @@ frontend/ React 19 + TS strict + Vite      backend/ FastAPI + Python 3.11+
   source / observation date / retrieval time / stale flag shown separately.
   `PROVIDERS.md` section 10, `ANALYTICS.md` section 12. Live-verified 2026-10-24.
 
+- **Money Manager core** (cycle 15): new Money page. Local-first ledger in the
+  browser only (accounts and debts, five transaction kinds, splits, pending,
+  categories), net worth and cash-flow figures, ratios with stated bases, debt
+  payoff estimates, reconciliation, AES-GCM encrypted backup/restore with undo,
+  formula-safe CSV export, CSV import with preview and duplicates, quarantine of
+  unreadable data, newer-version protection, delete-all. `ANALYTICS.md` section 13.
+
 **Baseline metrics:** `METRICS.json` (424 backend tests, 244 frontend unit, 22 browser
 smoke, 0 failing; npm audit 0 across all groups; Lighthouse a11y/best-practices/SEO
 100/100/100 on the production build).
@@ -177,6 +184,39 @@ domain public and preview URLs behind Vercel Authentication.
 T-1 and T-6 are **resolved**. T-5 is resolved by a config change rather than a
 standing manual step.
 
+## Roadmap from the cycle 15 briefs (not yet built, in order)
+
+The cycle 15 briefs asked for far more than one cycle (one arrived truncated).
+Built: Treasury yields, Money Manager core. Remaining, each to be delivered
+complete with tests rather than as placeholders:
+
+1. **Budgets and recurring items**: monthly category limits, actual vs budget,
+   projected month-end, recurring rules, subscription *candidates* (never
+   declared), unusual-change notices with evidence.
+2. **Goals and forecasts**: targets, required contribution, completion date at a
+   chosen contribution (no assumed return), conflicts between goals and cash flow;
+   30/90/365-day projected balances separating confirmed from estimated items.
+3. **Debt strategies and affordability**: avalanche vs snowball vs custom on the
+   user's own debts with minimum-payment feasibility and liquidity checks; a
+   current-vs-proposed scenario for a purchase or recurring commitment.
+4. **Investing workspace on real data**: holdings entered with manual, dated
+   valuations (no synthetic prices on real holdings); allocation and
+   concentration; an SEC-fundamentals screener with peer groups by SIC code,
+   explicit missing-data handling, and links to filings. Needs SEC_USER_AGENT
+   set. Price-dependent metrics stay unavailable without a licensed price source.
+5. **Action list**: transparent rules over the user's own data (shortfall, high-
+   interest debt, reserve, concentration, missing inputs), each with reason,
+   supporting figures, estimated impact where defensible, trade-offs, and a
+   simulation link; completed/dismissed/deferred stored locally.
+6. **Assistant ("Finley")**: requirements arrived truncated. Any version must run
+   without Roy's Claude credentials or any paid AI service and must keep personal
+   data in the browser; a deterministic, rule-based explainer over the action
+   list is the candidate. Needs the full requirements.
+
+Legal note for items 4-5: individualized securities recommendations delivered as
+a service raise investment-adviser registration questions; qualified legal review
+is required before shipping anything beyond education and research candidates.
+
 ## Next highest-value actions (unblocked, in order)
 
 1. **Your action (price data, unchanged from cycle 12):** choose the applying entity and send `PROVIDERS.md` §8.3
@@ -194,9 +234,9 @@ standing manual step.
 ## Cold-start checklist for the next session
 
 ```bash
-cd backend && source .venv/bin/activate && ruff check . && pytest   # expect 684 passed
-cd frontend && npm run typecheck && npm run lint && npm test        # expect 268 passed
-cd frontend && npm run test:e2e                                      # expect 25 passed, 3 skipped
+cd backend && source .venv/bin/activate && ruff check . && pytest   # expect 734 passed
+cd frontend && npm run typecheck && npm run lint && npm test        # expect 374 passed
+cd frontend && npm run test:e2e                                      # expect 29 passed, 3 skipped
 ```
 Stop dev servers before running tests (T-5 — now also guarded by a 20s
 `testTimeout`, so a missed step produces a slow run rather than a false red).

@@ -167,3 +167,12 @@ with the configuration instructions for SEC routes, 400 for malformed queries
 (previously 503: configuration was checked before input), and never contacts SEC.
 The client now honours `Retry-After` and pauses after 429/403, but only within one
 process; cross-instance coordination remains unsolved within the free stack.
+
+## T-10 — Personal finance data lives only in one browser (OPEN, by design)
+
+The Money Manager stores records in localStorage so that nothing personal ever
+reaches a server. Consequences, stated in the UI: about 5 MB of capacity, data
+lost if site data is cleared, no sync across devices, and the encrypted backup as
+the only copy mechanism. IndexedDB would raise capacity; optional end-to-end
+encrypted sync would need a design that keeps the server blind and a free host.
+Neither is justified until real usage shows the limits matter.
