@@ -420,3 +420,32 @@ def test_underwater_depends_only_on_shape_not_scale() -> None:
 def test_underwater_handles_an_empty_series() -> None:
     out = underwater(pd.Series([], dtype=float))
     assert out.longest_bars == 0 and np.isnan(out.current_drawdown)
+
+
+def test_underwater_known_answer_with_a_recovered_and_an_open_spell() -> None:
+    # Spell A: days 2-3 below 100, back at 100 on day 4 (2 bars, recovered).
+    # Spell B: days 6-7 below 120, never regained (2 bars, open). Ties keep the first.
+    out = underwater(_dated([100, 80, 90, 100, 120, 60, 70]))
+    assert (out.longest_bars, out.longest_recovered) == (2, True)
+    assert (out.longest_start, out.longest_end) == ("2025-01-01", "2025-01-04")
+    assert out.current_drawdown == pytest.approx(70 / 120 - 1)
+    assert out.current_peak_date == "2025-01-05"
+    assert out.time_underwater == pytest.approx(4 / 7)
+
+
+def test_underwater_open_spell_longer_than_any_recovered_one_wins() -> None:
+    out = underwater(_dated([10, 9, 10, 12, 11, 10, 9]))
+    assert out.longest_bars == 3 and out.longest_recovered is False
+    assert out.longest_start == "2025-01-04" and out.longest_end is None
+
+
+def test_underwater_ignores_missing_closes() -> None:
+    out = underwater(_dated([10, float("nan"), 8, 10]))
+    assert out.longest_bars == 1 and out.longest_recovered is True
+    assert out.time_underwater == pytest.approx(1 / 3)
+    assert out.current_drawdown == 0.0
+
+
+def test_regaining_the_exact_high_counts_as_recovery() -> None:
+    out = underwater(_dated([10, 9, 10]))
+    assert out.longest_recovered is True and out.longest_end == "2025-01-03"

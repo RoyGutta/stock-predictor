@@ -317,7 +317,7 @@ def build_series(
                 "yoy": None,
             }
         )
-    points.sort(key=lambda p: (p["period_end"], p["period_start"] or ""))
+    points, conflicts = _one_point_per_end(points)
     attach_yoy(points, cross_tag=spec.merge_tags)
     shown = points[-SERIES_LIMIT[period]:]
 
@@ -333,7 +333,34 @@ def build_series(
             None if shown else _missing_reason(tags, spec, period, ignored_units, excluded)
         ),
         "ignored_units": ignored_units,
+        "period_conflicts": conflicts,
     }
+
+
+def _one_point_per_end(points: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], list[str]]:
+    """One value per period end within a view; the most recently filed wins.
+
+    Two periods of the same kind ending on the same day but starting on different
+    days (a fiscal-calendar change, a re-presented 53-week year) cannot both be
+    shown in one column. The superseded one is named rather than silently lost.
+    """
+    by_end: dict[str, list[dict[str, Any]]] = {}
+    for point in points:
+        by_end.setdefault(point["period_end"], []).append(point)
+    kept: list[dict[str, Any]] = []
+    conflicts: list[str] = []
+    for end, group in by_end.items():
+        group.sort(key=lambda p: (p["filed"], p["accession_number"]))
+        winner = group[-1]
+        kept.append(winner)
+        for loser in group[:-1]:
+            conflicts.append(
+                f"Two periods end on {end}: {loser['period_start']} to {end} "
+                f"({loser['form']} filed {loser['filed']}) was replaced by "
+                f"{winner['period_start']} to {end} ({winner['form']} filed {winner['filed']})."
+            )
+    kept.sort(key=lambda p: p["period_end"])
+    return kept, conflicts
 
 
 def _missing_reason(

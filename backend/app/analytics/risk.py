@@ -239,6 +239,9 @@ def underwater(prices: pd.Series) -> Underwater:
     The running peak only sees the window: a security that peaked before the
     window began is measured from the window's own high. Callers state that.
     """
+    # A missing close is not a close: drop it rather than let one NaN poison the
+    # running peak. Spells count the bars that remain, not calendar days.
+    prices = prices.dropna()
     if prices.empty:
         return Underwater(float("nan"), None, 0, None, None, None, float("nan"))
     values = prices.to_numpy(dtype=float)

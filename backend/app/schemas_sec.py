@@ -107,6 +107,10 @@ class MetricSeries(BaseModel):
     points: list[FactPoint]
     missing_reason: str | None = Field(description="Why there are no points. Never zero-filled.")
     ignored_units: list[str]
+    period_conflicts: list[str] = Field(
+        default_factory=list,
+        description="Periods sharing an end date with a later-filed period, which replaced them.",
+    )
 
 
 class DerivedPoint(BaseModel):

@@ -342,3 +342,71 @@ def test_ratio_change_is_in_points_without_a_percent_of_a_percent():
     yoy = out["points"][1]["yoy"]
     assert yoy["change"] == pytest.approx(0.3)
     assert yoy["change_pct"] is None and yoy["note"] is None
+
+
+# --- cycle 14: adversarial period, unit, and filing compatibility -------------------
+
+
+def test_quarterly_margin_never_pairs_a_quarter_with_a_year_to_date_figure():
+    rev = [fact("2025-04-01", "2025-06-30", 100.0, "q", "10-Q", "2025-08-01")]
+    gp = [fact("2025-01-01", "2025-06-30", 90.0, "q", "10-Q", "2025-08-01")]  # six months
+    out = _derived({"Revenues": {"USD": rev}, "GrossProfit": {"USD": gp}}, "gross_margin",
+                   "quarterly")
+    assert out["points"] == []
+    assert "gross profit" in out["missing_reason"]
+
+
+def test_margin_needs_matching_units_not_conversion():
+    rev = [fact("2024-01-01", "2024-12-31", 100.0, "k", "10-K", "2025-02-01")]
+    gp = [fact("2024-01-01", "2024-12-31", 40.0, "k", "10-K", "2025-02-01")]
+    out = _derived({"Revenues": {"USD": rev}, "GrossProfit": {"EUR": gp}}, "gross_margin")
+    assert out["points"] == [] and "gross profit" in out["missing_reason"]
+
+
+def test_margin_pairs_only_identical_start_and_end_dates():
+    rev = [fact("2024-01-01", "2024-12-31", 100.0, "k", "10-K", "2025-02-01")]
+    gp = [fact("2023-12-31", "2024-12-31", 40.0, "k", "10-K", "2025-02-01")]  # 366 days
+    out = _derived({"Revenues": {"USD": rev}, "GrossProfit": {"USD": gp}}, "gross_margin")
+    assert out["points"] == []
+
+
+def test_quarterly_free_cash_flow_absent_when_cash_flows_are_year_to_date_only():
+    ocf = [fact("2025-01-01", "2025-06-30", 50.0, "q", "10-Q", "2025-08-01")]
+    capex = [fact("2025-01-01", "2025-06-30", 10.0, "q", "10-Q", "2025-08-01")]
+    out = _derived({"NetCashProvidedByUsedInOperatingActivities": {"USD": ocf},
+                    "PaymentsToAcquirePropertyPlantAndEquipment": {"USD": capex}},
+                   "free_cash_flow", "quarterly")
+    assert out["points"] == [] and "Needs" in out["missing_reason"]
+
+
+def test_quarter_is_never_compared_with_an_annual_figure():
+    rows = [
+        fact("2024-01-01", "2024-12-31", 400.0, "k", "10-K", "2025-02-01"),
+        fact("2025-10-01", "2025-12-31", 110.0, "q", "10-K", "2026-02-01"),
+    ]
+    quarterly = series({"NetIncomeLoss": {"USD": rows}}, "net_income", "quarterly")["points"]
+    assert [p["value"] for p in quarterly] == [110.0] and quarterly[0]["yoy"] is None
+
+
+def test_two_periods_ending_the_same_day_keep_the_later_filing_and_say_so():
+    rows = [
+        fact("2023-01-01", "2023-12-31", 50.0, "a", "10-K", "2024-02-01"),
+        fact("2022-12-25", "2023-12-31", 52.0, "b", "10-K", "2025-02-01"),  # 371 days
+    ]
+    out = series({"NetIncomeLoss": {"USD": rows}}, "net_income")
+    assert [p["value"] for p in out["points"]] == [52.0]
+    assert len(out["period_conflicts"]) == 1
+    assert "2023-01-01 to 2023-12-31" in out["period_conflicts"][0]
+
+
+def test_revision_keeps_provenance_of_the_selected_value():
+    rows = [
+        fact("2024-01-01", "2024-12-31", 100.0, "0000000001-25-000001", "10-K", "2025-02-01"),
+        fact("2024-01-01", "2024-12-31", 95.0, "0000000001-26-000001", "10-K", "2026-02-01"),
+    ]
+    point = series({"NetIncomeLoss": {"USD": rows}}, "net_income")["points"][0]
+    assert point["value"] == 95.0 and point["first_reported_value"] == 100.0
+    assert point["accession_number"] == "0000000001-26-000001"
+    assert point["filed"] == "2026-02-01" and point["filing_url"].endswith(
+        "000000000126000001/0000000001-26-000001-index.htm"
+    )
