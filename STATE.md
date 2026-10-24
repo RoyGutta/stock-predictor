@@ -1,6 +1,6 @@
 # State
 
-**Updated:** 2026-10-24 · **Commit:** see `git log` · **Cycle:** 14 (production hardening and analytical validation)
+**Updated:** 2026-10-24 · **Commit:** see `git log` · **Cycle:** 15 (Treasury yields; Money Manager core)
 
 ## Objective
 
@@ -125,6 +125,13 @@ frontend/ React 19 + TS strict + Vite      backend/ FastAPI + Python 3.11+
   replaced period named). Drawdown duration drops missing closes. Empty table cells
   carry screen-reader text; two glossary terms define the duration statistics.
   Adversarial and known-answer tests added (backend 666 to 684, frontend 266 to 268).
+
+- **Treasury yields** (cycle 15): official U.S. Treasury par yield curve on the
+  Dashboard, real data in the public demo. Latest published curve, 10y-2y and
+  10y-3m spreads (points and bp), one-month changes against a real published day,
+  shape under a stated definition, ~3 months of spread history, exact-values table,
+  source / observation date / retrieval time / stale flag shown separately.
+  `PROVIDERS.md` section 10, `ANALYTICS.md` section 12. Live-verified 2026-10-24.
 
 **Baseline metrics:** `METRICS.json` (424 backend tests, 244 frontend unit, 22 browser
 smoke, 0 failing; npm audit 0 across all groups; Lighthouse a11y/best-practices/SEO

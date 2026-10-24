@@ -39,6 +39,7 @@ product's central design decision, and the codebase enforces it with tests.
 | Area | Summary |
 |---|---|
 | Price history | OHLCV history over eight ranges, from one day of 5-minute bars to full monthly history, with CSV export. Locally from yfinance; synthetic in the public demo |
+| Treasury yields | The official U.S. Treasury par yield curve (1 month to 30 years) for the latest published business day, the 10-year minus 2-year and 10-year minus 3-month spreads in points and basis points, one-month changes against a real published day, the curve's shape under a stated definition, and about three months of spread history. Real data on the public site |
 | SEC filings | A company's recent 10-K, 10-Q, 8-K and foreign-issuer equivalents from SEC EDGAR, with filing date, period, amendment flag, 8-K items, and a link to the original on sec.gov |
 | Reported financials | Revenue, gross profit, operating income, net income, basic and diluted EPS, cash, total assets and liabilities, operating cash flow and capex from SEC XBRL company facts, annual or quarterly, with year-over-year change and the filing behind every value; margins, free cash flow and liabilities/assets computed only from same-period, same-filing lines |
 | Technical indicators | SMA, EMA, VWAP, RSI, MACD, Stochastic, ATR, Bollinger Bands, ADX (+DI/-DI), OBV, Ichimoku; all computed server-side and unit-tested against hand-computed values |
@@ -51,7 +52,7 @@ product's central design decision, and the codebase enforces it with tests.
 | Compare | Two to six securities over the identical window and method, with a return-correlation matrix; no ranking |
 | Explore | Preference matching over a disclosed universe of 20 ETFs; every criterion shows the measurement behind it and funds that miss are shown, not hidden |
 | Market context | Biggest movers (sub-$5 issues flagged, not filtered), sector snapshot, company profile, headlines, symbol search, session status |
-| Learn | A 17-entry learning path drawn from a 32-term plain-English glossary; each entry ends with what the concept cannot tell you |
+| Learn | A 17-entry learning path drawn from a 34-term plain-English glossary; each entry ends with what the concept cannot tell you |
 
 ## What it deliberately does not do
 
@@ -301,12 +302,13 @@ Venture tier.
 Nothing in the app is real-time and nothing claims to be. Every quote carries its
 own timestamp and every chart states its bar frequency.
 
-### Three kinds of data, labelled separately
+### Four kinds of data, labelled separately
 
 | Data | Where | Freshness | Public demo |
 |---|---|---|---|
 | Synthetic prices | `providers/demo.py`, dataset 2025.12.1 | Frozen at 2025-12-31 | Yes; every price on the public site |
 | Locally retrieved prices | `providers/yahoo.py` (yfinance) | Unofficial; the source states no delay or freshness guarantee, so the app says "may be delayed" and shows the time of the latest bar | Never; refused when `APP_ENV=production` |
+| Treasury par yields | `services/treasury.py`, home.treasury.gov XML feed | One observation per business day, published after the market day from closing bid prices; the panel shows the observation date and the retrieval time separately | Yes; U.S. government work, no reuse restriction found |
 | SEC filings and reported financials | `services/sec/`, data.sec.gov and sec.gov | SEC publishes filings within about a second and XBRL facts within about a minute of filing; the figures describe the reported periods, not today | Yes; SEC content may be redistributed |
 
 SEC EDGAR is the one real data source in the public build. SEC's website policy

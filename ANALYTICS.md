@@ -200,3 +200,18 @@ that a 365-day and a 366-day period ending together are not paired, that a
 component in a different unit blocks the ratio rather than being converted, and
 that a quarter is never compared year over year with an annual figure. Ratio changes are given in
 percentage points, never as a percent of a percent.
+
+## 12. Treasury yield curve (`analytics/yield_curve.py`, cycle 15)
+
+| Rule | Detail |
+|---|---|
+| Observation date | Treasury's `NEW_DATE`, a business day; shown apart from the retrieval time. Weekends and holidays are never filled in |
+| Missing | Absent element, `m:null="true"`, empty, or `N/A` is `None`. Unparseable or outside -5..30 percent is rejected, reported, and `None`. Never 0, never interpolated; chart lines break at gaps |
+| Duplicates | Same date twice: the higher Treasury record `Id` wins; reported |
+| Spreads | 10y-2y and 10y-3m = long minus short on the same day, rounded to 2 decimals (Treasury publishes 2); basis points = points x 100, rounded to whole bp |
+| One-month change | Latest observation against the last published day on or before latest - 30 calendar days, only if within 7 days of that target; otherwise no comparison |
+| Shape | From 10y-3m: below 0 inverted (standard definition); 0 to under 0.50 points comparatively flat; 0.50 and above upward sloping. The 0.50 boundary is this application's convention and is stated in the UI |
+| Incomplete curve | Any of 1M, 3M, 6M, 1Y, 2Y, 5Y, 10Y, 30Y missing is listed; the rest are shown |
+
+Descriptive only: no forecast, no link to the synthetic stock prices, and the UI
+states that inversions have not always been followed by recessions.

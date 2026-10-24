@@ -5,7 +5,8 @@ deployment (`TENSIONS.md` T-3). Written 2026-09-14 from the repository as it sta
 and from each provider's official pricing, terms, and documentation pages, fetched
 that day. Section 8 records the re-verification of 2026-10-08 and the decision
 status; where it disagrees with sections 3-7, section 8 is current. Section 9
-records SEC EDGAR, the free official source added in cycle 13. Nothing here
+records SEC EDGAR, the free official source added in cycle 13; section 10 the
+U.S. Treasury yield curve added in cycle 15. Nothing here
 is a legal opinion. Every licensing statement carries one
 of four labels:
 
@@ -606,3 +607,38 @@ No contact value is shipped; the operator supplies their own.
 
 Remaining limits: US GAAP tags only; recent-filings index only; spacing is
 per-process (see README, Known limitations).
+
+---
+
+## 10. U.S. Treasury par yield curve (2026-10-24)
+
+Integrated in cycle 15 at zero cost. Interest rates, not prices: kept outside
+the `PriceProvider` abstraction.
+
+Sources, read 2026-10-24:
+https://home.treasury.gov/treasury-daily-interest-rate-xml-feed ·
+https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve ·
+https://home.treasury.gov/developer-notice-xml-changes ·
+https://home.treasury.gov/subfooter/site-policies-and-notices
+
+| Question | Finding | Label |
+|---|---|---|
+| Access | XML feed, no key or account. `data=daily_treasury_yield_curve` with `field_tdr_date_value_month=YYYYMM` (also `=YYYY`, or `=all&page=N`) | C |
+| Schema | Atom feed of OData entries: `d:NEW_DATE` plus `d:BC_1MONTH` ... `d:BC_30YEAR` (14 maturities) as `Edm.Double` percent; `BC_30YEARDISPLAY` is a display copy | C (observed) |
+| Semantics | Constant-maturity par yields "interpolated by the Treasury from the daily par yield curve", based on "closing market bid prices on the most recently auctioned Treasury securities in the over-the-counter market"; bond-equivalent, actual/365-366; floored at zero | C |
+| Calendar | One entry per business day; Sept 2026 had 21 (Labor Day absent), Oct 1-23 had 16 (Oct 12 absent) | C (observed) |
+| Series breaks | 1.5-month from 2025-02-18, 4-month from 2022-10-19, 2-month from 2018-10-16; 20-year absent 1987-1993; method change 2021-12-06 (all values remain official) | C |
+| Validators / caching | No ETag, no Last-Modified; `Cache-Control: private, no-cache` (observed) | C (observed) |
+| Rate limit | None published | silence, treated conservatively |
+| Reuse | U.S. government works carry no U.S. copyright (17 U.S.C. 105); the site policy page lists no restriction on these statistics | S |
+
+Implementation: `app/analytics/yield_curve.py` (strict parser, metrics) and
+`app/services/treasury.py` (fetching). Four month requests per refresh, one at a
+time, at least 1 s apart; current month cached 1 h, closed months 24 h; one
+upstream call per month under concurrency; 2 MB response cap; DTD and entity
+declarations refused before parsing; 429/503 pause requests for Retry-After
+(5 min when absent); a flagged stale copy for up to 7 days. Per process only.
+
+Live verification (2026-10-24, from the backend, 4 requests): latest observation
+Fri 2026-10-23, comparison 2026-09-23, 10y-2y 0.31 points (31 bp), 10y-3m 0.78
+points (78 bp), shape upward, all 14 maturities present, 65 days of history.
