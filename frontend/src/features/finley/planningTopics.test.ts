@@ -98,6 +98,8 @@ describe("planning topics", () => {
     ["Did my spending change last month?", "unusual"],
     ["How are my investments spread out?", "holdings"],
     ["How much did I spend last month?", "spending_last_month"],
+    ["Should I use the avalanche or snowball method?", "debt_strategy"],
+    ["Which debt should I pay off first?", "debt_strategy"],
   ])("%s -> %s", (q, topic) => {
     expect(answer(q).topic).toBe(topic);
   });
@@ -135,6 +137,15 @@ describe("planning topics", () => {
     });
     expect(a.caveats.join(" ")).toMatch(/1 holding\(s\) have no dated price/);
     expect(a.basis).toMatch(/does not look up prices/);
+  });
+
+  it("debt strategy: simulates known debts and lists the one with missing inputs", () => {
+    const a = answer("snowball");
+    expect(a.figures[0].value).toBe("$30.00");
+    expect(a.figures[1].value).toMatch(/^\d+ months, \$[\d,.]+ interest$/);
+    expect(a.caveats[0]).toBe(
+      "Loan is left out: missing interest rate and minimum payment.",
+    );
   });
 
   it("empty planning sections say what to add instead of showing zeros", () => {

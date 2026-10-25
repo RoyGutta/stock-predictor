@@ -5,6 +5,7 @@
  */
 
 import { budgetReport } from "../money/budgets";
+import { compareResults, debtsFromState, planDebts } from "../money/debtPlan";
 import { concentration, portfolio, STALE_PRICE_DAYS } from "../money/holdings";
 import { formatCents } from "../money/model";
 import {
@@ -218,8 +219,64 @@ const unusual: Topic = {
   },
 };
 
+const debtStrategy: Topic = {
+  id: "debt_strategy",
+  example: "Compare debt payoff strategies",
+  match: [
+    ["avalanche"],
+    ["snowball"],
+    ["debt", "strateg"],
+    ["debt", "first"],
+    ["debt", "faster"],
+    ["payoff", "strateg"],
+  ],
+  answer: (ctx) => {
+    const empty = needsAccounts(ctx, "debt_strategy", "Debt payoff strategies");
+    if (empty) return empty;
+    const a = base("debt_strategy", "Debt payoff strategies");
+    const source = debtsFromState(ctx.state, ctx.today);
+    if (source.debts.length === 0) {
+      a.text = "You have no debts with a balance owed.";
+      return a;
+    }
+    const plan = planDebts(source.debts, source.default_budget_cents);
+    const av = plan.results.avalanche;
+    const sb = plan.results.snowball;
+    const cmp = compareResults(av, sb);
+    const describe = (r: typeof av) =>
+      r.feasible
+        ? `${r.months} months, ${formatCents(r.total_interest_cents)} interest`
+        : (r.reason ?? "Not feasible");
+    a.text = !av.feasible
+      ? `At ${formatCents(plan.budget_cents)} a month, the debts cannot be paid off: ${av.reason ?? "the payments do not cover the interest."}`
+      : `At ${formatCents(plan.budget_cents)} a month, paying the highest rate first takes ${av.months} months and ` +
+        `paying the smallest balance first takes ${sb.months}; the interest differs by ` +
+        `${formatCents(Math.abs(cmp.interest_difference_cents ?? 0))}.`;
+    a.figures = [
+      {
+        label: "Monthly amount for debts",
+        value: formatCents(plan.budget_cents),
+        note: "Your planned payments, or minimums where none is planned.",
+      },
+      { label: "Highest rate first", value: describe(av) },
+      { label: "Smallest balance first", value: describe(sb) },
+    ];
+    a.basis =
+      "Month-by-month simulation: interest = balance × APR ÷ 12, minimums paid on every debt, the rest to the target debt, and a paid-off debt's payment rolls to the next.";
+    for (const m of plan.missing)
+      a.caveats.push(
+        `${m.name} is left out: missing ${m.missing.join(" and ")}.`,
+      );
+    a.caveats.push(
+      "Both are ways to order payments; which suits you can depend on more than interest. The Debts tab lets you try other amounts and your own order.",
+    );
+    return a;
+  },
+};
+
 /** Order matters for ties: more specific topics first. */
 export const PLANNING_TOPICS: Topic[] = [
+  debtStrategy,
   budgets,
   bills,
   subscriptions,
