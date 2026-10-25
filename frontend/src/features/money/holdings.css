@@ -1,0 +1,101 @@
+/* Holdings view. Tokens only; works in both themes and at 390px. */
+
+.holdings-table th[scope="row"],
+.holdings-alloc th[scope="row"] {
+  text-align: left;
+  font-weight: 600;
+}
+
+.holdings-table td:nth-child(2) {
+  text-align: left;
+}
+
+.holdings-table td:nth-child(3),
+.holdings-alloc td:nth-child(3) {
+  text-align: right;
+}
+
+.holdings-row-actions {
+  justify-content: flex-end;
+}
+
+.holdings-share {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  justify-content: flex-end;
+}
+
+.holdings-bar {
+  display: inline-block;
+  width: 5rem;
+  max-width: 30vw;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--border);
+  overflow: hidden;
+}
+
+.holdings-bar__fill {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+
+.holdings-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: var(--space-3) var(--space-4);
+  margin: 0;
+}
+
+.holdings-facts dt {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.holdings-facts dd {
+  margin: 0;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.holdings-findings {
+  margin: var(--space-3) 0 0;
+  padding-left: var(--space-4);
+  display: grid;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  max-width: 80ch;
+}
+
+.holdings-mix {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: var(--space-3);
+  margin: var(--space-3) 0;
+}
+
+.holdings-mix label {
+  display: grid;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.holdings-mix input {
+  min-width: 0;
+  padding: var(--space-2) var(--space-3);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface-raised);
+  color: var(--text);
+  font: inherit;
+}
+
+@media (max-width: 30rem) {
+  .holdings-bar {
+    width: 3rem;
+  }
+}
