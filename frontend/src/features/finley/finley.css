@@ -1,0 +1,117 @@
+/* Finley — Financial Assistant. Uses the shared design tokens only. */
+
+.finley-intro {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  margin: 0 0 var(--space-3);
+}
+
+.finley-log {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-height: 32rem;
+  overflow-y: auto;
+  padding: var(--space-3);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.finley-empty {
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.finley-question {
+  align-self: flex-end;
+  margin: 0 0 var(--space-2) auto;
+  max-width: 85%;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--surface-raised);
+  border: var(--border-width) solid var(--border-strong);
+  width: fit-content;
+}
+
+.finley-exchange {
+  display: flex;
+  flex-direction: column;
+}
+
+.finley-answer {
+  border-left: 3px solid var(--accent);
+  padding-left: var(--space-3);
+}
+
+.finley-answer p {
+  margin: 0 0 var(--space-2);
+}
+
+.finley-answer__title {
+  font-weight: 600;
+}
+
+.finley-figures {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+  gap: var(--space-2) var(--space-4);
+  margin: 0 0 var(--space-2);
+}
+
+.finley-figure dt {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.finley-figure dd {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.finley-figure__value {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.finley-figure__note,
+.finley-basis,
+.finley-caveats {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.finley-caveats {
+  margin: 0 0 var(--space-2);
+  padding-left: var(--space-4);
+}
+
+.finley-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.finley-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: var(--space-3) 0;
+}
+
+.finley-form label {
+  display: block;
+  font-size: var(--text-sm);
+  margin-bottom: var(--space-1);
+}
+
+.finley-form__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.finley-form__row input {
+  flex: 1 1 14rem;
+  min-width: 0;
+}
