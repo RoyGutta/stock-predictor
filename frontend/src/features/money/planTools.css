@@ -1,0 +1,70 @@
+/* Debt plan and scenario views. Builds on money.css; tokens only. */
+
+.plan-order {
+  list-style: none;
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.plan-order__item {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-2) var(--space-3);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.plan-order__name {
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.plan-order__buttons {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.plan-fieldset {
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3);
+  margin: 0 0 var(--space-4);
+  min-width: 0;
+}
+
+.plan-fieldset legend {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  padding: 0 var(--space-1);
+}
+
+.plan-verdict {
+  margin: var(--space-3) 0;
+  line-height: 1.5;
+}
+
+.plan-source {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.plan-table td,
+.plan-table th {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 30rem) {
+  .plan-order__buttons {
+    width: 100%;
+  }
+
+  .plan-order__buttons .button {
+    flex: 1;
+  }
+}
