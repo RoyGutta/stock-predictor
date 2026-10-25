@@ -13,6 +13,8 @@
  */
 
 import { asFiniteNumber, isRecord } from "../../lib/storage";
+import { EMPTY_PLANNING } from "./planning";
+import { parsePlanning } from "./planningStore";
 import {
   ACCOUNT_TYPES,
   DEFAULT_CATEGORIES,
@@ -162,7 +164,10 @@ export interface LoadResult {
 
 type Migration = (doc: Record<string, unknown>) => Record<string, unknown>;
 /** Keyed by the version they upgrade FROM. Version 1 is the first schema. */
-export const MIGRATIONS: Record<number, Migration> = {};
+export const MIGRATIONS: Record<number, Migration> = {
+  // v1 -> v2: add the planning section, empty. Nothing existing changes.
+  1: (doc) => ({ ...doc, planning: structuredClone(EMPTY_PLANNING) }),
+};
 
 export function migrate(
   doc: Record<string, unknown>,
@@ -225,7 +230,9 @@ export function parseState(
         ),
       ]
     : [...DEFAULT_CATEGORIES];
+  const planning = parsePlanning(doc.planning, accountIds);
   const dropped =
+    planning.dropped +
     rawAccounts.length -
     uniqueAccounts.length +
     (rawTransactions.length - uniqueTransactions.length);
@@ -235,6 +242,7 @@ export function parseState(
       accounts: uniqueAccounts,
       transactions: uniqueTransactions,
       categories,
+      planning: planning.planning,
     },
     dropped,
   };

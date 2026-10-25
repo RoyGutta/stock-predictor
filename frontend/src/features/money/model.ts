@@ -20,7 +20,10 @@
  *   of totals, and the totals say so.
  */
 
-export const MONEY_SCHEMA_VERSION = 1;
+import { EMPTY_PLANNING, type PlanningState } from "./planning";
+
+/** v2 (cycle 16) added `planning`: budgets, recurring items, goals, holdings, profile. */
+export const MONEY_SCHEMA_VERSION = 2;
 
 export type AccountType =
   | "cash"
@@ -118,6 +121,7 @@ export interface MoneyState {
   accounts: Account[];
   transactions: Transaction[];
   categories: string[];
+  planning: PlanningState;
 }
 
 export const DEFAULT_CATEGORIES = [
@@ -147,6 +151,7 @@ export const EMPTY_STATE: MoneyState = {
   accounts: [],
   transactions: [],
   categories: [...DEFAULT_CATEGORIES],
+  planning: EMPTY_PLANNING,
 };
 
 export function isLiability(account: Pick<Account, "type">): boolean {

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { Account, MoneyState, Transaction } from "./model";
+import type { PlanningState } from "./planning";
 import {
   clearMoney,
   loadMoney,
@@ -21,6 +22,8 @@ export interface MoneyApi {
   deleteTransaction: (id: string) => void;
   addTransactions: (txs: Transaction[]) => void;
   addCategory: (name: string) => void;
+  /** The one way features change budgets, recurring items, goals, holdings, profile, decisions. */
+  updatePlanning: (fn: (planning: PlanningState) => PlanningState) => void;
   replaceAll: (state: MoneyState) => void;
   undoRestore: () => boolean;
   clearAll: () => void;
@@ -94,6 +97,7 @@ export function useMoney(): MoneyApi {
           ? s
           : { ...s, categories: [...s.categories, name] },
       ),
+    updatePlanning: (fn) => update((s) => ({ ...s, planning: fn(s.planning) })),
     replaceAll: (next) => {
       snapshotBeforeRestore();
       setState(next);
