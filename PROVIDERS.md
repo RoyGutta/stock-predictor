@@ -633,11 +633,21 @@ https://home.treasury.gov/subfooter/site-policies-and-notices
 | Reuse | U.S. government works carry no U.S. copyright (17 U.S.C. 105); the site policy page lists no restriction on these statistics | S |
 
 Implementation: `app/analytics/yield_curve.py` (strict parser, metrics) and
-`app/services/treasury.py` (fetching). Four month requests per refresh, one at a
-time, at least 1 s apart; current month cached 1 h, closed months 24 h; one
-upstream call per month under concurrency; 2 MB response cap; DTD and entity
-declarations refused before parsing; 429/503 pause requests for Retry-After
-(5 min when absent); a flagged stale copy for up to 7 days. Per process only.
+`app/services/treasury.py` (fetching). One yearly-feed request per refresh
+(`field_tdr_date_value=YYYY`, ~320 kB for 2026 to date), two when the window
+crosses January; at least 1 s apart; current year cached 1 h, earlier years 24 h;
+one upstream call per year under concurrency; 2 MB response cap; DTD and entity
+declarations refused before parsing; 403/429/503 pause requests for Retry-After
+(5 min when absent) and the error names the status; a flagged stale copy for up
+to 7 days. Per process only.
+
+Production incident, 2026-10-24: after a redeploy, Treasury requests from the
+Vercel function failed with a non-200 status for several minutes while identical
+requests from another host returned 200. The first version did not record the
+status, and Vercel logs were not accessible, so the cause is not confirmed; a
+refusal of the serverless host's shared address is consistent with what was seen.
+Fix: one request instead of four per cold start, refusals named and backed off.
+Production returned live data again after the fix (latest 2026-10-23).
 
 Live verification (2026-10-24, from the backend, 4 requests): latest observation
 Fri 2026-10-23, comparison 2026-09-23, 10y-2y 0.31 points (31 bp), 10y-3m 0.78

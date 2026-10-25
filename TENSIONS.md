@@ -176,3 +176,13 @@ lost if site data is cleared, no sync across devices, and the encrypted backup a
 the only copy mechanism. IndexedDB would raise capacity; optional end-to-end
 encrypted sync would need a design that keeps the server blind and a free host.
 Neither is justified until real usage shows the limits matter.
+
+## T-11 — Treasury may refuse the serverless host (OPEN, monitored)
+
+On 2026-10-24 production's Treasury requests failed for several minutes after a
+redeploy while the same request succeeded from another host. The status was not
+recorded, so the cause is unconfirmed. The service now makes one request per
+refresh (was four), names any refusal with its HTTP status, and pauses before
+retrying; the Dashboard then shows the stated error and no curve. If refusals
+recur, the free options are a longer cache, fewer cold starts, or a scheduled
+fetch that stores the published curve as a static file in the repository.
