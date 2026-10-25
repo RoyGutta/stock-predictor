@@ -144,7 +144,7 @@ describe("planning topics", () => {
     expect(a.figures[0].value).toBe("$30.00");
     expect(a.figures[1].value).toMatch(/^\d+ months, \$[\d,.]+ interest$/);
     expect(a.caveats[0]).toBe(
-      "Loan is left out: missing interest rate and minimum payment.",
+      "Loan is left out: missing interest rate (APR) and minimum payment.",
     );
   });
 
