@@ -26,6 +26,7 @@ from app.services.providers.registry import reset_price_provider
 FIXTURES = Path(__file__).parent / "fixtures"
 SEPT = (FIXTURES / "treasury_yield_curve_202609.xml").read_bytes()
 OCT = (FIXTURES / "treasury_yield_curve_202610.xml").read_bytes()
+YEAR_2026 = (FIXTURES / "treasury_yield_curve_2026.xml").read_bytes()  # 204 days, Jan 2 - Oct 23
 TODAY = date(2026, 10, 24)  # a Saturday: the latest observation is Friday's
 
 
@@ -235,12 +236,7 @@ class Clock:
 
 
 def routes(**overrides):
-    table = {
-        "202607": lambda _r: httpx.Response(200, content=feed()),
-        "202608": lambda _r: httpx.Response(200, content=feed()),
-        "202609": lambda _r: httpx.Response(200, content=SEPT),
-        "202610": lambda _r: httpx.Response(200, content=OCT),
-    }
+    table = {"2026": lambda _r: httpx.Response(200, content=YEAR_2026)}
     table.update(overrides)
     return table
 
@@ -251,9 +247,9 @@ class Upstream:
         self.requests: list[str] = []
 
     def __call__(self, request: httpx.Request) -> httpx.Response:
-        ym = request.url.params["field_tdr_date_value_month"]
-        self.requests.append(ym)
-        return self.table[ym](request)
+        year = request.url.params["field_tdr_date_value"]
+        self.requests.append(year)
+        return self.table[year](request)
 
 
 def install(table, clock=None) -> Upstream:
@@ -274,14 +270,22 @@ def run(coro):
     return asyncio.run(coro)
 
 
-def test_months_back_crosses_the_year_boundary():
-    assert treasury.months_back(date(2027, 2, 3), 4) == ["202611", "202612", "202701", "202702"]
+def test_years_needed_spans_january_only_when_the_window_does():
+    assert treasury.years_needed(date(2026, 10, 24), 92) == [2026]
+    assert treasury.years_needed(date(2027, 2, 3), 92) == [2026, 2027]
+
+
+def test_recorded_year_feed_parses_completely():
+    result = yc.parse_feed(YEAR_2026)
+    assert len(result.observations) == 204 and not result.rejected_values
+    assert result.observations[0].day == date(2026, 1, 2)
+    assert result.observations[-1].day == date(2026, 10, 23)
 
 
 def test_service_combines_months_and_reports_freshness():
     up = install(routes())
     out = run(treasury.get_yield_curve(92, today=TODAY))
-    assert sorted(up.requests) == ["202607", "202608", "202609", "202610"]
+    assert up.requests == ["2026"]  # one request covers the whole window
     assert out["latest"]["date"] == "2026-10-23" and out["observation_age_days"] == 1
     assert out["latest"]["comparison_date"] == "2026-09-23"
     assert out["stale"] is False and out["notes"] == []
@@ -295,7 +299,7 @@ def test_cache_prevents_refetching_within_ttl():
     run(treasury.get_yield_curve(92, today=TODAY))
     clock.now += 600
     run(treasury.get_yield_curve(92, today=TODAY))
-    assert len(up.requests) == 4
+    assert len(up.requests) == 1
 
 
 def test_concurrent_requests_share_upstream_calls():
@@ -305,33 +309,38 @@ def test_concurrent_requests_share_upstream_calls():
         await asyncio.gather(*(treasury.get_yield_curve(92, today=TODAY) for _ in range(6)))
 
     run(burst())
-    assert len(up.requests) == 4
+    assert len(up.requests) == 1
 
 
 def test_upstream_failure_serves_flagged_stale_copy_with_original_retrieval_time():
     clock = Clock()
     state = {"down": False}
-    oct_ok = routes()["202610"]
+    year_ok = routes()["2026"]
     up = install(
-        routes(**{"202610": lambda r: httpx.Response(503) if state["down"] else oct_ok(r)}),
+        routes(**{"2026": lambda r: httpx.Response(503) if state["down"] else year_ok(r)}),
         clock,
     )
     first = run(treasury.get_yield_curve(92, today=TODAY))
     state["down"] = True
-    clock.now += 3_601  # current month expired; closed months still fresh
+    clock.now += 3_601  # the current year's cache has expired
     second = run(treasury.get_yield_curve(92, today=TODAY))
     assert second["stale"] is True and "Treasury" in second["stale_reason"]
     assert second["latest"]["date"] == "2026-10-23"
     assert second["retrieved_at"] == first["retrieved_at"]
-    assert len(up.requests) == 5
+    assert len(up.requests) == 2
 
 
-def test_failed_older_month_degrades_history_with_a_note():
-    install(routes(**{"202609": lambda _r: httpx.Response(500)}))
-    out = run(treasury.get_yield_curve(92, today=TODAY))
-    assert out["latest"]["date"] == "2026-10-23"
+def test_failed_earlier_year_degrades_history_with_a_note():
+    # 2027-01-20: the window needs 2026 and 2027. 2026 fails; January 2027 stands alone.
+    jan = feed(entry("2027-01-19", BC_10YEAR="5.10", BC_2YEAR="4.80", BC_3MONTH="4.30"))
+    install({
+        "2026": lambda _r: httpx.Response(500),
+        "2027": lambda _r: httpx.Response(200, content=jan),
+    })
+    out = run(treasury.get_yield_curve(92, today=date(2027, 1, 20)))
+    assert out["latest"]["date"] == "2027-01-19"
     assert out["latest"]["comparison_date"] is None
-    assert any("September 2026" in n for n in out["notes"])
+    assert any("2026 could not be retrieved" in n for n in out["notes"])
 
 
 def test_total_failure_raises_a_typed_error():
@@ -350,24 +359,40 @@ def test_timeout_is_typed():
 
 
 def test_rate_limit_pauses_later_requests_and_fails_closed_without_cache():
-    up = install(routes(**{"202607": lambda _r: httpx.Response(429)}))
+    up = install(routes(**{"2026": lambda _r: httpx.Response(429)}))
     with pytest.raises(ProviderRateLimited):
         run(treasury.get_yield_curve(92, today=TODAY))
-    assert up.requests == ["202607"]
+    with pytest.raises(ProviderRateLimited):  # still paused: nothing is sent
+        run(treasury.get_yield_curve(92, today=TODAY))
+    assert up.requests == ["2026"]
 
 
-def test_malformed_month_is_rejected_not_used():
-    install(routes(**{"202610": lambda _r: httpx.Response(200, content=b"<html/>")}))
-    out = run(treasury.get_yield_curve(92, today=TODAY))
-    assert out["latest"]["date"] == "2026-09-30"  # October discarded, September stands
-    assert any("October 2026" in n for n in out["notes"])
+def test_403_is_named_and_pauses_requests():
+    up = install(routes(**{"2026": lambda _r: httpx.Response(403)}))
+    with pytest.raises(ProviderError, match="HTTP 403"):
+        run(treasury.get_yield_curve(92, today=TODAY))
+    with pytest.raises(ProviderError):
+        run(treasury.get_yield_curve(92, today=TODAY))
+    assert up.requests == ["2026"]
+
+
+def test_other_unexpected_status_is_named():
+    install(routes(**{"2026": lambda _r: httpx.Response(404)}))
+    with pytest.raises(ProviderError, match="HTTP 404"):
+        run(treasury.get_yield_curve(92, today=TODAY))
+
+
+def test_malformed_year_is_rejected_not_used():
+    install(routes(**{"2026": lambda _r: httpx.Response(200, content=b"<html/>")}))
+    with pytest.raises(ProviderError, match="unexpected format"):
+        run(treasury.get_yield_curve(92, today=TODAY))
 
 
 def test_oversized_stream_is_cut_off():
     big = b"x" * (yc.MAX_FEED_BYTES + 10)
-    install(routes(**{"202610": lambda _r: httpx.Response(200, content=big)}))
-    out = run(treasury.get_yield_curve(92, today=TODAY))
-    assert any("October 2026" in n for n in out["notes"])
+    install(routes(**{"2026": lambda _r: httpx.Response(200, content=big)}))
+    with pytest.raises(ProviderError, match="unexpectedly large"):
+        run(treasury.get_yield_curve(92, today=TODAY))
 
 
 # --- API -----------------------------------------------------------------------
