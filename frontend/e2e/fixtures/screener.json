@@ -1,0 +1,228 @@
+{
+ "source": "U.S. Securities and Exchange Commission (EDGAR)",
+ "retrieved_at": "2026-11-01T11:28:03+00:00",
+ "stale": false,
+ "stale_reason": null,
+ "calendar_year": 2025,
+ "prior_calendar_year": 2024,
+ "frames": [
+  {
+   "measure": "revenue",
+   "tag": "RevenueFromContractWithCustomerExcludingAssessedTax",
+   "period": "CY2025",
+   "url": "https://data.sec.gov/api/xbrl/frames/us-gaap/RevenueFromContractWithCustomerExcludingAssessedTax/USD/CY2025.json",
+   "available": true,
+   "companies": 3
+  },
+  {
+   "measure": "revenue",
+   "tag": "Revenues",
+   "period": "CY2025",
+   "url": "https://data.sec.gov/api/xbrl/frames/us-gaap/Revenues/USD/CY2025.json",
+   "available": true,
+   "companies": 2
+  },
+  {
+   "measure": "revenue_prior",
+   "tag": "RevenueFromContractWithCustomerExcludingAssessedTax",
+   "period": "CY2024",
+   "url": "https://data.sec.gov/api/xbrl/frames/us-gaap/RevenueFromContractWithCustomerExcludingAssessedTax/USD/CY2024.json",
+   "available": true,
+   "companies": 2
+  },
+  {
+   "measure": "revenue_prior",
+   "tag": "Revenues",
+   "period": "CY2024",
+   "url": "https://data.sec.gov/api/xbrl/frames/us-gaap/Revenues/USD/CY2024.json",
+   "available": true,
+   "companies": 2
+  },
+  {
+   "measure": "net_income",
+   "tag": "NetIncomeLoss",
+   "period": "CY2025",
+   "url": "https://data.sec.gov/api/xbrl/frames/us-gaap/NetIncomeLoss/USD/CY2025.json",
+   "available": true,
+   "companies": 4
+  },
+  {
+   "measure": "operating_cash_flow",
+   "tag": "NetCashProvidedByUsedInOperatingActivities",
+   "period": "CY2025",
+   "url": "https://data.sec.gov/api/xbrl/frames/us-gaap/NetCashProvidedByUsedInOperatingActivities/USD/CY2025.json",
+   "available": true,
+   "companies": 5
+  },
+  {
+   "measure": "capex",
+   "tag": "PaymentsToAcquirePropertyPlantAndEquipment",
+   "period": "CY2025",
+   "url": "https://data.sec.gov/api/xbrl/frames/us-gaap/PaymentsToAcquirePropertyPlantAndEquipment/USD/CY2025.json",
+   "available": true,
+   "companies": 3
+  },
+  {
+   "measure": "assets",
+   "tag": "Assets",
+   "period": "CY2025Q4I",
+   "url": "https://data.sec.gov/api/xbrl/frames/us-gaap/Assets/USD/CY2025Q4I.json",
+   "available": true,
+   "companies": 3
+  },
+  {
+   "measure": "liabilities",
+   "tag": "Liabilities",
+   "period": "CY2025Q4I",
+   "url": "https://data.sec.gov/api/xbrl/frames/us-gaap/Liabilities/USD/CY2025Q4I.json",
+   "available": true,
+   "companies": 3
+  }
+ ],
+ "universe": 5,
+ "total_matches": 5,
+ "offset": 0,
+ "limit": 25,
+ "size_bands": [
+  {
+   "key": "100b_plus",
+   "label": "$100B or more",
+   "min_revenue": 100000000000.0
+  },
+  {
+   "key": "10b_100b",
+   "label": "$10B to $100B",
+   "min_revenue": 10000000000.0
+  },
+  {
+   "key": "1b_10b",
+   "label": "$1B to $10B",
+   "min_revenue": 1000000000.0
+  },
+  {
+   "key": "100m_1b",
+   "label": "$100M to $1B",
+   "min_revenue": 100000000.0
+  },
+  {
+   "key": "under_100m",
+   "label": "Under $100M",
+   "min_revenue": 0.0
+  }
+ ],
+ "notes": [
+  "A research screen on figures companies reported to the SEC. It is not a recommendation and says nothing about whether a company is a good investment.",
+  "SEC frames calendar-align fiscal years: each company's fiscal year is placed in the calendar year it most overlaps, so periods are comparable but not identical.",
+  "No valuation metrics (P/E, EV/EBITDA, yields) are shown: they need market prices, and this screen uses no price data.",
+  "Industry (SIC code) is not in frames and would need one SEC request per company, so peers are grouped by revenue size band instead.",
+  "A missing figure means the company did not report that US GAAP tag for the period; it is shown as blank, never as zero. A filter on a figure excludes companies for which it is unknown.",
+  "Revenue uses RevenueFromContractWithCustomerExcludingAssessedTax, else Revenues. Growth compares the same tag in both years and needs positive prior revenue."
+ ],
+ "results": [
+  {
+   "cik": 5,
+   "name": "Epsilon Co",
+   "edgar_url": "https://www.sec.gov/edgar/browse/?CIK=5",
+   "revenue_tag": "RevenueFromContractWithCustomerExcludingAssessedTax",
+   "period_end": "2025-12-31",
+   "revenue_accession": "0000000000-25-000005",
+   "revenue": 150000000000.0,
+   "revenue_prior": 100000000000.0,
+   "revenue_growth_pct": 50.0,
+   "net_income": 30000000000.0,
+   "net_margin_pct": 20.0,
+   "operating_cash_flow": 40000000000.0,
+   "ocf_margin_pct": 26.666666666666668,
+   "capital_expenditures": 10000000000.0,
+   "free_cash_flow": 30000000000.0,
+   "total_assets": null,
+   "total_liabilities": null,
+   "liabilities_to_assets": null,
+   "size_band": "100b_plus"
+  },
+  {
+   "cik": 1,
+   "name": "Alpha Corp",
+   "edgar_url": "https://www.sec.gov/edgar/browse/?CIK=1",
+   "revenue_tag": "RevenueFromContractWithCustomerExcludingAssessedTax",
+   "period_end": "2025-12-31",
+   "revenue_accession": "0000000000-25-000001",
+   "revenue": 1000000000.0,
+   "revenue_prior": 800000000.0,
+   "revenue_growth_pct": 25.0,
+   "net_income": 100000000.0,
+   "net_margin_pct": 10.0,
+   "operating_cash_flow": 200000000.0,
+   "ocf_margin_pct": 20.0,
+   "capital_expenditures": 50000000.0,
+   "free_cash_flow": 150000000.0,
+   "total_assets": 2000000000.0,
+   "total_liabilities": 1000000000.0,
+   "liabilities_to_assets": 0.5,
+   "size_band": "1b_10b"
+  },
+  {
+   "cik": 3,
+   "name": "Gamma LLC",
+   "edgar_url": "https://www.sec.gov/edgar/browse/?CIK=3",
+   "revenue_tag": "RevenueFromContractWithCustomerExcludingAssessedTax",
+   "period_end": "2025-12-31",
+   "revenue_accession": "0000000000-25-000003",
+   "revenue": 300000000.0,
+   "revenue_prior": null,
+   "revenue_growth_pct": null,
+   "net_income": 15000000.0,
+   "net_margin_pct": 5.0,
+   "operating_cash_flow": 100000000.0,
+   "ocf_margin_pct": 33.33333333333333,
+   "capital_expenditures": 400000000.0,
+   "free_cash_flow": -300000000.0,
+   "total_assets": 1000000000.0,
+   "total_liabilities": 900000000.0,
+   "liabilities_to_assets": 0.9,
+   "size_band": "100m_1b"
+  },
+  {
+   "cik": 2,
+   "name": "Beta Inc",
+   "edgar_url": "https://www.sec.gov/edgar/browse/?CIK=2",
+   "revenue_tag": "Revenues",
+   "period_end": "2025-12-31",
+   "revenue_accession": "0000000000-25-000002",
+   "revenue": 50000000.0,
+   "revenue_prior": 0.0,
+   "revenue_growth_pct": null,
+   "net_income": -10000000.0,
+   "net_margin_pct": -20.0,
+   "operating_cash_flow": 5000000.0,
+   "ocf_margin_pct": 10.0,
+   "capital_expenditures": null,
+   "free_cash_flow": null,
+   "total_assets": null,
+   "total_liabilities": null,
+   "liabilities_to_assets": null,
+   "size_band": "under_100m"
+  },
+  {
+   "cik": 4,
+   "name": "Delta Holdings",
+   "edgar_url": "https://www.sec.gov/edgar/browse/?CIK=4",
+   "revenue_tag": null,
+   "period_end": null,
+   "revenue_accession": null,
+   "revenue": null,
+   "revenue_prior": null,
+   "revenue_growth_pct": null,
+   "net_income": null,
+   "net_margin_pct": null,
+   "operating_cash_flow": 10000000.0,
+   "ocf_margin_pct": null,
+   "capital_expenditures": null,
+   "free_cash_flow": null,
+   "total_assets": 100000000.0,
+   "total_liabilities": 20000000.0,
+   "liabilities_to_assets": 0.2,
+   "size_band": null
+  }
+ ]
+}

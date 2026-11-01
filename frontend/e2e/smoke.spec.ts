@@ -60,6 +60,7 @@ function respond(route: Route): Promise<void> {
     "/api/v1/market/correlation": "correlation",
     "/api/v1/portfolio/simulation": "portfolio",
     "/api/v1/explore/match": "explore",
+    "/api/v1/sec/screener": "screener",
   };
   if (simple[path]) return json(fixture(simple[path]));
   return notFound(`No fixture for ${path}`);
@@ -133,7 +134,7 @@ test("dashboard orients a first-time visitor", async ({ page }) => {
 test("every navigation destination is visible at this viewport", async ({ page }) => {
   await page.goto("/#/dashboard");
   const links = page.locator(".app__nav-link");
-  await expect(links).toHaveCount(7); // Dashboard, Analyze, Explore, Compare, Portfolio, Money, Learn
+  await expect(links).toHaveCount(8); // Dashboard, Analyze, Explore, Compare, Portfolio, Money, Research, Learn
   const viewport = page.viewportSize()!.width;
   for (const link of await links.all()) {
     const box = await link.boundingBox();
@@ -306,6 +307,35 @@ test("money manager keeps records in the browser and sends none of them anywhere
   await page.getByRole("button", { name: "Overview" }).click();
   await expect(page.getByText("$2,457.90").first()).toBeVisible();
   expect(outbound.filter((r) => r.includes("7731") || r.includes("2457"))).toEqual([]);
+  await noHorizontalOverflow(page);
+});
+
+test("every Money Manager tab lays out without sideways scrolling", async ({ page }) => {
+  await page.goto("/#/money");
+  await page.getByRole("button", { name: "Add your first account" }).click();
+  await page.getByLabel("Name").fill("Everyday");
+  await page.getByLabel(/Balance or value/).fill("1500.00");
+  await page.getByRole("button", { name: "Save account" }).click();
+  for (const tab of ["Budgets & bills", "Goals", "Cash flow", "Debts", "What if", "Holdings", "Ask Finley"]) {
+    await page.getByRole("button", { name: tab }).click();
+    await expect(page.getByRole("button", { name: tab })).toHaveAttribute("aria-pressed", "true");
+    await noHorizontalOverflow(page);
+  }
+  await page.getByLabel("Your question").fill("What bills are coming up?");
+  await page.getByRole("button", { name: "Ask", exact: true }).click();
+  await expect(page.getByText(/not entered any recurring bills/)).toBeVisible();
+  await expect(page).toHaveURL(/#\/money\/finley$/);
+  await page.getByRole("link", { name: "Open Budgets & bills" }).click();
+  await expect(page.getByRole("button", { name: "Budgets & bills" })).toHaveAttribute("aria-pressed", "true");
+  await expect(page).toHaveURL(/#\/money\/budgets$/);
+});
+
+test("research screener shows reported figures with their source and no prices", async ({ page }) => {
+  await page.goto("/#/research");
+  await expect(page.getByRole("heading", { name: "Research", level: 1 })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Alpha Corp/ })).toBeVisible();
+  await expect(page.getByText(/not a recommendation/).first()).toBeVisible();
+  await expect(page.getByText(/P\/E/).first()).toBeVisible(); // the methodology says why there is none
   await noHorizontalOverflow(page);
 });
 

@@ -392,7 +392,7 @@ export function ScreenerPanel({
               earlier copy; figures filed since then are missing.
             </Callout>
           )}
-          <p className="sec__meta">
+          <p className="sec__meta screener__frames">
             Frames used:{" "}
             {data.frames.map((frame, i) => (
               <span key={frame.url}>

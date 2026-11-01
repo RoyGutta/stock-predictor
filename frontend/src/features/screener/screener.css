@@ -68,6 +68,11 @@
   font-size: var(--text-sm);
 }
 
+/* XBRL tag names are long single words; let them break on a phone. */
+.screener__frames {
+  overflow-wrap: anywhere;
+}
+
 .screener-table th[aria-sort] {
   white-space: nowrap;
 }

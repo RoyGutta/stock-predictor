@@ -1,4 +1,6 @@
-import { Button } from "./components/ui";
+import { Suspense, lazy } from "react";
+
+import { Button, Skeleton } from "./components/ui";
 import { SessionBadge } from "./features/market/MarketPanels";
 import { NavLink, RouteProvider } from "./app/router";
 import { useRoute, type Page } from "./app/routes";
@@ -7,11 +9,20 @@ import { ComparePage } from "./pages/ComparePage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { ExplorePage } from "./pages/ExplorePage";
 import { LearnPage } from "./pages/LearnPage";
-import { MoneyPage } from "./pages/MoneyPage";
 import { PortfolioPage } from "./pages/PortfolioPage";
 import { useCapabilities, useMarketStatus } from "./hooks/useMarketData";
 import { useTheme } from "./hooks/useTheme";
 import "./App.css";
+
+// The Money Manager (all its planning views and Finley) and the Research
+// screener are most of the app's code, and a visitor to the market pages may
+// never open them, so they download on first visit instead of with every page.
+const MoneyPage = lazy(() =>
+  import("./pages/MoneyPage").then((m) => ({ default: m.MoneyPage })),
+);
+const ResearchPage = lazy(() =>
+  import("./pages/ResearchPage").then((m) => ({ default: m.ResearchPage })),
+);
 
 /**
  * Application shell: brand, primary navigation, the routed page, and the
@@ -25,6 +36,7 @@ const NAV_ITEMS: { page: Page; label: string }[] = [
   { page: "compare", label: "Compare" },
   { page: "portfolio", label: "Portfolio" },
   { page: "money", label: "Money" },
+  { page: "research", label: "Research" },
   { page: "learn", label: "Learn" },
 ];
 
@@ -43,6 +55,8 @@ function CurrentPage() {
       return <ExplorePage />;
     case "money":
       return <MoneyPage />;
+    case "research":
+      return <ResearchPage />;
     default:
       return <DashboardPage />;
   }
@@ -101,7 +115,9 @@ function App() {
         {/* tabIndex -1 lets route changes move focus here without adding the
             landmark to the tab order. */}
         <main id="main" className="app__main" tabIndex={-1}>
-          <CurrentPage />
+          <Suspense fallback={<Skeleton height="12rem" />}>
+            <CurrentPage />
+          </Suspense>
         </main>
 
         <footer className="app__footer">

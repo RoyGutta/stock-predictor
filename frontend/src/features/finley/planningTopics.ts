@@ -6,6 +6,8 @@
 
 import { budgetReport } from "../money/budgets";
 import { compareResults, debtsFromState, planDebts } from "../money/debtPlan";
+import { projectCashFlow } from "../money/forecast";
+import { feasibility } from "../money/goals";
 import { concentration, portfolio, STALE_PRICE_DAYS } from "../money/holdings";
 import { formatCents } from "../money/model";
 import {
@@ -274,12 +276,120 @@ const debtStrategy: Topic = {
   },
 };
 
+const goals: Topic = {
+  id: "goals",
+  example: "Am I on track for my goals?",
+  match: [["goal"], ["on", "track"], ["saving", "for"], ["afford", "goal"]],
+  answer: (ctx) => {
+    const empty = needsAccounts(ctx, "goals", "Goals");
+    if (empty) return empty;
+    const a = base("goals", "Goals");
+    if (ctx.state.planning.goals.length === 0) {
+      a.text =
+        "You have not set any goals. You can add them on the Goals tab with a target amount and, optionally, a date.";
+      return a;
+    }
+    const f = feasibility(ctx.state, ctx.today);
+    const conflicts = f.rows.filter((r) => r.fits === false);
+    a.text =
+      f.available_cents == null
+        ? `You have ${f.rows.length} goal(s). ${f.available_reason ?? "What is available each month cannot be computed yet."}`
+        : `About ${formatCents(f.available_cents)} a month is available after spending and commitments; ` +
+          `the goals need ${formatCents(f.total_needed_cents)}. ` +
+          (conflicts.length
+            ? `${conflicts.length} goal(s) do not fit in priority order.`
+            : "In priority order, every assessed goal fits.");
+    a.figures = f.rows.map((r) => ({
+      label: r.progress.goal.name,
+      value: `${Math.round(r.progress.progress * 100)}% funded`,
+      note: `${r.progress.status_text}${r.needed_cents != null ? ` Needs ${formatCents(r.needed_cents)} a month.` : ""}`,
+    }));
+    a.basis =
+      f.months.length > 0
+        ? `Average income minus spending over ${f.months.join(", ")}, minus recurring commitments not already in spending. No investment return is assumed.`
+        : "No complete tracked months yet.";
+    return a;
+  },
+};
+
+const projection: Topic = {
+  id: "projection",
+  example: "Will my cash run short in the next 90 days?",
+  match: [
+    ["run", "out"],
+    ["run", "short"],
+    ["shortfall"],
+    ["next", "days"],
+    ["cash", "flow"],
+    ["projection"],
+    ["low", "balance"],
+    ["overdraw"],
+  ],
+  answer: (ctx) => {
+    const empty = needsAccounts(ctx, "projection", "Cash-flow projection");
+    if (empty) return empty;
+    const a = base("projection", "Cash-flow projection, next 90 days");
+    if (ctx.state.planning.recurring.length === 0) {
+      a.text =
+        "A projection needs your recurring income and bills, and none are entered. Add them on the Budgets tab.";
+      return a;
+    }
+    const f = projectCashFlow(ctx.state, { asOf: ctx.today, horizonDays: 90 });
+    a.text = f.first_below_zero
+      ? `Based on your recurring items, your liquid funds would fall below zero on ${f.first_below_zero}.`
+      : `Based on your recurring items, your liquid funds stay above zero; the lowest point is ${formatCents(f.lowest.cents)} on ${f.lowest.date}.`;
+    a.figures = [
+      {
+        label: "Liquid funds today (settled)",
+        value: formatCents(f.confirmed_liquid_cents),
+      },
+      {
+        label: "Lowest projected",
+        value: formatCents(f.lowest.cents),
+        note: f.lowest.date,
+      },
+      {
+        label: "Projected on " + f.end_date,
+        value: formatCents(f.money_left_cents),
+      },
+    ];
+    a.basis = `Today's settled liquid balances plus your recurring items from ${f.as_of} to ${f.end_date}. ${f.fixed_count} fixed and ${f.estimated_count} estimated item(s).`;
+    a.caveats.push(
+      "This is a projection of the items you entered, not a prediction. Spending that is not set up as recurring is not included.",
+    );
+    if (f.pending.transactions.length)
+      a.caveats.push(
+        `${f.pending.transactions.length} pending transaction(s) are not included in the settled balance.`,
+      );
+    return a;
+  },
+};
+
+/**
+ * Link each answer to the Money tab that shows the same numbers, or to Accounts
+ * while there is no account to compute from.
+ */
+function onTab(topic: Topic, label: string, section: string): Topic {
+  return {
+    ...topic,
+    answer: (ctx) => {
+      const a = topic.answer(ctx);
+      a.links = ctx.state.accounts.some((acc) => !acc.archived)
+        ? [{ label, href: `#/money/${section}` }]
+        : [{ label: "Add an account", href: "#/money/accounts" }];
+      return a;
+    },
+  };
+}
+
 /** Order matters for ties: more specific topics first. */
 export const PLANNING_TOPICS: Topic[] = [
-  debtStrategy,
-  budgets,
-  bills,
-  subscriptions,
-  unusual,
-  holdings,
+  onTab(projection, "Open Cash flow", "forecast"),
+  onTab(goals, "Open Goals", "goals"),
+  onTab(debtStrategy, "Open Debts", "debts"),
+  onTab(budgets, "Open Budgets & bills", "budgets"),
+  onTab(bills, "Open Budgets & bills", "budgets"),
+  onTab(subscriptions, "Open Budgets & bills", "budgets"),
+  onTab(unusual, "Open Budgets & bills", "budgets"),
+  onTab(holdings, "Open Holdings", "holdings"),
 ];

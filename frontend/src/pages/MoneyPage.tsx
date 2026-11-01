@@ -1,21 +1,53 @@
 import { useState } from "react";
 
+import { navigate, useRoute } from "../app/routes";
 import { Callout, Card } from "../components/ui";
+import { FinleyPanel } from "../features/finley/FinleyPanel";
+import { ALL_TOPICS } from "../features/finley/topics";
 import { AccountsView } from "../features/money/AccountsView";
+import { BudgetsView } from "../features/money/BudgetsView";
 import { DataView } from "../features/money/DataView";
+import { DebtPlanView } from "../features/money/DebtPlanView";
+import { ForecastView } from "../features/money/ForecastView";
+import { GoalsView } from "../features/money/GoalsView";
+import { HoldingsView } from "../features/money/HoldingsView";
 import { MoneyOverview } from "../features/money/MoneyOverview";
+import { ScenarioView } from "../features/money/ScenarioView";
 import { TransactionsView } from "../features/money/TransactionsView";
 import { useMoney } from "../features/money/useMoney";
 import "../features/money/money.css";
 
-type Section = "overview" | "accounts" | "transactions" | "data";
+type Section =
+  | "overview"
+  | "accounts"
+  | "transactions"
+  | "budgets"
+  | "goals"
+  | "forecast"
+  | "debts"
+  | "scenarios"
+  | "holdings"
+  | "finley"
+  | "data";
 
 const SECTIONS: { key: Section; label: string }[] = [
   { key: "overview", label: "Overview" },
   { key: "accounts", label: "Accounts" },
   { key: "transactions", label: "Transactions" },
+  { key: "budgets", label: "Budgets & bills" },
+  { key: "goals", label: "Goals" },
+  { key: "forecast", label: "Cash flow" },
+  { key: "debts", label: "Debts" },
+  { key: "scenarios", label: "What if" },
+  { key: "holdings", label: "Holdings" },
+  { key: "finley", label: "Ask Finley" },
   { key: "data", label: "Backup & data" },
 ];
+
+/** The tab named in the URL (#/money/budgets), or the overview. */
+function sectionFrom(param: string | null): Section {
+  return SECTIONS.find((s) => s.key === param)?.key ?? "overview";
+}
 
 /**
  * Money Manager: the user's own accounts, debts, and transactions, kept in this
@@ -23,7 +55,20 @@ const SECTIONS: { key: Section; label: string }[] = [
  */
 export function MoneyPage() {
   const money = useMoney();
-  const [section, setSection] = useState<Section>("overview");
+  const route = useRoute();
+  const [section, setSectionState] = useState<Section>(() =>
+    sectionFrom(route.param),
+  );
+  // Follow the URL when it changes (back button, a link to #/money/goals).
+  const [routeParam, setRouteParam] = useState(route.param);
+  if (route.param !== routeParam) {
+    setRouteParam(route.param);
+    setSectionState(sectionFrom(route.param));
+  }
+  const setSection = (key: Section) => {
+    setSectionState(key);
+    navigate("money", key === "overview" ? null : key);
+  };
   const [openAccountForm, setOpenAccountForm] = useState(false);
   const { load } = money;
 
@@ -111,6 +156,21 @@ export function MoneyPage() {
           onDelete={money.deleteTransaction}
           onAddCategory={money.addCategory}
         />
+      )}
+      {section === "budgets" && (
+        <BudgetsView state={money.state} onPlanning={money.updatePlanning} />
+      )}
+      {section === "goals" && (
+        <GoalsView state={money.state} onPlanning={money.updatePlanning} />
+      )}
+      {section === "forecast" && <ForecastView state={money.state} />}
+      {section === "debts" && <DebtPlanView state={money.state} />}
+      {section === "scenarios" && <ScenarioView state={money.state} />}
+      {section === "holdings" && (
+        <HoldingsView state={money.state} onPlanning={money.updatePlanning} />
+      )}
+      {section === "finley" && (
+        <FinleyPanel state={money.state} topics={ALL_TOPICS} />
       )}
       {section === "data" && (
         <DataView

@@ -100,6 +100,8 @@ describe("planning topics", () => {
     ["How much did I spend last month?", "spending_last_month"],
     ["Should I use the avalanche or snowball method?", "debt_strategy"],
     ["Which debt should I pay off first?", "debt_strategy"],
+    ["Am I on track for my goals?", "goals"],
+    ["Will my cash run short in the next 90 days?", "projection"],
   ])("%s -> %s", (q, topic) => {
     expect(answer(q).topic).toBe(topic);
   });
@@ -146,6 +148,55 @@ describe("planning topics", () => {
     expect(a.caveats[0]).toBe(
       "Loan is left out: missing interest rate (APR) and minimum payment.",
     );
+  });
+
+  it("projection: rent against no recurring income shows the lowest point", () => {
+    const a = answer("will I run out of money");
+    expect(a.topic).toBe("projection");
+    expect(a.figures[0]).toEqual({
+      label: "Liquid funds today (settled)",
+      value: "$6,912.03",
+    });
+    expect(a.text).toMatch(/stay above zero/);
+    expect(a.caveats[0]).toMatch(/not a prediction/);
+  });
+
+  it("goals: shows funding and the monthly need without assuming returns", () => {
+    const state: MoneyState = {
+      ...PLANNED,
+      planning: {
+        ...PLANNED.planning,
+        goals: [
+          {
+            id: "g1",
+            name: "Car",
+            kind: "purchase",
+            target_cents: 600_000,
+            funded_cents: 0,
+            linked_account_ids: [],
+            target_date: "2027-10-24",
+            priority: 1,
+            monthly_contribution_cents: null,
+            description: "",
+          },
+        ],
+      },
+    };
+    const a = answer("goals", state);
+    expect(a.figures[0]).toMatchObject({ label: "Car", value: "0% funded" });
+    expect(a.figures[0].note).toContain("Needs $500.00 a month.");
+    expect(a.basis).toMatch(/No investment return is assumed/);
+  });
+
+  it("links each answer to the tab with the same numbers", () => {
+    expect(answer("upcoming bills").links).toEqual([
+      { label: "Open Budgets & bills", href: "#/money/budgets" },
+    ]);
+    expect(answer("snowball").links[0].href).toBe("#/money/debts");
+    const none: MoneyState = { ...SAMPLE, accounts: [] };
+    expect(answer("budget", none).links).toEqual([
+      { label: "Add an account", href: "#/money/accounts" },
+    ]);
   });
 
   it("empty planning sections say what to add instead of showing zeros", () => {

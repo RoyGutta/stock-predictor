@@ -128,7 +128,7 @@ const GUARDRAILS: Guardrail[] = [
         "This app is educational. It is not a registered investment adviser or broker.",
       ],
       links: [
-        { label: "Your holdings", href: "#/money" },
+        { label: "Your holdings", href: "#/money/holdings" },
         { label: "Research company filings", href: "#/research" },
       ],
     },
@@ -142,7 +142,7 @@ const GUARDRAILS: Guardrail[] = [
         "No one can reliably predict prices or returns, and Finley does not try. It can project your " +
         "own cash flow from the recurring items you entered, labelled as a projection of your entries.",
       caveats: [],
-      links: [{ label: "Cash-flow projection", href: "#/money" }],
+      links: [{ label: "Cash-flow projection", href: "#/money/forecast" }],
     },
   },
   {

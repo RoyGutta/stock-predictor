@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { axe } from "vitest-axe";
 import * as matchers from "vitest-axe/matchers";
 
+import { RouteContext } from "../app/routes";
 import { MONEY_SCHEMA_VERSION } from "../features/money/model";
 import { STORAGE_KEY } from "../features/money/store";
 import { MoneyPage } from "./MoneyPage";
@@ -220,6 +221,13 @@ describe("Money Manager", () => {
       "Overview",
       "Accounts",
       "Transactions",
+      "Budgets & bills",
+      "Goals",
+      "Cash flow",
+      "Debts",
+      "What if",
+      "Holdings",
+      "Ask Finley",
       "Backup & data",
     ]) {
       await user.click(screen.getByRole("button", { name: tab }));
@@ -228,5 +236,65 @@ describe("Money Manager", () => {
       });
       expect(results).toHaveNoViolations();
     }
+  });
+
+  it("opens every planning tab, with or without data", async () => {
+    const user = userEvent.setup();
+    render(<MoneyPage />);
+    const tabs: [string, string][] = [
+      ["Budgets & bills", "Budgets"],
+      ["Goals", "Goals"],
+      ["Cash flow", "Cash-flow projection"],
+      ["Debts", "Debt payoff plan"],
+      ["What if", "Try a purchase or a change"],
+      ["Holdings", "Holdings"],
+      ["Ask Finley", "Finley — Financial Assistant"],
+    ];
+    for (const [tab, heading] of tabs) {
+      await user.click(screen.getByRole("button", { name: tab }));
+      expect(screen.getByRole("button", { name: tab })).toHaveAttribute(
+        "aria-pressed",
+        "true",
+      );
+      expect(
+        screen.getByRole("heading", { name: heading }),
+      ).toBeInTheDocument();
+    }
+    await addAccount(user, "Everyday", "checking", "1000");
+    for (const [tab, heading] of tabs) {
+      await user.click(screen.getByRole("button", { name: tab }));
+      expect(
+        screen.getByRole("heading", { name: heading }),
+      ).toBeInTheDocument();
+    }
+  });
+
+  it("opens the tab named in the URL and follows it when it changes", () => {
+    const { rerender } = render(
+      <RouteContext.Provider value={{ page: "money", param: "goals" }}>
+        <MoneyPage />
+      </RouteContext.Provider>,
+    );
+    expect(screen.getByRole("button", { name: "Goals" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    rerender(
+      <RouteContext.Provider value={{ page: "money", param: "debts" }}>
+        <MoneyPage />
+      </RouteContext.Provider>,
+    );
+    expect(
+      screen.getByRole("heading", { name: "Debt payoff plan" }),
+    ).toBeInTheDocument();
+    rerender(
+      <RouteContext.Provider value={{ page: "money", param: "nonsense" }}>
+        <MoneyPage />
+      </RouteContext.Provider>,
+    );
+    expect(screen.getByRole("button", { name: "Overview" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
   });
 });
