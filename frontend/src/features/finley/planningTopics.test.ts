@@ -101,6 +101,8 @@ describe("planning topics", () => {
     ["Should I use the avalanche or snowball method?", "debt_strategy"],
     ["Which debt should I pay off first?", "debt_strategy"],
     ["Am I on track for my goals?", "goals"],
+    ["What needs my attention?", "actions"],
+    ["What should I do next?", "actions"],
     ["Will my cash run short in the next 90 days?", "projection"],
   ])("%s -> %s", (q, topic) => {
     expect(answer(q).topic).toBe(topic);
@@ -186,6 +188,38 @@ describe("planning topics", () => {
     expect(a.figures[0]).toMatchObject({ label: "Car", value: "0% funded" });
     expect(a.figures[0].note).toContain("Needs $500.00 a month.");
     expect(a.basis).toMatch(/No investment return is assumed/);
+  });
+
+  it("actions: the same list as the Actions tab, with set-aside items left out", () => {
+    const a = answer("what needs my attention", SAMPLE);
+    expect(a.text).toBe(
+      "3 item(s) on your action list, most time-sensitive first.",
+    );
+    expect(a.figures[0]).toMatchObject({
+      label: "Card charges 24% APR",
+      value: "Worth a look",
+    });
+    expect(a.links).toEqual([
+      { label: "Open Actions", href: "#/money/actions" },
+    ]);
+    const decided: MoneyState = {
+      ...SAMPLE,
+      planning: {
+        ...SAMPLE.planning,
+        action_decisions: {
+          "high_interest:Card": {
+            status: "dismissed",
+            until: null,
+            decided_on: TODAY,
+          },
+        },
+      },
+    };
+    const b = answer("action list", decided);
+    expect(b.figures.map((f) => f.label)).not.toContain("Card charges 24% APR");
+    expect(b.caveats).toContain(
+      "1 item(s) you set aside are not counted here.",
+    );
   });
 
   it("links each answer to the tab with the same numbers", () => {

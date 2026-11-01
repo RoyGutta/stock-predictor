@@ -580,6 +580,37 @@
     "research_page_chunk_bytes": 12931,
     "how": "cd frontend && npm run build ; stat -f %z dist/assets/{index,MoneyPage,ResearchPage}-*.js"
    }
+  },
+  {
+   "date": "2026-11-01",
+   "commit": "see git log (cycle 16, action list)",
+   "note": "Action list (Actions tab and Finley topic). CI green again after the httpx pin and Node version fixes (L-16).",
+   "reliability": {
+    "backend_tests_passing": 774,
+    "backend_tests_failing": 0,
+    "frontend_unit_tests_passing": 602,
+    "frontend_unit_tests_failing": 0,
+    "frontend_test_files": 46,
+    "browser_smoke_tests_listed": 38,
+    "browser_smoke_tests_passing": 35,
+    "browser_smoke_tests_skipped": 3,
+    "backend_lint_clean": true,
+    "frontend_lint_clean": true,
+    "typecheck_clean": true,
+    "production_build_passing": true,
+    "npm_audit_production_vulnerabilities": 0,
+    "how": "cd backend && ruff check . && pytest ; cd frontend && npm run typecheck && npm run lint && npx vitest run && npm run build && npm run test:e2e ; npm audit --omit=dev",
+    "backend_python_versions_verified": [
+     "3.11.9",
+     "3.13.11"
+    ]
+   },
+   "performance": {
+    "initial_js_bundle_bytes": 318587,
+    "money_page_chunk_bytes": 203402,
+    "research_page_chunk_bytes": 12931,
+    "how": "cd frontend && npm run build ; stat -f %z dist/assets/{index,MoneyPage,ResearchPage}-*.js"
+   }
   }
  ]
 }

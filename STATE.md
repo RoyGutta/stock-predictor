@@ -149,6 +149,13 @@ frontend/ React 19 + TS strict + Vite      backend/ FastAPI + Python 3.11+
   and custom debt payoff with a liquidity check; current-vs-proposed purchase
   scenarios; holdings valued only at user-entered, dated prices, with allocation
   and concentration. Simplifications listed in `TENSIONS.md` T-12.
+- **Action list** (cycle 16): an Actions tab of transparent rules over the user's
+  records (cash shortfall within 90 days, reserve below target, debts at 10% APR
+  or more, budgets over, goals that do not fit, concentration, possible
+  subscriptions, missing inputs). Each item gives its rule, figures, a computed
+  impact only where the arithmetic supports one, trade-offs, and a link to the
+  tab that simulates it. Done / hide 30 days / dismiss, undoable, stored locally.
+  Finley answers "What needs my attention?" from the same list.
 - **Finley** (cycle 16): rule-based assistant on the Money page. Matches a question
   to a topic and answers from the same modules the tabs use, with figures, basis,
   caveats, and a link to the tab. No AI service, no credentials, no network
@@ -164,8 +171,8 @@ frontend/ React 19 + TS strict + Vite      backend/ FastAPI + Python 3.11+
 below jsdom 30's floor) while local gates passed; fixed 2026-11-01 (L-16).
 Vercel deploys `master` on push whether or not CI passes.
 
-**Baseline metrics:** `METRICS.json`, cycle 16 entry (774 backend tests, 582 frontend
-unit, 33 browser smoke passing with 3 live-only skipped, 0 failing; npm audit 0;
+**Baseline metrics:** `METRICS.json`, latest entry (774 backend tests, 602 frontend
+unit, 35 browser smoke passing with 3 live-only skipped, 0 failing; npm audit 0;
 initial bundle 318,587 bytes with Money and Research as lazy chunks).
 
 ## Published
@@ -213,9 +220,10 @@ standing manual step.
 ## Roadmap from the cycle 15 briefs (not yet built, in order)
 
 The cycle 15 briefs asked for far more than one cycle (one arrived truncated).
-Built in cycle 15: Treasury yields, Money Manager core. Built in cycle 16: items
-1, 2, 3, 4 (peer groups are revenue size bands, not SIC; see T-12), and 6 (Finley,
-rule-based). **Remaining: item 5, the action list.**
+Built in cycle 15: Treasury yields, Money Manager core. Built in cycle 16: all six
+items (item 4's peer groups are revenue size bands, not SIC; item 6, Finley, is
+rule-based). Their simplifications are in T-12. The list below is kept as the
+record of what was asked.
 
 1. **Budgets and recurring items**: monthly category limits, actual vs budget,
    projected month-end, recurring rules, subscription *candidates* (never
@@ -252,11 +260,9 @@ is required before shipping anything beyond education and research candidates.
    entry, contract-test fixtures, a venue-partial label on intraday volume, an
    attribution component, and the CSV-export and Finnhub/FMP display decisions.
    The seam is in place; nothing else on this list unblocks real-data publishing.
-2. **Action list** (roadmap item 5): transparent rules over the user's own records,
-   reusing the cycle 16 modules, so Finley can explain each action.
-3. Remaining Phase 8 detectors (gap detection, support/resistance) under the
+2. Remaining Phase 8 detectors (gap detection, support/resistance) under the
    same anti-lookahead test regime as the ten shipped patterns.
-4. An opt-in, scheduled live-provider run of the browser smoke suite
+3. An opt-in, scheduled live-provider run of the browser smoke suite
    (`E2E_LIVE=1`) outside CI, so provider drift is noticed without making CI
    depend on market data.
 
@@ -264,8 +270,8 @@ is required before shipping anything beyond education and research candidates.
 
 ```bash
 cd backend && source .venv/bin/activate && ruff check . && pytest   # expect 774 passed
-cd frontend && npm run typecheck && npm run lint && npm test        # expect 582 passed
-cd frontend && npm run test:e2e                                      # expect 33 passed, 3 skipped
+cd frontend && npm run typecheck && npm run lint && npm test        # expect 602 passed
+cd frontend && npm run test:e2e                                      # expect 35 passed, 3 skipped
 ```
 Stop dev servers before running tests (T-5 — now also guarded by a 20s
 `testTimeout`, so a missed step produces a slow run rather than a false red).

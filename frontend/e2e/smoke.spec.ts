@@ -316,9 +316,9 @@ test("every Money Manager tab lays out without sideways scrolling", async ({ pag
   await page.getByLabel("Name").fill("Everyday");
   await page.getByLabel(/Balance or value/).fill("1500.00");
   await page.getByRole("button", { name: "Save account" }).click();
-  for (const tab of ["Budgets & bills", "Goals", "Cash flow", "Debts", "What if", "Holdings", "Ask Finley"]) {
-    await page.getByRole("button", { name: tab }).click();
-    await expect(page.getByRole("button", { name: tab })).toHaveAttribute("aria-pressed", "true");
+  for (const tab of ["Actions", "Budgets & bills", "Goals", "Cash flow", "Debts", "What if", "Holdings", "Ask Finley"]) {
+    await page.getByRole("button", { name: tab, exact: true }).click();
+    await expect(page.getByRole("button", { name: tab, exact: true })).toHaveAttribute("aria-pressed", "true");
     await noHorizontalOverflow(page);
   }
   await page.getByLabel("Your question").fill("What bills are coming up?");
@@ -328,6 +328,23 @@ test("every Money Manager tab lays out without sideways scrolling", async ({ pag
   await page.getByRole("link", { name: "Open Budgets & bills" }).click();
   await expect(page.getByRole("button", { name: "Budgets & bills" })).toHaveAttribute("aria-pressed", "true");
   await expect(page).toHaveURL(/#\/money\/budgets$/);
+});
+
+test("an action set aside stays set aside after a reload", async ({ page }) => {
+  await page.goto("/#/money");
+  await page.getByRole("button", { name: "Add your first account" }).click();
+  await page.getByLabel("Name").fill("Everyday");
+  await page.getByLabel(/Balance or value/).fill("1500.00");
+  await page.getByRole("button", { name: "Save account" }).click();
+  await page.getByRole("button", { name: "Actions", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Set an emergency reserve target" })).toBeVisible();
+  await page.getByRole("button", { name: "Hide for 30 days" }).click();
+  await expect(page.getByText("Nothing needs attention under these rules today.")).toBeVisible();
+  await page.reload();
+  await expect(page.getByRole("heading", { name: "Set aside" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Put back: Set an emergency reserve target" })).toBeVisible();
+  await expect(page).toHaveURL(/#\/money\/actions$/);
+  await noHorizontalOverflow(page);
 });
 
 test("research screener shows reported figures with their source and no prices", async ({ page }) => {

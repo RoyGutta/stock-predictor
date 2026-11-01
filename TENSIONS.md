@@ -208,4 +208,7 @@ none is hidden, but each is a place where the numbers are simpler than reality.
   to that card's balance.
 - **Projections** use the user's own figure for estimated items with no range
   around it, and skip recurring dates before today rather than flag them overdue.
-- **Action list** (roadmap item 5) is not built yet.
+- **Action list** thresholds (10% APR, 20% position, 35% sector) are this app's
+  lines, stated in every item, not universal rules. Decisions are keyed by a
+  stable id, so an item marked done stays set aside while its rule still finds
+  it; the UI says so.

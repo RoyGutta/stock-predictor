@@ -219,6 +219,7 @@ describe("Money Manager", () => {
     await addAccount(user, "Loan", "student_loan", "5000");
     for (const tab of [
       "Overview",
+      "Actions",
       "Accounts",
       "Transactions",
       "Budgets & bills",
@@ -242,6 +243,7 @@ describe("Money Manager", () => {
     const user = userEvent.setup();
     render(<MoneyPage />);
     const tabs: [string, string][] = [
+      ["Actions", "Actions"],
       ["Budgets & bills", "Budgets"],
       ["Goals", "Goals"],
       ["Cash flow", "Cash-flow projection"],

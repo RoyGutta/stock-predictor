@@ -5,6 +5,7 @@ import { Callout, Card } from "../components/ui";
 import { FinleyPanel } from "../features/finley/FinleyPanel";
 import { ALL_TOPICS } from "../features/finley/topics";
 import { AccountsView } from "../features/money/AccountsView";
+import { ActionsView } from "../features/money/ActionsView";
 import { BudgetsView } from "../features/money/BudgetsView";
 import { DataView } from "../features/money/DataView";
 import { DebtPlanView } from "../features/money/DebtPlanView";
@@ -19,6 +20,7 @@ import "../features/money/money.css";
 
 type Section =
   | "overview"
+  | "actions"
   | "accounts"
   | "transactions"
   | "budgets"
@@ -32,6 +34,7 @@ type Section =
 
 const SECTIONS: { key: Section; label: string }[] = [
   { key: "overview", label: "Overview" },
+  { key: "actions", label: "Actions" },
   { key: "accounts", label: "Accounts" },
   { key: "transactions", label: "Transactions" },
   { key: "budgets", label: "Budgets & bills" },
@@ -156,6 +159,9 @@ export function MoneyPage() {
           onDelete={money.deleteTransaction}
           onAddCategory={money.addCategory}
         />
+      )}
+      {section === "actions" && (
+        <ActionsView state={money.state} onPlanning={money.updatePlanning} />
       )}
       {section === "budgets" && (
         <BudgetsView state={money.state} onPlanning={money.updatePlanning} />

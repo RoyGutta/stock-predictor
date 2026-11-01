@@ -4,6 +4,11 @@
  * matching Money tab uses, so Finley and the tab always show the same numbers.
  */
 
+import {
+  applyDecisions,
+  buildActions,
+  PRIORITY_LABELS,
+} from "../money/actions";
 import { budgetReport } from "../money/budgets";
 import { compareResults, debtsFromState, planDebts } from "../money/debtPlan";
 import { projectCashFlow } from "../money/forecast";
@@ -365,6 +370,49 @@ const projection: Topic = {
   },
 };
 
+const actions: Topic = {
+  id: "actions",
+  example: "What needs my attention?",
+  match: [
+    ["action"],
+    ["attention"],
+    ["priorit"],
+    ["focus"],
+    ["next", "step"],
+    ["should", "next"],
+  ],
+  answer: (ctx) => {
+    const empty = needsAccounts(ctx, "actions", "What needs attention");
+    if (empty) return empty;
+    const a = base("actions", "What needs attention");
+    const list = applyDecisions(
+      buildActions(ctx.state, ctx.today),
+      ctx.state.planning.action_decisions,
+      ctx.today,
+    );
+    a.text =
+      list.active.length === 0
+        ? "Nothing needs attention under the action rules today."
+        : `${list.active.length} item(s) on your action list, most time-sensitive first.`;
+    a.figures = list.active.slice(0, 5).map((item) => ({
+      label: item.title,
+      value: PRIORITY_LABELS[item.priority],
+      ...(item.impact ? { note: item.impact } : {}),
+    }));
+    a.basis =
+      "The action list's rules applied to your own records. The Actions tab shows each item's rule, figures, and trade-offs.";
+    if (list.active.length > 5)
+      a.caveats.push(`${list.active.length - 5} more on the Actions tab.`);
+    const aside = list.deferred.length + list.dismissed.length;
+    if (aside > 0)
+      a.caveats.push(`${aside} item(s) you set aside are not counted here.`);
+    a.caveats.push(
+      "These are prompts to look at your numbers, not financial advice.",
+    );
+    return a;
+  },
+};
+
 /**
  * Link each answer to the Money tab that shows the same numbers, or to Accounts
  * while there is no account to compute from.
@@ -384,6 +432,7 @@ function onTab(topic: Topic, label: string, section: string): Topic {
 
 /** Order matters for ties: more specific topics first. */
 export const PLANNING_TOPICS: Topic[] = [
+  onTab(actions, "Open Actions", "actions"),
   onTab(projection, "Open Cash flow", "forecast"),
   onTab(goals, "Open Goals", "goals"),
   onTab(debtStrategy, "Open Debts", "debts"),
