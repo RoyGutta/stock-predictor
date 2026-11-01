@@ -160,6 +160,10 @@ frontend/ React 19 + TS strict + Vite      backend/ FastAPI + Python 3.11+
   by filters; source, retrieval time, and frame links shown. No prices or
   valuation metrics. Needs `SEC_USER_AGENT`, like the other SEC panels.
 
+**CI** was red on every push from 2026-10-24 (conflicting httpx pins; Node 20
+below jsdom 30's floor) while local gates passed; fixed 2026-11-01 (L-16).
+Vercel deploys `master` on push whether or not CI passes.
+
 **Baseline metrics:** `METRICS.json`, cycle 16 entry (774 backend tests, 582 frontend
 unit, 33 browser smoke passing with 3 live-only skipped, 0 failing; npm audit 0;
 initial bundle 318,587 bytes with Money and Research as lazy chunks).

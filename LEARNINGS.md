@@ -274,3 +274,20 @@ Found by rendering seeded data in a browser, as L-13 recommends.
 
 **Applies from now on:** any time series built from user records starts at the
 point records begin; earlier periods are omitted with a sentence saying why.
+
+## L-16 · A green local run is not a green CI run; read CI after every push
+
+CI on `master` failed on every push from 2026-10-24 to 2026-11-01 while every
+local gate passed. Two independent causes: `requirements-dev.txt` pinned
+`httpx~=0.27.0` on top of `requirements.txt`'s `httpx~=0.28.0` (pip:
+ResolutionImpossible; the local venv predated the conflict), and a `jsdom` 30
+upgrade requires Node ^22.22.2 or ^24.15.0 while CI still ran Node 20 (every
+jsdom test file failed to start: `webidl.util.markAsUncloneable is not a
+function`). Production kept deploying because Vercel builds on push regardless
+of CI.
+
+**Applies from now on:** after each push, read the CI run's result (public API:
+`/repos/RoyGutta/stock-predictor/actions/runs?branch=master`). After a dependency
+upgrade, compare its `engines` field with CI's Node version. Install from the
+requirements files into a fresh venv on the oldest CI Python before calling a
+backend change done. Pin a package in one requirements file only.
