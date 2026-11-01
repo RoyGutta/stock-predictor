@@ -109,3 +109,29 @@ The check produces repeated false positives from indirect variable reads, making
 it noise rather than signal.
 
 **STATUS** active
+
+## SM-5 | 2026-11-01
+
+**TRIGGER**
+Verified work sat on the local machine for several commits at a time (15
+unpushed on this date), and staging was sometimes done by directory. The owner
+asked for a standing GitHub workflow: push every verified increment under the
+configured identity, stage explicitly, and check outgoing changes for secrets
+and private data first.
+
+**CHANGE**
+`CLAUDE.md` § *GitHub sync, ownership, and confidentiality*: identity check
+against `origin` before committing, explicit-path staging, full gate before each
+push, a secret and private-data scan of the outgoing commits, push and confirm
+`origin/master` matches, and a fixed completion report. `.gitignore` now covers
+`.claude/settings.local.json` and `.claude/worktrees/`, which were previously
+excluded only by this machine's `.git/info/exclude`.
+
+**HYPOTHESIS**
+The public repository stays current and never receives local agent state,
+credentials, or personal financial data.
+
+**REVERT-IF**
+The owner withdraws the instruction.
+
+**STATUS** active

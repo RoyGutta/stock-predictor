@@ -553,6 +553,33 @@
     "initial_js_bundle_bytes": 372700,
     "how": "cd frontend && npm run build"
    }
+  },
+  {
+   "date": "2026-11-01",
+   "commit": "see git log (cycle 16)",
+   "note": "Cycle 16. Budgets and recurring items, goals and cash-flow projection, debt strategies and purchase scenarios, holdings, Finley planning topics, SEC fundamentals screener (Research page). Money and Research pages are now lazy chunks.",
+   "reliability": {
+    "backend_tests_passing": 774,
+    "backend_tests_failing": 0,
+    "frontend_unit_tests_passing": 582,
+    "frontend_unit_tests_failing": 0,
+    "frontend_test_files": 44,
+    "browser_smoke_tests_listed": 36,
+    "browser_smoke_tests_passing": 33,
+    "browser_smoke_tests_skipped": 3,
+    "backend_lint_clean": true,
+    "frontend_lint_clean": true,
+    "typecheck_clean": true,
+    "production_build_passing": true,
+    "npm_audit_production_vulnerabilities": 0,
+    "how": "cd backend && ruff check . && pytest ; cd frontend && npm run typecheck && npm run lint && npx vitest run && npm run build && npm run test:e2e ; npm audit --omit=dev"
+   },
+   "performance": {
+    "initial_js_bundle_bytes": 318587,
+    "money_page_chunk_bytes": 188643,
+    "research_page_chunk_bytes": 12931,
+    "how": "cd frontend && npm run build ; stat -f %z dist/assets/{index,MoneyPage,ResearchPage}-*.js"
+   }
   }
  ]
 }

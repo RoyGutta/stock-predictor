@@ -234,3 +234,19 @@ Pure TypeScript, run in the browser. Every rule is in `ledger.test.ts`.
 | Ratios | Debts / assets (null without assets); recorded minimum payments / average monthly income over the last 3 complete months with activity (debts without a minimum are named as excluded); liquid funds / average monthly spending. Null, never 0, when inputs are missing |
 | Payoff | Monthly: interest = round(balance x APR / 12), then payment. Infeasible when the payment does not exceed the first month's interest. No APR or payment means no estimate. Known answer: $10,000 at 6% clears in 120 payments of $111.03 |
 | Reconciliation | Statement balance minus recorded balance on a date |
+
+## 14. Money planning modules (`frontend/src/features/money/`, cycle 16)
+
+Pure TypeScript over the ledger in section 13, run in the browser; Finley calls
+the same functions. Each module's rules are pinned in its `*.test.ts`.
+Simplifications are listed in `TENSIONS.md` T-12.
+
+| Module | Rule |
+|---|---|
+| `budgets.ts` | Status: over only when spending is strictly above the limit; near from 85% (`NEAR_THRESHOLD`). Two labelled month-end figures, neither a forecast: *pace* (spent ÷ days elapsed × days in month) and *scheduled* (spent + recurring expenses still due) |
+| `recurring.ts` | Monthly dates clamp to month end without drift. Subscription *candidates* need 3+ payments (`MIN_OCCURRENCES`) with the same description and account, amounts within 5% of the median (`AMOUNT_TOLERANCE`), at a regular cadence; never declared, only offered. Unusual change: last complete month at least 50% and $50 above the average of up to 3 earlier months (at least 2 required); months before tracking or without spending are left out, not zero |
+| `goals.ts` | Required monthly amount = remaining ÷ whole months to the target date, rounded up to the cent. Feasibility checks goals in priority order against average surplus over up to 6 complete months less recurring commitments. A return scenario is opt-in, 0–30%, applied to new contributions only, and labelled hypothetical |
+| `forecast.ts` | Settled liquid balances today plus recurring items over 30/90/365 days; settled and projected are never mixed; estimated items are counted at the user's figure. Goal contributions only when the user opts in |
+| `debtPlan.ts` | Same interest convention as the ledger payoff (round(balance × APR ÷ 12)). Avalanche, snowball, or the user's order; minimums on every debt, the rest to the target, paid-off payments roll over. Debts without APR or minimum are excluded and named, never treated as 0. Infeasible beyond 600 months (`MAX_PLAN_MONTHS`), with the reason |
+| `scenario.ts` | Current vs proposed for a purchase (cash or financed, standard amortization), a spending change, or an income change; every output labelled entered or calculated with its basis; the verdict describes, it does not approve |
+| `holdings.ts` | Value = quantity × the user's dated price; no price lookup. No dated price means value unknown (counted, excluded from percentages). Prices older than 31 days are flagged. Concentration notices at 20% in one position and 35% in one sector |

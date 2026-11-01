@@ -46,7 +46,9 @@ feature engineering → analysis → evaluation → visualization.
 These are product commitments, enforced by tests. Treat them as constraints, not preferences.
 
 9. **No fabricated market data.** If a provider is unavailable or a feature is not
-   on the plan, the app says so. This is why the stock screener does not exist.
+   on the plan, the app says so. This is why there is no price-based stock
+   screener: the Research screener uses SEC-reported figures only, with no prices
+   and no valuation metrics.
 10. **No predictions.** Indicators describe the past. Monte Carlo is labeled as
     dispersion under a stated assumption, never a forecast.
 11. **No buy/sell verdicts.** Show evidence on both sides; surface conflicts.
@@ -92,7 +94,7 @@ existing architecture.
 **4. VERIFY** — **Stop dev servers and browsers first** (see CHANGELOG SM-2), then:
 
 ```bash
-cd backend  && ruff check . && pytest        # expect 247 passed
+cd backend  && ruff check . && pytest        # current counts: STATE.md cold-start
 cd frontend && npm run typecheck && npm run lint && npm test && npm run build
 ```
 
@@ -169,6 +171,65 @@ frontend/src/styles/     design tokens (light + dark are both first-class)
 - FMP: `company-screener`, `stock-list` → HTTP 402, **paid only**
 - FMP `/api/v3` is retired; new keys get 403 "Legacy Endpoint"
 - `yfinance` needs no key but is **not licensed for redistribution** (T-3)
+
+---
+
+## GitHub sync, ownership, and confidentiality
+
+Standing instruction from the owner (2026-11-01). Applies to every session.
+
+**Repository and identity.** `RoyGutta/stock-predictor`, branch `master`, remote
+`origin`. Commit with the Git identity already configured on this machine; it
+must match the author of the existing commits on `origin`. If it does not, stop
+before committing and explain without printing the email. Never change Git config
+to invent an identity, never add an AI co-author trailer, never create another
+repository, change the remote, rewrite history, force-push, or delete branches.
+
+**Push verified increments.** Each coherent, verified feature or fix is committed
+and pushed rather than left local. Before each push:
+
+1. Inspect the working tree; understand every change.
+2. Run targeted tests, then the full gate in *Operating loop* step 4 (including
+   `npm run build` and the browser suite for UI work).
+3. Review the complete diff and every new or generated file.
+4. Stage explicit paths only (`git add <file>…`, never `git add -A` / `git add .`);
+   review staged and unstaged changes separately.
+5. Scan the outgoing commits for secrets and private data (below).
+6. Commit with a descriptive message, push, then confirm `origin/master` equals
+   the local branch.
+
+Compiling is not readiness. A failing test, unfinished feature, or open security
+defect is reported as a blocker, never pushed as complete. If a push fails, keep
+the work and report the exact error.
+
+**Never commit or print** (this outranks pushing quickly): `.env`/`.env.*` files or
+real variable values; API keys, tokens, passwords, cookies, signing keys,
+certificates; personal balances, transactions, accounts, debts, holdings, exports
+or backups; private notes (`personal.md`) or contact details; Claude Code local
+state (`.claude/settings.local.json`, `.claude/worktrees/`), `.claude-flow/`,
+`.swarm/`, `.hive-mind/`; databases, caches, logs with sensitive data, model
+weights, private screenshots, browser profiles. Check `.gitignore` covers these
+and that no intended source file is hidden by it. A placeholder in
+`.env.example` is not a secret; a real value never goes in a tracked file. If a
+real credential is found in history, stop the push and report it without
+printing it; do not rewrite history or rotate credentials without authorization.
+
+**Product guarantees still apply to every push:** synthetic public prices until
+display rights exist; local Yahoo data stays private; SEC and Treasury figures
+keep their source labels and dates; Money Manager data stays in the browser;
+Finley never uses the owner's Claude or Anthropic credentials; missing values are
+never zero; no guaranteed outcomes. Never weaken a test or safeguard to get green.
+
+**Deployment** is separate from GitHub sync: only through the existing workflow,
+only when authorized and the checks pass, verified independently. Never change
+hosting credentials, billing, domains, production variables, repository
+visibility, or permissions.
+
+**Report after each increment:** what was built; which checks passed (with
+counts); failures or skips; files committed; commit hash and message; whether the
+push succeeded and local matches remote; whether production was deployed and
+verified; confirmation that the outgoing changes were checked for secrets and
+private data.
 
 ---
 

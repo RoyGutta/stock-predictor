@@ -91,3 +91,6 @@ Thumbs.db
 .claude-flow/
 .swarm/
 .hive-mind/
+# Claude Code: per-machine permissions and agent worktrees (full repo copies).
+.claude/settings.local.json
+.claude/worktrees/

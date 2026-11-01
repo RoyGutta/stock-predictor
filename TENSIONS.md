@@ -186,3 +186,26 @@ refresh (was four), names any refusal with its HTTP status, and pauses before
 retrying; the Dashboard then shows the stated error and no curve. If refusals
 recur, the free options are a longer cache, fewer cold starts, or a scheduled
 fetch that stores the published curve as a static file in the repository.
+
+## T-12 — Planning and research modules carry stated simplifications (OPEN, documented)
+
+Cycle 16 added budgets, recurring items, goals, cash-flow projection, debt payoff
+strategies, purchase scenarios, holdings, Finley topics over them, and the SEC
+fundamentals screener. Each limitation below is stated in the UI or the module;
+none is hidden, but each is a place where the numbers are simpler than reality.
+
+- **Screener peers** are revenue size bands, not SIC industries as the brief
+  asked: frames carry no SIC code, and fetching it costs one SEC request per
+  company. Total-liabilities is untagged by many filers, so liabilities/assets is
+  often blank. The frames format is covered by hand-built fixtures only; it has
+  not been exercised live because no `SEC_USER_AGENT` is set (T-9). The 25 MB
+  frame cap is measured after download, since the SEC client reads whole bodies.
+- **Goals** count a recurring expense as a new commitment when no recorded
+  spending matches its category and amount or its description; a bill whose
+  amount changes can be counted twice.
+- **Debt plans** use APR ÷ 12 monthly interest, a payoff order fixed from today's
+  balances, and no new charges. **Scenarios** do not add a card-funded purchase
+  to that card's balance.
+- **Projections** use the user's own figure for estimated items with no range
+  around it, and skip recurring dates before today rather than flag them overdue.
+- **Action list** (roadmap item 5) is not built yet.

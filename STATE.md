@@ -1,6 +1,6 @@
 # State
 
-**Updated:** 2026-10-24 · **Commit:** see `git log` · **Cycle:** 15 (Treasury yields; Money Manager core)
+**Updated:** 2026-11-01 · **Commit:** see `git log` · **Cycle:** 16 (Money planning tools; Finley; SEC fundamentals screener)
 
 ## Objective
 
@@ -140,9 +140,29 @@ frontend/ React 19 + TS strict + Vite      backend/ FastAPI + Python 3.11+
   formula-safe CSV export, CSV import with preview and duplicates, quarantine of
   unreadable data, newer-version protection, delete-all. `ANALYTICS.md` section 13.
 
-**Baseline metrics:** `METRICS.json` (424 backend tests, 244 frontend unit, 22 browser
-smoke, 0 failing; npm audit 0 across all groups; Lighthouse a11y/best-practices/SEO
-100/100/100 on the production build).
+- **Money planning tools** (cycle 16), all in the browser, all tabs deep-linkable
+  (`#/money/<tab>`): budgets with pace and scheduled projections; recurring bills
+  and income; subscription *candidates* the user confirms; unusual-change notices
+  with their baseline; goals with required monthly amount, feasibility in
+  priority order, and an opt-in, labelled hypothetical return; a 30/90/365-day
+  cash-flow projection separating settled from projected; avalanche, snowball,
+  and custom debt payoff with a liquidity check; current-vs-proposed purchase
+  scenarios; holdings valued only at user-entered, dated prices, with allocation
+  and concentration. Simplifications listed in `TENSIONS.md` T-12.
+- **Finley** (cycle 16): rule-based assistant on the Money page. Matches a question
+  to a topic and answers from the same modules the tabs use, with figures, basis,
+  caveats, and a link to the tab. No AI service, no credentials, no network
+  request (asserted by tests); declines buy/sell, prediction, and tax/legal
+  questions.
+- **Research page: SEC fundamentals screener** (cycle 16): filters U.S. filers on
+  reported revenue, growth, margins, cash flow, free cash flow, and leverage from
+  SEC XBRL frames; peers by revenue size band; unknown figures null and excluded
+  by filters; source, retrieval time, and frame links shown. No prices or
+  valuation metrics. Needs `SEC_USER_AGENT`, like the other SEC panels.
+
+**Baseline metrics:** `METRICS.json`, cycle 16 entry (774 backend tests, 582 frontend
+unit, 33 browser smoke passing with 3 live-only skipped, 0 failing; npm audit 0;
+initial bundle 318,587 bytes with Money and Research as lazy chunks).
 
 ## Published
 
@@ -167,7 +187,9 @@ domain public and preview URLs behind Vercel Authentication.
 
 1. **T-2** — `backend/venv/` (a stale Windows virtualenv) should be deleted;
    awaiting your OK since it is your file.
-2. **T-4** — stock screener needs a paid FMP plan (re-verified 402 on 2026-09-14).
+2. **T-4** — a *price-based* stock screener needs a paid FMP plan (re-verified 402
+   on 2026-09-14). The SEC fundamentals screener (cycle 16) needs only
+   `SEC_USER_AGENT` (item 0).
 4. **T-3 / T-8 provider decision — research complete 2026-10-08, awaiting your
    written answers.** Decision record: `PROVIDERS.md` section 8. Provider chosen
    for the public real-data path: Twelve Data. Two routes: (a) Non-Profit
@@ -187,8 +209,9 @@ standing manual step.
 ## Roadmap from the cycle 15 briefs (not yet built, in order)
 
 The cycle 15 briefs asked for far more than one cycle (one arrived truncated).
-Built: Treasury yields, Money Manager core. Remaining, each to be delivered
-complete with tests rather than as placeholders:
+Built in cycle 15: Treasury yields, Money Manager core. Built in cycle 16: items
+1, 2, 3, 4 (peer groups are revenue size bands, not SIC; see T-12), and 6 (Finley,
+rule-based). **Remaining: item 5, the action list.**
 
 1. **Budgets and recurring items**: monthly category limits, actual vs budget,
    projected month-end, recurring rules, subscription *candidates* (never
@@ -225,18 +248,20 @@ is required before shipping anything beyond education and research candidates.
    entry, contract-test fixtures, a venue-partial label on intraday volume, an
    attribution component, and the CSV-export and Finnhub/FMP display decisions.
    The seam is in place; nothing else on this list unblocks real-data publishing.
-2. Remaining Phase 8 detectors (gap detection, support/resistance) under the
+2. **Action list** (roadmap item 5): transparent rules over the user's own records,
+   reusing the cycle 16 modules, so Finley can explain each action.
+3. Remaining Phase 8 detectors (gap detection, support/resistance) under the
    same anti-lookahead test regime as the ten shipped patterns.
-3. An opt-in, scheduled live-provider run of the browser smoke suite
+4. An opt-in, scheduled live-provider run of the browser smoke suite
    (`E2E_LIVE=1`) outside CI, so provider drift is noticed without making CI
    depend on market data.
 
 ## Cold-start checklist for the next session
 
 ```bash
-cd backend && source .venv/bin/activate && ruff check . && pytest   # expect 734 passed
-cd frontend && npm run typecheck && npm run lint && npm test        # expect 374 passed
-cd frontend && npm run test:e2e                                      # expect 29 passed, 3 skipped
+cd backend && source .venv/bin/activate && ruff check . && pytest   # expect 774 passed
+cd frontend && npm run typecheck && npm run lint && npm test        # expect 582 passed
+cd frontend && npm run test:e2e                                      # expect 33 passed, 3 skipped
 ```
 Stop dev servers before running tests (T-5 — now also guarded by a 20s
 `testTimeout`, so a missed step produces a slow run rather than a false red).
